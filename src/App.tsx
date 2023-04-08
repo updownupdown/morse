@@ -1,17 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./css/styles.scss";
 import { alphaToMorse } from "./data";
 import useLongPress from "./hooks/useLongPress";
 import tone from "./audio/tone.mp3";
 import clsx from "clsx";
-
-const longPressDuration = 250;
 
 const enum Multipliers {
   longDash = 3,
@@ -24,7 +16,8 @@ function App() {
   const audio = useMemo(() => new Audio(tone), [tone]);
   audio.loop = false;
 
-  const [tickDuration, setTickDuration] = useState(500);
+  const [tickDuration, setTickDuration] = useState(200);
+  const [longPressDuration, setLongPressDuration] = useState(125);
 
   const [timerRunning, setTimmerRunning] = useState(false);
   const [ticks, setTicks] = useState(0);
@@ -68,7 +61,7 @@ function App() {
   };
 
   const processWord = () => {
-    if (output.length !== 0) {
+    if (output.length !== 0 && output[output.length - 1] !== "/") {
       addToOutput("/");
     }
   };
@@ -116,6 +109,29 @@ function App() {
 
   return (
     <div className="main">
+      <div className="timing">
+        <div>
+          <label>Delay</label>
+          <input
+            type="number"
+            min="10"
+            max="1000"
+            value={tickDuration}
+            onChange={(e) => setTickDuration(Number(e.target.value))}
+          />
+        </div>
+
+        <div>
+          <label>Long Press</label>
+          <input
+            type="number"
+            min="10"
+            max="1000"
+            value={longPressDuration}
+            onChange={(e) => setLongPressDuration(Number(e.target.value))}
+          />
+        </div>
+      </div>
       <div className="dictionary">
         {Object.keys(alphaToMorse).map((key: string, i: number) => (
           <div className="letter" key={alphaToMorse[key]}>
@@ -123,23 +139,6 @@ function App() {
             <span>{alphaToMorse[key]}</span>
           </div>
         ))}
-      </div>
-
-      <div className="timing">
-        <input
-          type="number"
-          min="10"
-          max="1000"
-          value={tickDuration}
-          onChange={(e) => setTickDuration(Number(e.target.value))}
-        />
-
-        <span>Ticks: {ticks}</span>
-
-        {/* <div
-          className="tick-progress"
-          style={{ animationDuration: `${tickDuration}ms` }}
-        /> */}
       </div>
 
       <div className="output">

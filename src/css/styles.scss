@@ -87,6 +87,7 @@ a {
   width: 100%;
 }
 .main {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -94,14 +95,43 @@ a {
   width: 100%;
   min-height: 100vh;
   gap: 100px;
+
+  padding: 80px 0;
+}
+
+// Timing
+.timing {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 0;
+
+  background: var(--white);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08), 0 0 20px rgba(0, 0, 0, 0.08);
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    input {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+  }
 }
 
 .dictionary {
   display: flex;
-  // flex-direction: column;
+  flex-wrap: wrap;
   gap: 20px;
-  // width: 100%;
-  // margin: auto;
+  padding: 0 100px;
+
+  margin: auto;
 
   .letter {
     display: flex;
@@ -116,46 +146,6 @@ a {
     }
     span:nth-child(2) {
       font-size: 18px;
-    }
-  }
-}
-
-// Timing
-.timing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-
-  input {
-    padding: 12px;
-
-    font-size: 14px;
-  }
-
-  .tick-progress {
-    position: relative;
-    width: 10px;
-    height: 10px;
-
-    border-radius: 50%;
-    background: var(--K500);
-
-    animation-name: blink;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-
-    @keyframes blink {
-      0% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
     }
   }
 }
@@ -216,7 +206,7 @@ a {
     border-radius: 10px;
     background: var(--K100);
 
-    font-size: 24px;
+    font-size: 40px;
     font-weight: 700;
   }
 
