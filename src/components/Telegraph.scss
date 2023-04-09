@@ -13,7 +13,8 @@
     align-items: center;
     justify-content: center;
     height: 60px;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     gap: calc($dot-width / 2);
 
     .buffer-display {
@@ -83,7 +84,7 @@
   }
 
   .tkey {
-    $btn-height: 60px;
+    $btn-height: 50px;
 
     cursor: pointer;
     transition: 0.1s ease background-color;
@@ -91,6 +92,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     height: $btn-height;
 
     border-radius: 50%;
@@ -159,9 +161,8 @@
 
 .guide {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 40px;
+  flex-wrap: wrap;
   width: 100%;
   margin-bottom: 30px;
 
@@ -172,13 +173,11 @@
 
   &__section {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: flex-start;
     gap: 4px;
-
-    > span {
-      font-weight: 600;
-    }
+    margin-right: 40px;
+    margin-bottom: 12px;
 
     div {
       display: flex;
