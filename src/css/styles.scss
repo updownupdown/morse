@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap");
 @import "./media.scss";
 
 $theme-colors: (
@@ -16,6 +16,7 @@ $theme-colors: (
   "K100": #f7f8f9,
   "accent": #0c9ec2,
   "accent-hover": #266f8e,
+  "accent-active": #194a5f,
 );
 
 :root {
@@ -29,6 +30,7 @@ $theme-colors: (
   }
 
   --font: "Montserrat", sans-serif;
+  --font-serif: "Libre Baskerville", serif;
 }
 
 * {
@@ -44,7 +46,7 @@ body {
   justify-content: center;
   margin: 0;
 
-  background: var(--white);
+  background: var(--K100);
 
   color: var(--K800);
   line-height: 1;
@@ -86,6 +88,7 @@ a {
 #root {
   width: 100%;
 }
+
 .main {
   position: relative;
   display: flex;
@@ -94,136 +97,7 @@ a {
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  gap: 100px;
+  // gap: 100px;
 
   padding: 80px 0;
-}
-
-// Timing
-.timing {
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 12px 0;
-
-  background: var(--white);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08), 0 0 20px rgba(0, 0, 0, 0.08);
-
-  div {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    input {
-      padding: 8px 12px;
-      font-size: 14px;
-    }
-  }
-}
-
-.dictionary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 0 100px;
-
-  margin: auto;
-
-  .letter {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    white-space: nowrap;
-    text-align: center;
-
-    span:nth-child(1) {
-      font-size: 20px;
-      font-weight: 700;
-    }
-    span:nth-child(2) {
-      font-size: 18px;
-    }
-  }
-}
-
-// Output
-.output {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  &__letters {
-    display: flex;
-    gap: 8px;
-  }
-
-  &__letter {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    align-items: center;
-
-    font-size: 20px;
-    font-weight: 700;
-
-    &--word-break {
-      color: var(--K300);
-      font-weight: 300;
-    }
-  }
-
-  &__clear {
-    cursor: pointer;
-    padding: 8px 12px;
-
-    border-radius: 4px;
-    border: unset;
-    background: var(--K100);
-
-    &:hover {
-      background: var(--K200);
-    }
-  }
-}
-
-.controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-
-  &__buffer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 60px;
-    width: 200px;
-
-    border-radius: 10px;
-    background: var(--K100);
-
-    font-size: 40px;
-    font-weight: 700;
-  }
-
-  // Telegraph Key
-  &__button {
-    cursor: pointer;
-    transition: 0.1s ease background-color;
-    width: 200px;
-    height: 100px;
-
-    border: unset;
-    border-radius: 8px;
-    background: var(--accent);
-
-    &:hover,
-    &:active {
-      background: var(--accent-hover);
-    }
-  }
 }

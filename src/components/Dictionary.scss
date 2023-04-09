@@ -1,0 +1,35 @@
+.dictionary {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 60px;
+  padding: 0 100px;
+
+  font-family: var(--font-serif);
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .letter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 30px;
+    white-space: nowrap;
+
+    span:nth-child(1) {
+      width: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+    }
+    span:nth-child(2) {
+      width: 50px;
+      font-size: 22px;
+    }
+  }
+}
