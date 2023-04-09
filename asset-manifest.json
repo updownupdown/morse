@@ -1,16 +1,17 @@
 {
   "files": {
-    "main.css": "/morse/static/css/main.801c1689.css",
-    "main.js": "/morse/static/js/main.42fb3daa.js",
+    "main.css": "/morse/static/css/main.199974f5.css",
+    "main.js": "/morse/static/js/main.77afd542.js",
     "static/js/787.04dc5cbe.chunk.js": "/morse/static/js/787.04dc5cbe.chunk.js",
+    "static/media/paper-texture.jpg": "/morse/static/media/paper-texture.389ac88cdbe6dd1891f5.jpg",
     "static/media/tone.mp3": "/morse/static/media/tone.4a836c9be1a4f9f8be80.mp3",
     "index.html": "/morse/index.html",
-    "main.801c1689.css.map": "/morse/static/css/main.801c1689.css.map",
-    "main.42fb3daa.js.map": "/morse/static/js/main.42fb3daa.js.map",
+    "main.199974f5.css.map": "/morse/static/css/main.199974f5.css.map",
+    "main.77afd542.js.map": "/morse/static/js/main.77afd542.js.map",
     "787.04dc5cbe.chunk.js.map": "/morse/static/js/787.04dc5cbe.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.801c1689.css",
-    "static/js/main.42fb3daa.js"
+    "static/css/main.199974f5.css",
+    "static/js/main.77afd542.js"
   ]
 }
