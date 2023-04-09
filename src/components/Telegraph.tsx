@@ -139,6 +139,7 @@ export const Telegraph = () => {
   const timeout = useRef<any>(null);
 
   const startSignal = useCallback(() => {
+    if (signalInProgressRef.current) return;
     signalInProgressRef.current = true;
 
     timeout.current = setTimeout(() => {
@@ -257,7 +258,9 @@ export const Telegraph = () => {
           <button
             className="tkey tkey--main"
             onMouseDown={() => startSignal()}
+            onTouchStart={() => startSignal()}
             onMouseUp={() => endSignal()}
+            onTouchEnd={() => endSignal()}
             onMouseLeave={() => {
               if (signalInProgressRef.current) {
                 endSignal();
