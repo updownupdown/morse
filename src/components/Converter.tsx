@@ -3,7 +3,7 @@ import "./Converter.scss";
 import { alphaToMorse } from "../data";
 
 export const Converter = () => {
-  const [input, setInput] = useState("This is a test");
+  const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
   useEffect(() => {
@@ -28,6 +28,7 @@ export const Converter = () => {
   return (
     <div className="converter">
       <textarea
+        placeholder="Enter text to convert to morse"
         value={input}
         onChange={(e) => {
           setInput(e.target.value);

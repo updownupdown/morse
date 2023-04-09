@@ -1,22 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
 @import "./media.scss";
 
 $theme-colors: (
   "white": #ffffff,
-  "K900": #24292d,
-  "K800": #4e5256,
-  "K700": #696f74,
-  "K600": #83898e,
-  "K500": #9da3a8,
+  "K900": #413824,
+  "K800": #574b31,
+  "K700": #77572b,
+  "K600": #976f37,
+  "K500": #bb8a45,
   "K400": #b5bbc0,
-  "K300": #ced3d6,
-  "K200": #dde1e3,
-  "K150": #edeef0,
-  "K125": #f1f3f4,
-  "K100": #f7f8f9,
-  "accent": #0c9ec2,
-  "accent-hover": #266f8e,
-  "accent-active": #194a5f,
+  "K300": #d3d2d0,
+  "K200": #e5e3e1,
+  "K150": #eeecea,
+  "K100": #f7f1e9,
+  "accent": #d5b68a,
+  "accent-hover": #c79e65,
+  "accent-active": #b98843,
 );
 
 :root {
@@ -29,8 +28,7 @@ $theme-colors: (
     --#{$name}-rgb: #{hexToRGB($color)};
   }
 
-  --font: "Montserrat", sans-serif;
-  --font-serif: "Libre Baskerville", serif;
+  --font: "Outfit", sans-serif;
 }
 
 * {
@@ -85,8 +83,47 @@ a {
   font-weight: 600;
 }
 
+button {
+  cursor: pointer;
+  background: unset;
+  border: unset;
+}
+
+textarea {
+  resize: none;
+
+  width: 600px;
+  height: 140px;
+  padding: 12px;
+
+  border: 1px solid rgba(var(--K900-rgb), 0.1);
+  background: rgba(var(--K900-rgb), 0.05);
+
+  font-family: var(--font);
+  font-size: 20px;
+  color: var(--K900);
+
+  &::placeholder {
+    color: rgba(var(--K900-rgb), 0.4);
+  }
+
+  &:read-only {
+    cursor: not-allowed;
+    border-color: transparent;
+    background: rgba(var(--K900-rgb), 0.1);
+  }
+
+  &:focus {
+    outline: none;
+    background: rgba(var(--K900-rgb), 0.1);
+    border-color: rgba(var(--K900-rgb), 0.2);
+  }
+}
+
 #root {
   width: 100%;
+
+  background-repeat: repeat;
 }
 
 .main {
@@ -97,7 +134,49 @@ a {
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  // gap: 100px;
+  padding: 20px 40px;
 
-  padding: 80px 0;
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 800px;
+    flex-grow: 1;
+  }
+}
+
+// Tabs
+.tabs-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .tabs {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    gap: 1px;
+    margin-bottom: 20px;
+
+    .tab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      height: 60px;
+      padding: 0 20px;
+
+      border-bottom: 3px solid transparent;
+
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--K800);
+
+      &--selected {
+        border-bottom-color: var(--K800);
+      }
+    }
+  }
 }

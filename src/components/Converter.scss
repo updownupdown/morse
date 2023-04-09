@@ -2,20 +2,5 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 30px;
-
-  textarea {
-    font-family: var(--font);
-    width: 600px;
-    height: 200px;
-    padding: 12px;
-
-    border: 1px solid var(--K200);
-
-    font-size: 24px;
-
-    &:read-only {
-      background: var(--K50);
-    }
-  }
+  margin-top: 60px;
 }

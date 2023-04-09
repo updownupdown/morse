@@ -1,22 +1,23 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { alphaToMorse } from "../data";
-import clsx from "clsx";
 import tone from "../audio/tone.mp3";
 import "./Telegraph.scss";
-
-const enum Multipliers {
-  longDash = 3,
-  elementSpacing = 1,
-  letterSpacing = 3,
-  wordSpacing = 7,
-}
+import { Message } from "./Message";
+import { useTiming } from "../hooks/useTiming";
+import { SettingsContext } from "../context/SettingsContext";
 
 export const Telegraph = () => {
-  const audio = useMemo(() => new Audio(tone), []);
+  const { addWordBreaks } = useContext(SettingsContext);
+  const { gaps, timing } = useTiming();
 
-  const [tickDuration, setTickDuration] = useState(200);
-  const [longPressDuration, setLongPressDuration] = useState(125);
-  const [addWordBreaks, setAddWordBreaks] = useState(false);
+  const audio = useMemo(() => new Audio(tone), []);
 
   const [timerRunning, setTimmerRunning] = useState(false);
   const [ticks, setTicks] = useState(0);
@@ -39,15 +40,15 @@ export const Telegraph = () => {
   );
 
   useEffect(() => {
-    const tickInterval = setInterval(onTick, tickDuration);
+    const tickInterval = setInterval(onTick, timing.short);
     return () => clearInterval(tickInterval);
-  }, [onTick, tickDuration]);
+  }, [onTick, timing]);
 
   useEffect(() => {
-    if (ticks > Multipliers.elementSpacing && buffer !== "") {
+    if (ticks > gaps.gapLetters && buffer !== "") {
       processLetter();
     }
-    if (ticks > Multipliers.wordSpacing) {
+    if (ticks > gaps.gapWords) {
       processWord();
       stopTimer();
     }
@@ -91,6 +92,8 @@ export const Telegraph = () => {
       if (!signalInProgressRef.current) {
         startSignal();
       }
+    } else if (e.key === "Delete" || e.key === "Backspace") {
+      deleteLastCharacter();
     }
   };
 
@@ -113,7 +116,11 @@ export const Telegraph = () => {
   }, []);
 
   const emulateSignal = (long: boolean) => {
-    const signalDuration = long ? longPressDuration : longPressDuration / 3;
+    if (signalInProgressRef.current) return;
+
+    const signalDuration = long ? timing.long : timing.short;
+
+    clearTimeout(timeout.current);
 
     startSignal();
 
@@ -132,18 +139,19 @@ export const Telegraph = () => {
   const timeout = useRef<any>(null);
 
   const startSignal = useCallback(() => {
+    signalInProgressRef.current = true;
+
     timeout.current = setTimeout(() => {
       sendSignal(true);
 
-      signalInProgressRef.current = true;
       longPressTriggeredRef.current = true;
-    }, longPressDuration);
+    }, timing.shortLongThreshold);
 
     audio.play();
     stopTimer();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sendSignal, longPressDuration]);
+  }, [sendSignal, timing]);
 
   const endSignal = useCallback(() => {
     clearTimeout(timeout.current);
@@ -160,28 +168,34 @@ export const Telegraph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendSignal]);
 
+  const deleteLastCharacter = () => {
+    setMessage((message) => message.slice(0, -1));
+  };
+
   return (
     <>
-      <div className="message">
-        <div className="message__letters">
-          {message.map((letter, i) => {
-            return (
-              <div
-                className={clsx(
-                  "message__letter",
-                  letter === "/" && "message__letter--word-break"
-                )}
-                key={`${letter}-${i}`}
-              >
-                <span>{letter}</span>
-                <span>{alphaToMorse[letter] ?? ""}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <Message message={message} buffer={buffer} />
 
       <div className="controls">
+        <div className="controls__edit-message">
+          <button
+            onClick={() => {
+              deleteLastCharacter();
+            }}
+            disabled={message.length === 0}
+          >
+            Backspace
+          </button>
+          <button
+            onClick={() => {
+              setMessage([]);
+            }}
+            disabled={message.length === 0}
+          >
+            Clear message
+          </button>
+        </div>
+
         <span className="controls__buffer">
           {Array.from(buffer).map((element, i) => (
             <div
@@ -193,86 +207,62 @@ export const Telegraph = () => {
           ))}
         </span>
 
+        <div className="guide">
+          <div className="guide__section">
+            <span>Dot</span>
+            <div>
+              <span>.</span> or
+              <span>z</span>
+            </div>
+          </div>
+          <div className="guide__section">
+            <span>Dash</span>
+            <div>
+              <span>-</span> or
+              <span>x</span>
+            </div>
+          </div>
+          <div className="guide__section">
+            <span>Manual operation</span>
+            <div>
+              <span>m</span>
+            </div>
+          </div>
+          <div className="guide__section">
+            <span>Delete last character</span>
+            <div>
+              <span>Delete</span> or
+              <span>Backspace</span>
+            </div>
+          </div>
+        </div>
+
         <div className="controls__buttons">
-          <div className="controls__buttons__button">
+          <div className="controls__buttons__aux">
             <button
               className="tkey tkey--sec"
-              onClick={() => emulateSignal(false)}
+              onMouseDown={() => emulateSignal(false)}
             >
-              .
+              <div className="tkey-symbol" />
             </button>
-            <div className="key-hints">
-              <span className="key-guide">.</span>
-              <span className="key-guide">z</span>
-            </div>
-          </div>
 
-          <div className="controls__buttons__button">
             <button
               className="tkey tkey--sec"
-              onClick={() => emulateSignal(true)}
+              onMouseDown={() => emulateSignal(true)}
             >
-              -
+              <div className="tkey-symbol tkey-symbol--long" />
             </button>
-            <div className="key-hints">
-              <span className="key-guide">-</span>
-              <span className="key-guide">x</span>
-            </div>
           </div>
 
-          <div className="controls__buttons__button">
-            <button
-              className="tkey tkey--main"
-              onMouseDown={() => startSignal()}
-              onMouseUp={() => endSignal()}
-            />
-            <div className="key-hints">
-              <span>Press and hold</span>
-              <span className="key-guide">m</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button
-        className="clear-message-btn"
-        onClick={() => {
-          setMessage([]);
-        }}
-      >
-        Clear message
-      </button>
-
-      <div className="timing">
-        <div>
-          <input
-            type="checkbox"
-            checked={addWordBreaks}
-            onChange={() => {
-              setAddWordBreaks(!addWordBreaks);
+          <button
+            className="tkey tkey--main"
+            onMouseDown={() => startSignal()}
+            onMouseUp={() => endSignal()}
+            onMouseLeave={() => {
+              if (signalInProgressRef.current) {
+                endSignal();
+              }
             }}
-          />
-          <label>Add Word Breaks</label>
-        </div>
-        <div>
-          <label>Delay</label>
-          <input
-            type="number"
-            min="10"
-            max="1000"
-            value={tickDuration}
-            onChange={(e) => setTickDuration(Number(e.target.value))}
-          />
-        </div>
-
-        <div>
-          <label>Long Press</label>
-          <input
-            type="number"
-            min="10"
-            max="1000"
-            value={longPressDuration}
-            onChange={(e) => setLongPressDuration(Number(e.target.value))}
           />
         </div>
       </div>

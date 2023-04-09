@@ -1,0 +1,77 @@
+.message {
+  $side-margin: 40px;
+  $letter-height: 40px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  min-height: 94px;
+  padding: 30px 20px 0 20px;
+
+  border-radius: 8px;
+  border: 1px solid var(--K150);
+  background: var(--white);
+  box-shadow: 1px 2px 8px rgba(var(--K600-rgb), 0.1),
+    2px 4px 24px rgba(var(--K600-rgb), 0.1);
+
+  &__letters {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__letter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 26px;
+    height: $letter-height;
+    margin-bottom: 20px;
+
+    span:nth-child(1) {
+      height: 18px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    span:nth-child(2) {
+      height: 14px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--K500);
+    }
+
+    &--word-break {
+      color: var(--K300);
+      font-weight: 300;
+
+      span:nth-child(2) {
+        opacity: 0;
+      }
+    }
+  }
+
+  .buffer {
+    $dot-width: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: $letter-height;
+    gap: calc($dot-width / 2);
+
+    .buffer-display {
+      display: flex;
+      height: $dot-width;
+
+      border-radius: calc($dot-width / 2);
+      background: var(--K800);
+
+      &--dot {
+        width: $dot-width;
+      }
+      &--dash {
+        width: $dot-width * 2.4;
+      }
+    }
+  }
+}

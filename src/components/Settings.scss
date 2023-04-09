@@ -1,0 +1,26 @@
+.timing {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  padding: 12px 0;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    input[type="number"] {
+      width: 80px;
+      padding: 8px 10px;
+
+      border-radius: 4px;
+      border: 1px solid var(--K300);
+
+      font-size: 14px;
+    }
+  }
+}
