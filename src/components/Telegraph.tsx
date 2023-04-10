@@ -84,11 +84,7 @@ export const Telegraph = () => {
 
   // Event listeners
   const keyDownHandler = (e: KeyboardEvent) => {
-    if (e.key === "." || e.key === "z") {
-      emulateSignal(false);
-    } else if (e.key === "-" || e.key === "x") {
-      emulateSignal(true);
-    } else if (e.key === "m") {
+    if (e.key === "m") {
       if (!signalInProgressRef.current) {
         startSignal();
       }
@@ -173,31 +169,21 @@ export const Telegraph = () => {
     setMessage((message) => message.slice(0, -1));
   };
 
+  const clearMessage = () => {
+    setMessage([]);
+  };
+
   return (
     <>
-      <Message message={message} buffer={buffer} />
+      <Message
+        message={message}
+        buffer={buffer}
+        clearMessage={clearMessage}
+        deleteLastCharacter={deleteLastCharacter}
+      />
 
       <div className="controls">
-        <div className="controls__edit-message">
-          <button
-            onClick={() => {
-              deleteLastCharacter();
-            }}
-            disabled={message.length === 0}
-          >
-            Backspace
-          </button>
-          <button
-            onClick={() => {
-              setMessage([]);
-            }}
-            disabled={message.length === 0}
-          >
-            Clear message
-          </button>
-        </div>
-
-        <span className="controls__buffer">
+        <div className="controls__buffer">
           {Array.from(buffer).map((element, i) => (
             <div
               className={`buffer-display buffer-display--${
@@ -206,68 +192,18 @@ export const Telegraph = () => {
               key={i}
             />
           ))}
-        </span>
-
-        <div className="guide">
-          <div className="guide__section">
-            <span>Dot</span>
-            <div>
-              <span>.</span> or
-              <span>z</span>
-            </div>
-          </div>
-          <div className="guide__section">
-            <span>Dash</span>
-            <div>
-              <span>-</span> or
-              <span>x</span>
-            </div>
-          </div>
-          <div className="guide__section">
-            <span>Manual operation</span>
-            <div>
-              <span>m</span>
-            </div>
-          </div>
-          <div className="guide__section">
-            <span>Delete last character</span>
-            <div>
-              <span>Delete</span> or
-              <span>Backspace</span>
-            </div>
-          </div>
         </div>
 
-        <div className="controls__buttons">
-          <div className="controls__buttons__aux">
-            <button
-              className="tkey tkey--sec"
-              onMouseDown={() => emulateSignal(false)}
-            >
-              <div className="tkey-symbol" />
-            </button>
-
-            <button
-              className="tkey tkey--sec"
-              onMouseDown={() => emulateSignal(true)}
-            >
-              <div className="tkey-symbol tkey-symbol--long" />
-            </button>
-          </div>
-
-          <button
-            className="tkey tkey--main"
-            onMouseDown={() => startSignal()}
-            onTouchStart={() => startSignal()}
-            onMouseUp={() => endSignal()}
-            onTouchEnd={() => endSignal()}
-            onMouseLeave={() => {
-              if (signalInProgressRef.current) {
-                endSignal();
-              }
-            }}
-          />
-        </div>
+        <button
+          className="controls__tkey"
+          onPointerDown={() => startSignal()}
+          onPointerUp={() => endSignal()}
+          onMouseLeave={() => {
+            if (signalInProgressRef.current) {
+              endSignal();
+            }
+          }}
+        />
       </div>
     </>
   );

@@ -1,9 +1,9 @@
 .dictionary {
   display: flex;
   align-items: flex-start;
+  flex-wrap: wrap;
   gap: 24px;
   margin-bottom: 60px;
-  padding: 0 100px;
 
   &__list {
     display: flex;

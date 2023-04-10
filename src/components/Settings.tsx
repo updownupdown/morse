@@ -8,7 +8,8 @@ export const Settings = () => {
 
   return (
     <div className="timing">
-      <div>
+      {/* <div>
+        <label>Add Word Breaks</label>
         <input
           type="checkbox"
           checked={addWordBreaks}
@@ -16,10 +17,8 @@ export const Settings = () => {
             setAddWordBreaks(!addWordBreaks);
           }}
         />
-        <label>Add Word Breaks</label>
-      </div>
+      </div> */}
       <div>
-        <label>Word per min</label>
         <input
           type="number"
           min="10"
@@ -27,6 +26,7 @@ export const Settings = () => {
           value={wordsPerMin}
           onChange={(e) => setWordsPerMin(Number(e.target.value))}
         />
+        <label>words per min</label>
       </div>
     </div>
   );

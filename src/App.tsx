@@ -42,22 +42,21 @@ function App() {
           backgroundImage: `url(${paperTexture})`,
         }}
       >
-        <div className="tabs-menu">
-          <div className="tabs">
-            {Object.values(Tabs).map((tab) => (
-              <button
-                key={tab}
-                className={clsx("tab", selectedTab === tab && "tab--selected")}
-                onClick={() => setSelectedTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        <div className="tabs">
+          {Object.values(Tabs).map((tab) => (
+            <button
+              key={tab}
+              className={clsx("tab", selectedTab === tab && "tab--selected")}
+              onClick={() => setSelectedTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
-        {selectedTab === Tabs.Receive ||
-          (selectedTab === Tabs.Convert && <Settings />)}
+        {(selectedTab === Tabs.Send || selectedTab === Tabs.Receive) && (
+          <Settings />
+        )}
 
         <div className="main__content">
           {selectedTab === Tabs.Send && <Telegraph />}

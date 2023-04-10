@@ -1,21 +1,23 @@
+@import "./../css/media.scss";
+
 .controls {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 20px;
-  margin-top: 20px;
   width: 100%;
 
   &__buffer {
-    $dot-width: 20px;
+    $dot-width: 10px;
 
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 60px;
-    width: 100%;
-    max-width: 400px;
     gap: calc($dot-width / 2);
+    width: 100%;
+    min-height: $dot-width;
+    margin: 12px 0;
 
     .buffer-display {
       display: flex;
@@ -33,57 +35,8 @@
     }
   }
 
-  // Edit message
-  &__edit-message {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    gap: 12px;
-
-    button {
-      transition: 0.2s ease all;
-      transition-property: background-color, border-color, color;
-      cursor: pointer;
-      padding: 4px 8px;
-
-      border-radius: 4px;
-      border: 1px solid rgba(var(--K700-rgb), 0.2);
-      background: unset;
-
-      color: var(--K700);
-
-      &:disabled {
-        opacity: 0.4;
-      }
-
-      &:not(:disabled):hover {
-        color: var(--K800);
-        border-color: var(--K700);
-        background: rgba(var(--K700-rgb), 0.1);
-      }
-    }
-  }
-
   // Telegraph Key
-  &__buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 34px;
-    width: 100%;
-    padding: 20px;
-
-    border-radius: 8px;
-
-    &__aux {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-    }
-  }
-
-  .tkey {
+  &__tkey {
     $btn-height: 50px;
 
     cursor: pointer;
@@ -97,106 +50,22 @@
 
     border-radius: 50%;
 
-    &--main {
-      width: calc($btn-height * 2);
-      height: calc($btn-height * 2);
+    width: calc($btn-height * 2);
+    height: calc($btn-height * 2);
 
-      background: var(--K800);
-      box-shadow: 1px 2px 8px rgba(var(--K900-rgb), 0.3),
-        2px 4px 20px rgba(var(--K900-rgb), 0.3),
-        inset 0 0 30px rgba(var(--K100-rgb), 0.3);
+    background: var(--K800);
+    box-shadow: 1px 2px 8px rgba(var(--K900-rgb), 0.3),
+      2px 4px 20px rgba(var(--K900-rgb), 0.3),
+      inset 0 0 30px rgba(var(--K100-rgb), 0.3);
 
-      color: var(--white);
+    color: var(--white);
 
-      &:hover,
-      &:active {
-        background: var(--K900);
-      }
-      &:active {
-        background: var(--K700);
-      }
+    &:hover,
+    &:active {
+      background: var(--K900);
     }
-
-    &--sec {
-      width: $btn-height;
-      font-size: 60px;
-      line-height: 1;
-
-      background: var(--K100);
-      box-shadow: 2px 4px 8px rgba(var(--K900-rgb), 0.1),
-        3px 6px 20px rgba(var(--K900-rgb), 0.1),
-        inset 0 0 30px rgba(var(--K700-rgb), 0.1);
-
-      color: var(--K800);
-
-      &:hover,
-      &:active {
-        background: var(--K150);
-
-        box-shadow: 1px 2px 8px rgba(var(--K900-rgb), 0.1),
-          2px 4px 20px rgba(var(--K900-rgb), 0.1),
-          inset 0 0 30px rgba(var(--K700-rgb), 0.1);
-      }
-      &:active {
-        background: var(--K200);
-      }
-    }
-
-    .tkey-symbol {
-      $symbol-width: 8px;
-
-      width: $symbol-width;
-      height: $symbol-width;
-
-      border-radius: $symbol-width;
-      background: var(--K800);
-
-      &--long {
-        width: 100%;
-        width: calc($symbol-width * 3);
-      }
-    }
-  }
-}
-
-.guide {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-  margin-bottom: 30px;
-
-  font-size: 14px;
-  color: var(--K900);
-  font-weight: 400;
-  line-height: 1;
-
-  &__section {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 4px;
-    margin-right: 40px;
-    margin-bottom: 12px;
-
-    div {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-
-      span {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 24px;
-        height: 24px;
-        padding: 0 6px;
-
-        background: rgba(var(--K800-rgb), 0.06);
-        border-radius: 4px;
-
-        font-size: 14px;
-      }
+    &:active {
+      background: var(--K700);
     }
   }
 }
