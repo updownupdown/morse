@@ -195,7 +195,7 @@ export const Telegraph = () => {
         </div>
 
         <button
-          className="controls__tkey"
+          className="controls__tkey large-button"
           onPointerDown={() => startSignal()}
           onPointerUp={() => endSignal()}
           onMouseLeave={() => {

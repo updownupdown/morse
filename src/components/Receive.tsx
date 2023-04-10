@@ -125,10 +125,10 @@ export const Receive = () => {
       <Message message={messageArray} buffer={""} />
 
       <div className="receive__buttons">
-        <button onClick={() => playMessage()}>
+        <button className="large-button" onClick={() => playMessage()}>
           <Play />
         </button>
-        <button onClick={() => stopMessage()}>
+        <button className="large-button" onClick={() => stopMessage()}>
           <Stop />
         </button>
       </div>

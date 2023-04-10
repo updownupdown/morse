@@ -99,13 +99,14 @@ button {
 
 textarea {
   resize: none;
+  transition: 0.2s ease all;
+  transition-property: background-color, border-color, color;
 
   width: 100%;
-  max-width: 600px;
   height: 140px;
   padding: 12px;
 
-  border: 1px solid rgba(var(--K900-rgb), 0.1);
+  border: 1px solid rgba(var(--K900-rgb), 0.15);
   background: rgba(var(--K900-rgb), 0.05);
 
   font-family: var(--font);
@@ -118,8 +119,8 @@ textarea {
 
   &:read-only {
     cursor: not-allowed;
-    border-color: transparent;
-    background: rgba(var(--K900-rgb), 0.1);
+    border-color: rgba(var(--K900-rgb), 0.05);
+    background: rgba(var(--K900-rgb), 0.08);
   }
 
   &:focus {
@@ -142,7 +143,7 @@ textarea {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   padding: 20px;
 
   &__content {
@@ -150,13 +151,11 @@ textarea {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 100%;
+    width: 100%;
     max-width: 700px;
     flex-grow: 1;
   }
 }
-
-// Tabs
 
 .tabs {
   overflow: hidden;
@@ -165,6 +164,7 @@ textarea {
   max-width: 600px;
   gap: 1px;
   margin-bottom: 20px;
+  flex-shrink: 0;
 
   border-radius: 12px;
   background: rgba(var(--K800-rgb), 0.1);
@@ -205,5 +205,39 @@ textarea {
       background: rgba(var(--K800-rgb), 0.1);
       border-bottom-color: var(--K900);
     }
+  }
+}
+
+.large-button {
+  transition: 0.1s ease background-color;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  background: var(--K800);
+  box-shadow: 1px 2px 8px rgba(var(--K900-rgb), 0.3),
+    2px 4px 20px rgba(var(--K900-rgb), 0.3),
+    inset 0 0 30px rgba(var(--K100-rgb), 0.3);
+
+  color: var(--white);
+
+  svg {
+    width: 70%;
+    height: 70%;
+
+    path {
+      fill: var(--K100);
+    }
+  }
+
+  &:hover,
+  &:active {
+    background: var(--K900);
+  }
+  &:active {
+    background: var(--K700);
   }
 }

@@ -37,35 +37,7 @@
 
   // Telegraph Key
   &__tkey {
-    $btn-height: 50px;
-
-    cursor: pointer;
-    transition: 0.1s ease background-color;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    height: $btn-height;
-
-    border-radius: 50%;
-
-    width: calc($btn-height * 2);
-    height: calc($btn-height * 2);
-
-    background: var(--K800);
-    box-shadow: 1px 2px 8px rgba(var(--K900-rgb), 0.3),
-      2px 4px 20px rgba(var(--K900-rgb), 0.3),
-      inset 0 0 30px rgba(var(--K100-rgb), 0.3);
-
-    color: var(--white);
-
-    &:hover,
-    &:active {
-      background: var(--K900);
-    }
-    &:active {
-      background: var(--K700);
-    }
+    width: 100px;
+    height: 100px;
   }
 }
