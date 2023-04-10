@@ -111,20 +111,6 @@ export const Telegraph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const emulateSignal = (long: boolean) => {
-    if (signalInProgressRef.current) return;
-
-    const signalDuration = long ? timing.long : timing.short;
-
-    clearTimeout(timeout.current);
-
-    startSignal();
-
-    setTimeout(() => {
-      endSignal();
-    }, signalDuration);
-  };
-
   const sendSignal = (long: boolean) => {
     const signal = long ? "-" : ".";
     setBuffer((l) => l + signal);
@@ -186,7 +172,7 @@ export const Telegraph = () => {
         <div className="controls__buffer">
           {Array.from(buffer).map((element, i) => (
             <div
-              className={`buffer-display buffer-display--${
+              className={`buffer-symbol buffer-symbol--${
                 element === "." ? "dot" : "dash"
               }`}
               key={i}
@@ -203,7 +189,9 @@ export const Telegraph = () => {
               endSignal();
             }
           }}
-        />
+        >
+          M
+        </button>
       </div>
     </>
   );

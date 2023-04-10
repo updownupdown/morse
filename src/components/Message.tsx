@@ -44,10 +44,18 @@ export const Message = ({
 
       {clearMessage && deleteLastCharacter && (
         <div className="edit-message">
-          <button onClick={deleteLastCharacter} disabled={message.length === 0}>
+          <button
+            className="small-button"
+            onClick={deleteLastCharacter}
+            disabled={message.length === 0}
+          >
             Backspace
           </button>
-          <button onClick={clearMessage} disabled={message.length === 0}>
+          <button
+            className="small-button"
+            onClick={clearMessage}
+            disabled={message.length === 0}
+          >
             Clear
           </button>
         </div>

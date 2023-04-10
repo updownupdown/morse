@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./Converter.scss";
 import { alphaToMorse } from "../data";
 
 export const Converter = () => {
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
+  const [alpha, setAlpha] = useState("");
+  const [morse, setMorse] = useState("");
 
-  useEffect(() => {
+  const convertToMorse = (text: string) => {
     let outputText: string[] = [];
+    const alphaChunks = Array.from(text);
 
-    Array.from(input).forEach((char) => {
+    alphaChunks.forEach((char) => {
       let convertedLetter = "";
       const uppercaseChar = char.toUpperCase();
 
       if (char === " ") {
-        convertedLetter = "   ";
+        convertedLetter = "/";
       } else if (alphaToMorse[uppercaseChar]) {
         convertedLetter = alphaToMorse[uppercaseChar];
       }
@@ -22,20 +23,97 @@ export const Converter = () => {
       outputText.push(convertedLetter);
     });
 
-    setOutput(outputText.join(" "));
-  }, [input]);
+    setMorse(outputText.join(" "));
+  };
+
+  const regex = /^[/. -]*$/;
+
+  const sanitizedMorse = (input: string) => {
+    return input.replace(regex, "");
+  };
+
+  const convertToAlpha = (input: string) => {
+    let outputText: string[] = [];
+    const morseChunks = input.split(" ");
+
+    if (morseChunks.length !== 0) {
+      morseChunks.forEach((symbols) => {
+        if (symbols === "/") {
+          outputText.push(" ");
+          return;
+        }
+        if (symbols === "") {
+          return;
+        }
+
+        const match = Object.keys(alphaToMorse).find(
+          (key) => alphaToMorse[key] === symbols
+        );
+
+        outputText.push(match ?? "�");
+      });
+    }
+
+    setAlpha(outputText.join(""));
+  };
+
+  const clearAlpha = () => {
+    setAlpha("");
+  };
+
+  const clearMorse = () => {
+    setMorse("");
+  };
 
   return (
     <div className="converter">
+      <div className="converter__header">
+        <h3>Text</h3>
+
+        <button className="small-button" onClick={clearAlpha}>
+          Clear
+        </button>
+      </div>
+
       <textarea
+        className="converter__alpha"
         placeholder="Enter text to convert to morse"
-        value={input}
+        value={alpha}
         onChange={(e) => {
-          setInput(e.target.value);
+          const text = e.target.value.toUpperCase();
+
+          setAlpha(text);
+          convertToMorse(text);
         }}
       />
 
-      <textarea value={output} readOnly />
+      <div className="converter__header">
+        <h3>Morse</h3>
+
+        <button className="small-button" onClick={clearMorse}>
+          Clear
+        </button>
+      </div>
+
+      <textarea
+        className="converter__morse"
+        value={morse}
+        placeholder="Enter morse to convert to morse"
+        onChange={(e) => {
+          const text = e.target.value;
+
+          if (text === "" || regex.test(text)) {
+            setMorse(text);
+            convertToAlpha(text);
+          }
+        }}
+        onPaste={(e) => {
+          const text = sanitizedMorse(e.clipboardData.getData("Text"));
+
+          setMorse(text);
+          convertToAlpha(text);
+        }}
+      />
     </div>
   );
 };
