@@ -121,7 +121,7 @@ export const Receive = () => {
 
       <textarea
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={(e) => setMessage(e.target.value.toUpperCase())}
         readOnly={isPlaying}
       />
 
