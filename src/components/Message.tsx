@@ -3,7 +3,7 @@ import clsx from "clsx";
 import "./Message.scss";
 
 interface Props {
-  message: string[];
+  message: string;
   buffer: string;
   clearMessage?: () => void;
   deleteLastCharacter?: () => void;
@@ -19,7 +19,7 @@ export const Message = ({
     <div className="message-wrap">
       <div className="message">
         <div className="message__letters">
-          {message.map((letter, i) => {
+          {message.split("").map((letter, i) => {
             return (
               <div
                 className={clsx(

@@ -1,10 +1,10 @@
-import { useState } from "react";
-import "./Converter.scss";
 import { alphaToMorse } from "../data";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import "./Converter.scss";
 
 export const Converter = () => {
-  const [alpha, setAlpha] = useState("");
-  const [morse, setMorse] = useState("");
+  const [alpha, setAlpha] = useLocalStorage("convertedAlpha", "");
+  const [morse, setMorse] = useLocalStorage("convertedMorse", "");
 
   const convertToMorse = (text: string) => {
     let outputText: string[] = [];

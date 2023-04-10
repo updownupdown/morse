@@ -12,6 +12,7 @@ import "./Telegraph.scss";
 import { Message } from "./Message";
 import { useTiming } from "../hooks/useTiming";
 import { SettingsContext } from "../context/SettingsContext";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export const Telegraph = () => {
   const { addWordBreaks } = useContext(SettingsContext);
@@ -22,7 +23,7 @@ export const Telegraph = () => {
   const [timerRunning, setTimmerRunning] = useState(false);
   const [ticks, setTicks] = useState(0);
   const [buffer, setBuffer] = useState("");
-  const [message, setMessage] = useState<string[]>([]);
+  const [message, setMessage] = useLocalStorage("telegraphMessage", "");
 
   // Timer functions
   const startTimer = () => setTimmerRunning(true);
@@ -57,7 +58,7 @@ export const Telegraph = () => {
 
   // Add to message
   const addToMessage = (text: string) => {
-    setMessage((message) => [...message, text]);
+    setMessage((message) => message + text);
   };
 
   const processLetter = () => {
@@ -156,7 +157,7 @@ export const Telegraph = () => {
   };
 
   const clearMessage = () => {
-    setMessage([]);
+    setMessage("");
   };
 
   return (

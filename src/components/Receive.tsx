@@ -6,14 +6,17 @@ import tone from "../audio/tone.mp3";
 import { useTiming } from "../hooks/useTiming";
 import Stop from "../icons/Stop";
 import Play from "../icons/Play";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export const Receive = () => {
   const { timing } = useTiming();
   const audio = useMemo(() => new Audio(tone), []);
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const [message, setMessage] = useState(Telegrams["Simple SOS"]);
-  const messageArray = Array.from(message.toUpperCase());
+  const [message, setMessage] = useLocalStorage(
+    "receiveMessage",
+    Telegrams["Simple SOS"]
+  );
 
   const [messageSymbols, setMessageSymbols] = useState("");
   const [playPosition, setPlayPosition] = useState(0);
@@ -105,7 +108,7 @@ export const Receive = () => {
       <select
         value=""
         onChange={(e) => {
-          setMessage(e.target.value);
+          setMessage(e.target.value.toUpperCase());
         }}
       >
         <option value="">Select message...</option>
@@ -122,7 +125,7 @@ export const Receive = () => {
         readOnly={isPlaying}
       />
 
-      <Message message={messageArray} buffer={""} />
+      <Message message={message} buffer={""} />
 
       <div className="receive__buttons">
         <button className="large-button" onClick={() => playMessage()}>
