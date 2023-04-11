@@ -24,17 +24,17 @@ export const Message = ({
               <div
                 className={clsx(
                   "message__letter",
-                  letter === "/" && "message__letter--word-break"
+                  letter === " " && "message__letter--word-break"
                 )}
                 key={`${letter}-${i}`}
               >
-                <span>{letter}</span>
+                <span>{letter === " " ? "/" : letter}</span>
                 <span>{alphaToMorse[letter] ?? ""}</span>
               </div>
             );
           })}
           {buffer && (
-            <div className="message__letter">
+            <div className="message__letter message__letter--buffer">
               <span>&nbsp;</span>
               <span>{buffer}</span>
             </div>

@@ -1,0 +1,44 @@
+textarea,
+select,
+input[type="text"],
+input[type="number"] {
+  transition: 0.2s ease all;
+  transition-property: background-color, border-color, color, box-shadow;
+
+  width: 100%;
+  padding: 12px;
+
+  border-radius: 4px;
+  border: 1px solid var(--K200);
+  background: var(--white);
+
+  font-family: var(--font);
+  font-size: 16px;
+  color: var(--K900);
+
+  &::placeholder {
+    color: var(--K400);
+  }
+
+  &:hover,
+  &:active {
+    border: 1px solid var(--K400);
+    box-shadow: 1px 2px 10px rgba(var(--K800-rgb), 0.15);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--K800-rgb), 0.2);
+  }
+}
+
+textarea {
+  resize: none;
+  height: 120px;
+
+  &:read-only {
+    cursor: not-allowed;
+    border-color: var(--K200);
+    background: var(--K100);
+  }
+}

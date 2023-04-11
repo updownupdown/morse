@@ -98,7 +98,7 @@ export const Converter = () => {
       <textarea
         className="converter__morse"
         value={morse}
-        placeholder="Enter morse to convert to morse"
+        placeholder="Enter morse to convert to text"
         onChange={(e) => {
           const text = e.target.value;
 

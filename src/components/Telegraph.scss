@@ -18,7 +18,7 @@
     gap: calc($dot-width / 2);
     width: 100%;
     min-height: $dot-width;
-    margin: 12px 0;
+    margin: 20px 0;
 
     .buffer-symbol {
       display: flex;
@@ -45,16 +45,14 @@
 
     font-size: 42px;
     font-weight: 800;
-    color: var(--K950);
-    text-shadow: 0 0 6px rgba(255, 255, 255, 0.12),
-      0 0 2px rgba(255, 255, 255, 0.1);
+    color: rgba(var(--K950-rgb), 0.4);
 
     &:hover,
     &:active {
-      color: var(--K900);
+      color: rgba(var(--K950-rgb), 0.3);
     }
     &:active {
-      color: var(--K800);
+      color: rgba(var(--K950-rgb), 0.2);
     }
   }
 }

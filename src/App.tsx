@@ -22,6 +22,10 @@ function App() {
     "wordsPerMin",
     defaultSettings.wordsPerMin
   );
+  const [shortDashDuration, setShortDashDuration] = useLocalStorage(
+    "shortDashDuration",
+    defaultSettings.shortDashDuration
+  );
   const [addWordBreaks, setAddWordBreaks] = useLocalStorage(
     "addWordBreaks",
     defaultSettings.addWordBreaks
@@ -34,6 +38,8 @@ function App() {
         setWordsPerMin,
         addWordBreaks,
         setAddWordBreaks,
+        shortDashDuration,
+        setShortDashDuration,
       }}
     >
       <div
@@ -42,27 +48,29 @@ function App() {
           backgroundImage: `url(${paperTexture})`,
         }}
       >
-        <div className="tabs">
-          {Object.values(Tabs).map((tab) => (
-            <button
-              key={tab}
-              className={clsx("tab", selectedTab === tab && "tab--selected")}
-              onClick={() => setSelectedTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {(selectedTab === Tabs.Send || selectedTab === Tabs.Receive) && (
-          <Settings />
-        )}
-
         <div className="main__content">
-          {selectedTab === Tabs.Send && <Telegraph />}
-          {selectedTab === Tabs.Receive && <Receive />}
-          {selectedTab === Tabs.Convert && <Converter />}
-          {selectedTab === Tabs.Study && <Dictionary />}
+          <div className="tabs">
+            {Object.values(Tabs).map((tab) => (
+              <button
+                key={tab}
+                className={clsx("tab", selectedTab === tab && "tab--selected")}
+                onClick={() => setSelectedTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {(selectedTab === Tabs.Send || selectedTab === Tabs.Receive) && (
+            <Settings />
+          )}
+
+          <div className="main__content__middle">
+            {selectedTab === Tabs.Send && <Telegraph />}
+            {selectedTab === Tabs.Receive && <Receive />}
+            {selectedTab === Tabs.Convert && <Converter />}
+            {selectedTab === Tabs.Study && <Dictionary />}
+          </div>
         </div>
       </div>
     </SettingsContext.Provider>

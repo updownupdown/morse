@@ -15,7 +15,7 @@ import { SettingsContext } from "../context/SettingsContext";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export const Telegraph = () => {
-  const { addWordBreaks } = useContext(SettingsContext);
+  const { addWordBreaks, shortDashDuration } = useContext(SettingsContext);
   const { gaps, timing } = useTiming();
 
   const audio = useMemo(() => new Audio(tone), []);
@@ -35,15 +35,17 @@ export const Telegraph = () => {
   };
 
   // Tick
-  const onTick = useCallback(
-    () => (timerRunning ? setTicks((t) => t + 1) : 0),
-    [timerRunning]
-  );
-
   useEffect(() => {
-    const tickInterval = setInterval(onTick, timing.short);
+    if (!timerRunning) return;
+
+    const tickInterval = setInterval(() => {
+      if (timerRunning) {
+        setTicks((t) => t + 1);
+      }
+    }, timing.short);
+
     return () => clearInterval(tickInterval);
-  }, [onTick, timing]);
+  }, [timerRunning, ticks, timing]);
 
   useEffect(() => {
     if (ticks > gaps.gapLetters && buffer !== "") {
@@ -61,6 +63,7 @@ export const Telegraph = () => {
     setMessage((message) => message + text);
   };
 
+  // Letter
   const processLetter = () => {
     const letterMatch = Object.keys(alphaToMorse).find(
       (key) => alphaToMorse[key] === buffer
@@ -71,15 +74,17 @@ export const Telegraph = () => {
     }
 
     setBuffer("");
+    resetTimer();
   };
 
+  // Word
   const processWord = () => {
     if (
       message.length !== 0 &&
-      message[message.length - 1] !== "/" &&
+      message[message.length - 1] !== " " &&
       addWordBreaks
     ) {
-      addToMessage("/");
+      addToMessage(" ");
     }
   };
 
@@ -129,7 +134,7 @@ export const Telegraph = () => {
       sendSignal(true);
 
       longPressTriggeredRef.current = true;
-    }, timing.shortLongThreshold);
+    }, shortDashDuration);
 
     audio.play();
     stopTimer();

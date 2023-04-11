@@ -18,15 +18,16 @@
 
   padding: 30px 20px 0 20px;
 
-  border-radius: 8px;
-  border: 1px solid var(--K150);
-  background: var(--white);
-  box-shadow: 1px 2px 8px rgba(var(--K600-rgb), 0.1),
-    2px 4px 24px rgba(var(--K600-rgb), 0.1);
+  border-radius: 12px;
+  background: var(--K100);
+  box-shadow: 1px 2px 8px rgba(var(--K600-rgb), 0.12),
+    2px 4px 32px rgba(var(--K600-rgb), 0.16),
+    inset 2px 4px 16px rgba(var(--K600-rgb), 0.1);
 
   &__letters {
     display: flex;
     flex-wrap: wrap;
+    gap: 4px;
   }
 
   &__letter {
@@ -38,8 +39,8 @@
     margin-bottom: 20px;
 
     span:nth-child(1) {
-      height: 18px;
-      font-size: 18px;
+      height: 20px;
+      font-size: 20px;
       font-weight: 700;
     }
     span:nth-child(2) {
@@ -52,10 +53,6 @@
     &--word-break {
       color: var(--K300);
       font-weight: 300;
-
-      span:nth-child(2) {
-        opacity: 0;
-      }
     }
   }
 

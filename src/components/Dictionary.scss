@@ -1,33 +1,70 @@
+.dictionary-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  margin: 40px 0;
+  width: 100%;
+}
+
 .dictionary {
   display: flex;
-  align-items: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 24px;
-  margin-bottom: 60px;
+  gap: 40px;
 
   &__list {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    justify-content: center;
+    gap: 12px;
   }
 
   .letter {
     display: flex;
     align-items: center;
-    gap: 12px;
-    height: 30px;
     white-space: nowrap;
+    gap: 12px;
 
     span:nth-child(1) {
       width: 14px;
       font-size: 18px;
-      font-weight: 700;
       text-align: center;
+      font-weight: 700;
     }
     span:nth-child(2) {
-      width: 50px;
-      font-size: 22px;
+      font-size: 18px;
+      font-weight: 600;
     }
+  }
+}
+
+.prosign {
+  &__sign {
+    > span {
+      display: flex;
+      gap: 6px;
+
+      font-size: 18px;
+      font-weight: 700;
+
+      .linked {
+        text-decoration: overline;
+      }
+    }
+  }
+
+  &__voice {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  &__code {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  &__details {
+    font-size: 16px;
+    line-height: 1.4;
   }
 }
