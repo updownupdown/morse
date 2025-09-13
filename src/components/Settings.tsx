@@ -39,7 +39,7 @@ export const Settings = () => {
         <label>Speed</label>
         <input
           type="number"
-          min="10"
+          min="1"
           max="1000"
           value={wordsPerMin}
           onChange={(e) => setWordsPerMin(Number(e.target.value))}

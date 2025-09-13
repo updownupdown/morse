@@ -8,6 +8,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import { Settings } from "./components/Settings";
 import { SettingsContext, defaultSettings } from "./context/SettingsContext";
 import paperTexture from "./images/paper-texture.jpg";
+import { Reference } from "./components/Reference";
 
 const Tabs = {
   Send: "Send",
@@ -30,6 +31,8 @@ function App() {
     "addWordBreaks",
     defaultSettings.addWordBreaks
   );
+  const frequency = 400;
+  const volume = 100;
 
   return (
     <SettingsContext.Provider
@@ -40,6 +43,8 @@ function App() {
         setAddWordBreaks,
         shortDashDuration,
         setShortDashDuration,
+        frequency,
+        volume,
       }}
     >
       <div
@@ -64,6 +69,8 @@ function App() {
           {(selectedTab === Tabs.Send || selectedTab === Tabs.Receive) && (
             <Settings />
           )}
+
+          <Reference />
 
           <div className="main__content__middle">
             {selectedTab === Tabs.Send && <Telegraph />}

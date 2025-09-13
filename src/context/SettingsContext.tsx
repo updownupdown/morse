@@ -7,6 +7,8 @@ export const defaultSettings = {
 };
 
 interface ContextProps {
+  frequency: number;
+  volume: number;
   wordsPerMin: number;
   setWordsPerMin: (val: number) => void;
   addWordBreaks: boolean;
@@ -22,4 +24,6 @@ export const SettingsContext = createContext<ContextProps>({
   setAddWordBreaks: () => {},
   shortDashDuration: defaultSettings.shortDashDuration,
   setShortDashDuration: () => {},
+  frequency: 400,
+  volume: 100,
 });

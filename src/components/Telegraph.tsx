@@ -90,17 +90,18 @@ export const Telegraph = () => {
 
   // Event listeners
   const keyDownHandler = (e: KeyboardEvent) => {
-    if (e.key === "m") {
+    if (e.key === " ") {
       if (!signalInProgressRef.current) {
         startSignal();
       }
     } else if (e.key === "Delete" || e.key === "Backspace") {
-      deleteLastCharacter();
+      // deleteLastCharacter();
+      setMessage((message) => message.slice(0, -1));
     }
   };
 
   const keyUpHandler = ({ key }: any) => {
-    if (key === "m") {
+    if (key === " ") {
       endSignal();
     }
   };
@@ -157,10 +158,6 @@ export const Telegraph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendSignal]);
 
-  const deleteLastCharacter = () => {
-    setMessage((message) => message.slice(0, -1));
-  };
-
   const clearMessage = () => {
     setMessage("");
   };
@@ -171,7 +168,9 @@ export const Telegraph = () => {
         message={message}
         buffer={buffer}
         clearMessage={clearMessage}
-        deleteLastCharacter={deleteLastCharacter}
+        deleteLastCharacter={() =>
+          setMessage((message) => message.slice(0, -1))
+        }
       />
 
       <div className="controls">
@@ -196,7 +195,7 @@ export const Telegraph = () => {
             }
           }}
         >
-          M
+          _
         </button>
       </div>
     </>

@@ -21,13 +21,14 @@
 
   .letter {
     display: flex;
+    flex-direction: column;
     align-items: center;
     white-space: nowrap;
-    gap: 12px;
+    gap: 2px;
 
     span:nth-child(1) {
       width: 14px;
-      font-size: 18px;
+      font-size: 22px;
       text-align: center;
       font-weight: 700;
     }
