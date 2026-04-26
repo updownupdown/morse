@@ -14,14 +14,14 @@
     "clsx": "^2.1.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-scripts": "5.0.1",
     "sass": "^1.99.0",
     "web-vitals": "^5.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "dev": "vite --open",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "preview": "vite preview",
     "deploy": "gh-pages -d dist"
   },
   "eslintConfig": {
@@ -48,7 +48,9 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
     "gh-pages": "^6.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10"
   }
 }

@@ -11,7 +11,7 @@ export function useMorseAudio() {
   const { settings } = useContext(MorseContext);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  const pressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pressTimeoutRef = useRef<number | null>(null);
 
   // Store oscillator and gain node for press signal
   const pressOscRef = useRef<OscillatorNode | null>(null);
