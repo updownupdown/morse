@@ -1,86 +1,61 @@
 import "./css/styles.scss";
-import { Dictionary } from "./components/Dictionary";
-import { Telegraph } from "./components/Telegraph";
-import { Converter } from "./components/Converter";
-import clsx from "clsx";
-import { Receive } from "./components/Receive";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import {
+  Menus,
+  Modes,
+  MorseContext,
+  defaultSettings,
+} from "./context/MorseContext";
+import { Header } from "./components/Header";
 import { Settings } from "./components/Settings";
-import { SettingsContext, defaultSettings } from "./context/SettingsContext";
-import paperTexture from "./images/paper-texture.jpg";
-import { Reference } from "./components/Reference";
-
-const Tabs = {
-  Send: "Send",
-  Receive: "Receive",
-  Convert: "Convert",
-  Study: "Study",
-};
+import { Menu, MenuLinks } from "./components/Menu";
+import { Dictionary } from "./components/Dictionary";
+import { Decode } from "./components/Decode";
+import { Translate } from "./components/Translate";
+import { Simulator } from "./components/Simulator";
+import { Encode } from "./components/Encode";
 
 function App() {
-  const [selectedTab, setSelectedTab] = useLocalStorage("tab", Tabs.Send);
-  const [wordsPerMin, setWordsPerMin] = useLocalStorage(
-    "wordsPerMin",
-    defaultSettings.wordsPerMin
-  );
-  const [shortDashDuration, setShortDashDuration] = useLocalStorage(
-    "shortDashDuration",
-    defaultSettings.shortDashDuration
-  );
-  const [addWordBreaks, setAddWordBreaks] = useLocalStorage(
-    "addWordBreaks",
-    defaultSettings.addWordBreaks
-  );
-  const frequency = 400;
-  const volume = 100;
+  const [selectedMenu, setSelectedMenu] = useLocalStorage("menu", Menus.None);
+  const [selectedMode, setSelectedMode] = useLocalStorage("mode", Modes.Home);
+  const [settings, setSettings] = useLocalStorage("settings", defaultSettings);
 
   return (
-    <SettingsContext.Provider
+    <MorseContext.Provider
       value={{
-        wordsPerMin,
-        setWordsPerMin,
-        addWordBreaks,
-        setAddWordBreaks,
-        shortDashDuration,
-        setShortDashDuration,
-        frequency,
-        volume,
+        settings,
+        setSettings,
+        selectedMenu,
+        setSelectedMenu,
+        selectedMode,
+        setSelectedMode,
       }}
     >
       <div
-        className="main"
-        style={{
-          backgroundImage: `url(${paperTexture})`,
-        }}
+        className={`app app--mode-${selectedMode.replace(/[^a-zA-Z]/g, "").toLowerCase()} app--diff-${settings.difficulty.toLowerCase()}`}
       >
-        <div className="main__content">
-          <div className="tabs">
-            {Object.values(Tabs).map((tab) => (
-              <button
-                key={tab}
-                className={clsx("tab", selectedTab === tab && "tab--selected")}
-                onClick={() => setSelectedTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        {selectedMenu === Menus.Menu && <Menu />}
+        {selectedMenu === Menus.Settings && <Settings />}
 
-          {(selectedTab === Tabs.Send || selectedTab === Tabs.Receive) && (
-            <Settings />
-          )}
+        <Header
+          selectedMenu={selectedMenu}
+          setSelectedMenu={setSelectedMenu}
+          selectedMode={selectedMode}
+          setSelectedMode={setSelectedMode}
+        />
 
-          <Reference />
-
-          <div className="main__content__middle">
-            {selectedTab === Tabs.Send && <Telegraph />}
-            {selectedTab === Tabs.Receive && <Receive />}
-            {selectedTab === Tabs.Convert && <Converter />}
-            {selectedTab === Tabs.Study && <Dictionary />}
+        <div className="main">
+          <div className="main__content">
+            {selectedMode === Modes.Home && <MenuLinks />}
+            {selectedMode === Modes.Encode && <Encode />}
+            {selectedMode === Modes.Decode && <Decode />}
+            {selectedMode === Modes.Dictionary && <Dictionary />}
+            {selectedMode === Modes.Translate && <Translate />}
+            {selectedMode === Modes.Simulator && <Simulator />}
           </div>
         </div>
       </div>
-    </SettingsContext.Provider>
+    </MorseContext.Provider>
   );
 }
 

@@ -23,18 +23,16 @@ export type Timing = [gain: number, time: number];
 export const getGainTimings = (
   morse: string,
   volume: number,
-  wordsPerMin: number
+  unitTime: number,
 ) => {
-  const unitLength = 60 / (50 * wordsPerMin);
-
-  console.log({ unitLength });
+  console.log({ unitTime });
 
   const timing = {
-    short: unitLength * gaps.short,
-    long: unitLength * gaps.long,
-    gapElements: unitLength * gaps.gapElements,
-    gapLetters: unitLength * gaps.gapLetters,
-    gapWords: unitLength * gaps.gapWords,
+    short: unitTime * gaps.short,
+    long: unitTime * gaps.long,
+    gapElements: unitTime * gaps.gapElements,
+    gapLetters: unitTime * gaps.gapLetters,
+    gapWords: unitTime * gaps.gapWords,
   };
 
   console.log({ timing });

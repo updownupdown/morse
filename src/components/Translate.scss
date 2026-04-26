@@ -1,23 +1,29 @@
-.converter {
+.translate {
   display: flex;
   flex-direction: column;
-  margin-top: 60px;
   width: 100%;
+  padding: 20px;
+  gap: 20px;
+
+  &--reverse {
+    flex-direction: column-reverse;
+  }
 
   &__header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    gap: 12px;
 
     h3 {
+      flex: 1;
       text-transform: uppercase;
       font-size: 16px;
       font-weight: 700;
     }
   }
 
-  textarea + .converter__header {
+  textarea + .translate__header {
     margin-top: 40px;
   }
 

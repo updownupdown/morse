@@ -1,13 +1,14 @@
 .keyboard {
-  $key-width: 60px;
+  $key-width: 34px;
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  padding: 20px;
 
   &__row {
     display: flex;
-    gap: 8px;
+    gap: 4px;
 
     &:nth-child(2) {
       padding-left: calc($key-width * 0.3);
@@ -23,21 +24,22 @@
       align-items: center;
       white-space: nowrap;
       width: $key-width;
-      height: $key-width;
-      gap: 2px;
+      height: calc($key-width * 1.6);
+      gap: 4px;
 
-      border-radius: 12px;
-      background: var(--K100);
+      border-radius: 4px;
+      background: var(--K850);
 
-      span:nth-child(1) {
+      &__letter {
         width: 14px;
         font-size: 22px;
         text-align: center;
         font-weight: 700;
       }
-      span:nth-child(2) {
-        font-size: 18px;
-        font-weight: 600;
+
+      &:hover {
+        color: var(--K100);
+        background: var(--K700);
       }
     }
   }

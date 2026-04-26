@@ -1,0 +1,128 @@
+.word {
+  $word-height: 80px;
+  $word-width: 60px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+
+  .slash {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: $word-height;
+    min-width: $word-width;
+
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--K800);
+  }
+
+  .letter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    min-width: $word-width;
+    min-height: $word-height;
+
+    border-radius: 6px;
+
+    &__value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--K300);
+      text-transform: uppercase;
+    }
+    // &__morse{}
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+    &:not(:disabled):hover {
+      background: var(--K850);
+    }
+
+    &--current {
+      background: var(--K850);
+      box-shadow: inset 0 0 0 2px var(--K300);
+
+      .letter__value {
+        color: var(--K100);
+      }
+    }
+    &--correct {
+      .letter__value {
+        color: var(--status-green);
+      }
+    }
+    &--incorrect {
+      .letter__value {
+        color: var(--status-red);
+      }
+    }
+    &--empty {
+      .letter__value {
+        color: var(--K700);
+      }
+    }
+  }
+}
+
+.morse-char {
+  display: flex;
+  flex-wrap: wrap;
+
+  .app--diff-easy & {
+    .dit-dah {
+      &--dit {
+        background: var(--dit);
+      }
+      &--dah {
+        background: var(--dah);
+      }
+    }
+  }
+
+  .app--diff-moderate &,
+  .app--diff-hard & {
+    .dit-dah {
+      &--dit,
+      &--dah {
+        background: var(--K500);
+      }
+    }
+  }
+
+  @mixin morse-size($size) {
+    gap: $size;
+
+    .dit-dah {
+      height: $size;
+      border-radius: calc($size / 2);
+
+      &--space,
+      &--dit {
+        width: $size;
+      }
+      &--dah {
+        width: calc($size * 3);
+      }
+    }
+  }
+
+  &--sm {
+    @include morse-size(var(--dit-sm));
+  }
+  &--md {
+    @include morse-size(var(--dit-md));
+  }
+  &--lg {
+    @include morse-size(var(--dit-lg));
+  }
+  &--xl {
+    @include morse-size(var(--dit-xl));
+  }
+}

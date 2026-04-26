@@ -1,49 +1,134 @@
 @import "../css/media.scss";
+@import "../css/mixins.scss";
 
 .settings {
   display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
 
-  align-items: center;
-  padding: 12px;
-  width: 100%;
-  max-width: var(--content-width);
-  margin-bottom: 20px;
-
-  border-radius: 12px;
-  border: 1px solid rgba(var(--K800-rgb), 0.12);
-  background: rgba(var(--K800-rgb), 0.08);
-
-  @media #{$query-min-md} {
-    justify-content: space-evenly;
-  }
-  @media #{$query-max-md} {
-    flex-direction: column;
+  &__buttons {
+    display: flex;
     gap: 12px;
+    padding: 0 30px;
+  }
+
+  &__content {
+    @include scrollbar-mixin;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px;
   }
 
   .setting {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 30px;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
 
-    font-size: 14px;
-    font-weight: 400;
+    border-radius: 20px;
+    background: var(--K850);
 
-    input[type="number"] {
-      width: 60px;
-      padding: 4px 6px;
-
-      border: 1px solid rgba(var(--K900-rgb), 0.2);
-      background: rgba(var(--K900-rgb), 0.05);
-
-      font-size: 16px;
-      text-align: center;
-      font-weight: 600;
+    &__title {
+      font-size: 18px;
+      font-weight: 700;
     }
 
-    .unit {
-      width: 36px;
+    &__input {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex: 1;
+
+      input[type="range"] {
+        flex: 1;
+        width: 100%;
+      }
+
+      .reset-btn {
+        color: var(--link);
+
+        &:hover {
+          color: var(--link-hover);
+        }
+      }
+
+      &__unit {
+        min-width: 60px;
+        color: var(--accent);
+        text-align: right;
+      }
+    }
+
+    &__radios {
+      display: flex;
+      padding: 6px;
+
+      border-radius: 8px;
+      background: var(--K800);
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 42px;
+        flex: 1;
+
+        border-radius: 4px;
+
+        color: var(--K200);
+        font-weight: 700;
+
+        &.selected {
+          background: var(--K200);
+          color: var(--K800);
+        }
+        &.not-selected:hover {
+          background: var(--K700);
+        }
+      }
+    }
+
+    &__details {
+      $details-col: var(--K500);
+
+      display: flex;
+      gap: 16px;
+
+      color: $details-col;
+      line-height: 1.2;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+
+        &.flex {
+          flex: 1;
+        }
+      }
+
+      .setting-example {
+        $height: 14px;
+
+        display: flex;
+        height: $height;
+
+        border-radius: calc($height / 2);
+        background: $details-col;
+
+        &--dit {
+          width: $height;
+        }
+        &--dah {
+          width: calc($height * 3);
+        }
+      }
     }
   }
 }

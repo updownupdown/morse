@@ -1,0 +1,42 @@
+.header {
+  display: flex;
+  align-items: flex-start;
+  padding: 20px;
+
+  button {
+    svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--K500);
+    }
+
+    &:hover svg {
+      fill: var(--K200);
+    }
+  }
+
+  &__center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    gap: 4px;
+
+    &__title {
+      font-size: 12px;
+      font-weight: 500;
+    }
+    &__mode {
+      font-size: 18px;
+      font-weight: 900;
+    }
+    &__settings {
+      display: flex;
+      gap: 12px;
+      padding-top: 6px;
+
+      font-size: 14px;
+      color: var(--K600);
+    }
+  }
+}

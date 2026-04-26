@@ -1,0 +1,15 @@
+import * as React from "react";
+
+export function Keyboard(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M20 5C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H4C2.9 19 2 18.1 2 17L2.00977 7C2.00977 5.9 2.9 5 4 5H20ZM9 15C8.45 15 8 15.45 8 16C8 16.55 8.45 17 9 17H15C15.55 17 16 16.55 16 16C16 15.45 15.55 15 15 15H9ZM5 13H7V11H5V13ZM8 13H10V11H8V13ZM11 13H13V11H11V13ZM14 13H16V11H14V13ZM17 13H19V11H17V13ZM5 10H7V8H5V10ZM8 10H10V8H8V10ZM11 10H13V8H11V10ZM14 10H16V8H14V10ZM17 8V10H19V8H17Z" />
+    </svg>
+  );
+}
