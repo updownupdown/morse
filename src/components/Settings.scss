@@ -1,5 +1,5 @@
-@import "../css/media.scss";
-@import "../css/mixins.scss";
+@use "../css/media.scss";
+@use "../css/mixins.scss" as *;
 
 .settings {
   display: flex;

@@ -1,6 +1,8 @@
+@use "./media.scss";
+@use "./mixins.scss";
+@use "./inputs.scss";
+@use "sass:color";
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
-@import "./media.scss";
-@import "./mixins.scss";
 
 $theme-colors: (
   "black": #000000,
@@ -33,7 +35,9 @@ $theme-colors: (
 :root {
   // Generate hex/rgb CSS vars for default/rgba usage, respectively
   @function hexToRGB($hex) {
-    @return red($hex), green($hex), blue($hex);
+    @return color.channel($hex, "red", $space: rgb),
+      color.channel($hex, "green", $space: rgb),
+      color.channel($hex, "blue", $space: rgb);
   }
   @each $name, $color in $theme-colors {
     --#{$name}: #{$color};
@@ -280,5 +284,3 @@ table {
     height: 100%;
   }
 }
-
-@import "./inputs.scss";
