@@ -64,7 +64,7 @@ export const Word = ({ word, status, guess, index, setIndex }: Props) => {
               key={i}
               className={clsx(
                 "letter",
-                `letter--${thisStatus}`,
+                `letter--${thisStatus ?? "none"}`,
                 status && i === index && "letter--current",
               )}
               onClick={() => {

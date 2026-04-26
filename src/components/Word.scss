@@ -36,7 +36,6 @@
       color: var(--K300);
       text-transform: uppercase;
     }
-    // &__morse{}
 
     &:disabled {
       cursor: not-allowed;
@@ -66,6 +65,30 @@
     &--empty {
       .letter__value {
         color: var(--K700);
+      }
+    }
+  }
+
+  .app--diff-easy.app--mode-encode & {
+    .letter {
+      &--none,
+      &--incorrect {
+        .letter__morse {
+          opacity: 0;
+
+          // .morse-char span {
+          //   background: var(--K400);
+          // }
+        }
+      }
+      &--current {
+        .letter__morse {
+          opacity: 1;
+
+          // .morse-char span {
+          //   background: var(--K400);
+          // }
+        }
       }
     }
   }
