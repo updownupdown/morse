@@ -5,7 +5,7 @@ import { alphaToMorse } from "../data";
 import "./Word.scss";
 import { MorseContext } from "../context/MorseContext";
 
-export type Status = "empty" | "correct" | "incorrect" | "guess" | "neutral";
+export type Status = "empty" | "correct" | "incorrect" | "neutral";
 
 interface MorseCharProps {
   morse: string;
@@ -42,11 +42,10 @@ interface Props {
   word: string;
   index?: number;
   setIndex?: (i: number) => void;
-  guess?: string[];
   status?: Status[];
 }
 
-export const Word = ({ word, status, guess, index, setIndex }: Props) => {
+export const Word = ({ word, status, index, setIndex }: Props) => {
   const { isPlayingTone } = useContext(MorseContext);
   const { playMorse } = useMorseAudio();
 

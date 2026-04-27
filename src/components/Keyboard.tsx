@@ -1,7 +1,6 @@
 import React from "react";
 import { alphaToMorse } from "../data";
 import "./Keyboard.scss";
-import { useMorseAudio } from "../hooks/useMorseAudio";
 import { MorseChar } from "./Word";
 
 interface KeyProps {
@@ -13,16 +12,12 @@ interface KeyboardProps {
 }
 
 export const Keyboard = ({ onPress }: KeyboardProps) => {
-  // const { settings } = useContext(MorseContext);
-  // const { playMorse } = useMorseAudio();
-
   const Key = ({ letter }: KeyProps) => {
     return (
       <button
         key={letter}
         className="key"
         onClick={() => {
-          // playMorse(alphaToMorse[letter]);
           onPress(letter);
         }}
       >

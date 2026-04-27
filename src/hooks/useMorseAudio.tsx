@@ -8,7 +8,8 @@ const fadeDurationInSec = 0.02; // 20 ms
 
 export function useMorseAudio() {
   const ctxRef = useRef<AudioContext | null>(null);
-  const { settings, setIsPlayingTone } = useContext(MorseContext);
+  const { settings, isPlayingTone, setIsPlayingTone } =
+    useContext(MorseContext);
 
   const [isPressed, setIsPressed] = useState(false);
   const pressTimeoutRef = useRef<number | null>(null);
@@ -148,7 +149,7 @@ export function useMorseAudio() {
     new Promise((resolve) => setTimeout(resolve, ms));
 
   async function playMorse(morse: string) {
-    if (isPressed) return;
+    if (isPressed || isPlayingTone) return;
 
     setIsPlayingTone(true);
 

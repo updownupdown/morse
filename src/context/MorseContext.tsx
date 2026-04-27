@@ -15,6 +15,7 @@ export type Settings = {
 
 export enum Menus {
   None = "None",
+  Start = "Start",
   Menu = "Menu",
   Settings = "Settings",
 }

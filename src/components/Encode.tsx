@@ -8,43 +8,35 @@ import { getRandomWord } from "../data/words";
 
 export const Encode = () => {
   const [word, setWord] = useLocalStorage("encodeWord", "");
-  const [guessIndex, setGuessIndex] = useState(0);
+  const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);
-  const [guess, setGuess] = useState<string[]>([]);
 
   function newWord(word: string) {
     let newStatus: Status[] = [];
-    let newGuess: string[] = [];
     let newMorseWord: string[] = [];
 
     for (let i = 0; i < word.length; i++) {
       newStatus.push("empty");
-      newGuess.push("");
       newMorseWord.push(alphaToMorse[word[i]]);
     }
 
     setStatus(newStatus);
-    setGuess(newGuess);
-    setGuessIndex(0);
+    setWordIndex(0);
     setWord(word);
   }
 
   function submitChar(char: string) {
-    const isCorrect = char === word.charAt(guessIndex).toUpperCase();
-
-    let newGuess = [...guess];
-    newGuess[guessIndex] = char;
-    setGuess(newGuess);
+    const isCorrect = char === word.charAt(wordIndex).toUpperCase();
 
     let newStatus = [...status];
-    newStatus[guessIndex] = isCorrect ? "correct" : "incorrect";
+    newStatus[wordIndex] = isCorrect ? "correct" : "incorrect";
     setStatus(newStatus);
 
     if (isCorrect) {
-      if (guessIndex === word.length - 1) {
+      if (wordIndex === word.length - 1) {
         setWord("");
       } else {
-        setGuessIndex((prev) => prev + 1);
+        setWordIndex((prev) => prev + 1);
       }
     }
   }
@@ -60,9 +52,9 @@ export const Encode = () => {
       <div className="encode__word">
         <Word
           word={word}
-          index={guessIndex}
+          index={wordIndex}
           status={status}
-          setIndex={setGuessIndex}
+          setIndex={setWordIndex}
         />
       </div>
 
