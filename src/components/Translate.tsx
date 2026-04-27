@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { alphaToMorse } from "../data";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import "./Translate.scss";
@@ -8,9 +8,11 @@ import { Reset as ResetIcon } from "../icons/Reset";
 import { Backspace as BackspaceIcon } from "../icons/Backspace";
 import { Speaker as SpeakerIcon } from "../icons/Speaker";
 import { useMorseAudio } from "../hooks/useMorseAudio";
+import { MorseContext } from "../context/MorseContext";
 
 export const Translate = () => {
-  const { playMorse, isPlaying } = useMorseAudio();
+  const { isPlayingTone } = useContext(MorseContext);
+  const { playMorse } = useMorseAudio();
 
   const [alpha, setAlpha] = useLocalStorage("convertedAlpha", "");
   const [morse, setMorse] = useLocalStorage("convertedMorse", "");
@@ -177,7 +179,7 @@ export const Translate = () => {
           <button
             className="btn btn--small"
             onClick={playMorseCode}
-            disabled={!morse.length || isPlaying}
+            disabled={!morse.length || isPlayingTone}
           >
             <SpeakerIcon />
           </button>
