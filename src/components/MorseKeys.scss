@@ -139,12 +139,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     height: $btn-height;
 
     border-radius: calc($btn-height * 2);
-
     background: var(--K600);
+
+    user-select: none;
 
     svg {
       width: 24px;
