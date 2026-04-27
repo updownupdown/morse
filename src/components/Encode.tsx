@@ -30,8 +30,6 @@ export const Encode = () => {
   }
 
   function submitChar(char: string) {
-    console.log("submit " + char);
-
     const isCorrect = char === word.charAt(guessIndex).toUpperCase();
 
     let newGuess = [...guess];
@@ -60,7 +58,12 @@ export const Encode = () => {
   return (
     <div className="encode">
       <div className="encode__word">
-        <Word word={word} index={guessIndex} status={status} />
+        <Word
+          word={word}
+          index={guessIndex}
+          status={status}
+          setIndex={setGuessIndex}
+        />
       </div>
 
       <MorseKeys word={word} submitChar={submitChar} />

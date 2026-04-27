@@ -42,6 +42,8 @@ interface ContextProps {
   setSelectedMenu: (menu: Menus) => void;
   selectedMode: Modes;
   setSelectedMode: (mode: Modes) => void;
+  isPlayingTone: boolean;
+  setIsPlayingTone: (playing: boolean) => void;
 }
 
 export const MorseContext = createContext<ContextProps>({
@@ -51,4 +53,6 @@ export const MorseContext = createContext<ContextProps>({
   setSelectedMenu: () => {},
   selectedMode: Modes.Decode,
   setSelectedMode: () => {},
+  isPlayingTone: false,
+  setIsPlayingTone: () => {},
 });

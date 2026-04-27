@@ -16,24 +16,42 @@
 
     button {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 50px;
       height: 100%;
+      gap: 6px;
 
       border-radius: 12px;
-      background: var(--K850);
 
       svg {
         width: 24px;
         height: 24px;
+      }
 
-        fill: var(--K300);
+      &:first-child {
+        svg {
+          fill: var(--K600);
+        }
+      }
+      &:last-child {
+        background: var(--K850);
+
+        span {
+          color: var(--K300);
+        }
+        svg {
+          fill: var(--K300);
+        }
       }
 
       &:not(:disabled):hover {
         background: var(--K700);
 
+        span {
+          color: var(--K100);
+        }
         svg {
           fill: var(--K100);
         }
@@ -43,8 +61,11 @@
         cursor: not-allowed;
         background: transparent;
 
+        span {
+          color: var(--K800);
+        }
         svg {
-          fill: var(--K700);
+          fill: var(--K800);
         }
       }
     }
@@ -60,7 +81,7 @@
       &__match {
         display: flex;
         align-items: center;
-        justify-content: center;
+        padding-left: 30px;
         min-height: 38px;
 
         font-size: 38px;
@@ -76,7 +97,7 @@
       &__morse {
         display: flex;
         align-items: center;
-        justify-content: center;
+        padding-left: 30px;
         gap: var(--dit-xl);
         min-height: var(--dit-xl);
       }

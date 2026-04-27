@@ -1,12 +1,15 @@
 .menu {
   display: flex;
+  justify-content: center;
   flex-direction: column;
+  height: 100%;
 }
 
 .menu-links {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin: 20px;
 
   .link {
     display: flex;

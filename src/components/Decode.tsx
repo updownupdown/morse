@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Decode.scss";
 import { Speaker as SpeakerIcon } from "../icons/Speaker";
-import { Return as ReturnIcon } from "../icons/Return";
 import { alphaToMorse } from "../data";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { getRandomWord } from "../data/words";
@@ -10,8 +9,8 @@ import { Status, Word } from "./Word";
 import { Difficulty, MorseContext } from "../context/MorseContext";
 
 export const Decode = () => {
-  const { settings } = useContext(MorseContext);
-  const { playMorse, isPlaying } = useMorseAudio();
+  const { settings, isPlayingTone } = useContext(MorseContext);
+  const { playMorse } = useMorseAudio();
 
   const [decodeWord, setDecodeWord] = useState("");
   const [morseWord, setMorseWord] = useState("");
@@ -38,8 +37,10 @@ export const Decode = () => {
   }
 
   useEffect(() => {
-    newWord(getRandomWord());
-  }, []);
+    if (decodeWord.length === 0) {
+      newWord(getRandomWord());
+    }
+  }, [decodeWord]);
 
   useEffect(() => {
     let newIndex = status.findIndex((s) => ["empty", "incorrect"].includes(s));
@@ -50,9 +51,11 @@ export const Decode = () => {
 
     setDecodeIndex(newIndex);
 
+    // Play next letter
     if (
       settings.difficulty === Difficulty.Easy &&
-      decodeWord[decodeIndex] !== undefined
+      decodeWord[decodeIndex] !== undefined &&
+      alphaToMorse[decodeWord[newIndex]]
     ) {
       playMorse(alphaToMorse[decodeWord[newIndex]]);
     }
@@ -61,32 +64,21 @@ export const Decode = () => {
       status.length !== 0 &&
       status.find((val) => val !== "correct") === undefined
     ) {
-      newWord("LOREM");
+      setDecodeWord("");
     }
   }, [status, guess]);
-
-  function checkGuesses() {
-    let newStatus = [...status];
-
-    for (let i = 0; i < decodeWord.length; i++) {
-      if (status[i] === "correct" || guess[i] === "") continue;
-
-      if (guess[i] === decodeWord[i]) {
-        newStatus[i] = "correct";
-      } else {
-        newStatus[i] = "incorrect";
-      }
-    }
-
-    setStatus(newStatus);
-  }
 
   function pressKey(key: string) {
     let newGuess = [...guess];
     let newStatus = [...status];
 
     newGuess[decodeIndex] = key;
-    newStatus[decodeIndex] = "guess";
+
+    if (key === decodeWord[decodeIndex]) {
+      newStatus[decodeIndex] = "correct";
+    } else {
+      newStatus[decodeIndex] = "incorrect";
+    }
 
     setGuess(newGuess);
     setStatus(newStatus);
@@ -109,7 +101,7 @@ export const Decode = () => {
           onClick={() => {
             playMorse(morseWord);
           }}
-          disabled={isPlaying}
+          disabled={isPlayingTone}
         >
           <SpeakerIcon />
           <span>Word</span>
@@ -119,19 +111,10 @@ export const Decode = () => {
           onClick={() => {
             playMorse(alphaToMorse[decodeWord[decodeIndex]]);
           }}
-          disabled={isPlaying}
+          disabled={isPlayingTone}
         >
           <SpeakerIcon />
           <span>Letter</span>
-        </button>
-        <button
-          className="btn btn--full"
-          onClick={() => {
-            checkGuesses();
-          }}
-        >
-          <ReturnIcon />
-          <span>Submit</span>
         </button>
       </div>
 

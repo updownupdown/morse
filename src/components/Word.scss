@@ -52,6 +52,10 @@
         color: var(--K100);
       }
     }
+    &.letter--current.letter--incorrect {
+      box-shadow: inset 0 0 0 2px var(--status-red);
+    }
+
     &--correct {
       .letter__value {
         color: var(--status-green);
@@ -69,53 +73,169 @@
     }
   }
 
+  // ========== Encode ========== //
+  // Encode + Easy
   .app--diff-easy.app--mode-encode & {
     .letter {
       &--none,
+      &--empty,
       &--incorrect {
         .letter__morse {
           opacity: 0;
-
-          // .morse-char span {
-          //   background: var(--K400);
-          // }
         }
       }
       &--current {
         .letter__morse {
-          opacity: 1;
-
-          // .morse-char span {
-          //   background: var(--K400);
-          // }
+          animation: 4s fade-in linear forwards;
+          animation-delay: 2s;
         }
       }
+    }
+  }
+
+  // Encode + Moderate
+  .app--diff-moderate.app--mode-encode & {
+    .letter {
+      &--none,
+      &--empty,
+      &--incorrect {
+        .letter__morse {
+          opacity: 0;
+        }
+      }
+      &--current {
+        .letter__morse {
+          animation: 6s fade-in linear forwards;
+          animation-delay: 4s;
+        }
+      }
+    }
+  }
+
+  // Encode + Hard
+  .app--diff-hard.app--mode-encode & {
+    .letter {
+      &--none,
+      &--empty,
+      &--incorrect,
+      &--current {
+        .letter__morse {
+          opacity: 0;
+        }
+      }
+    }
+  }
+
+  // ========== Decode ========== //
+  // Decode + Easy
+  .app--diff-easy.app--mode-decode & {
+    .letter {
+      &--empty {
+        .letter__value {
+          opacity: 0;
+        }
+      }
+      &--current {
+        .letter__value {
+          opacity: 0;
+
+          animation: 4s fade-in linear forwards;
+          animation-delay: 3s;
+        }
+      }
+      &--incorrect {
+        .letter__value {
+          opacity: 1;
+          animation: unset;
+        }
+      }
+    }
+  }
+
+  // Decode + Moderate
+  .app--diff-moderate.app--mode-decode & {
+    .letter {
+      &--empty {
+        .letter__value {
+          opacity: 0;
+        }
+      }
+      &--current {
+        .letter__value {
+          opacity: 0;
+
+          animation: 5s fade-in linear forwards;
+          animation-delay: 6s;
+        }
+      }
+      &--incorrect {
+        .letter__value {
+          opacity: 1;
+          animation: unset;
+        }
+      }
+    }
+  }
+
+  // Decode + Hard
+  .app--diff-hard.app--mode-decode & {
+    .letter {
+      &--empty {
+        .letter__value {
+          opacity: 0;
+        }
+      }
+      &--current {
+        .letter__value {
+          opacity: 0;
+        }
+      }
+      &--incorrect {
+        .letter__value {
+          opacity: 1;
+          animation: unset;
+        }
+      }
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
 }
 
 .morse-char {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
 
-  .app--diff-easy & {
-    .dit-dah {
-      &--dit {
-        background: var(--dit);
-      }
-      &--dah {
-        background: var(--dah);
-      }
+  .dit-dah {
+    &--dit {
+      background: var(--dit);
+    }
+    &--dah {
+      background: var(--dah);
+    }
+    &--in-progress {
+      background: var(--K700);
+
+      animation-name: in-progress;
+      animation-timing-function: linear;
+      transform-origin: center left;
     }
   }
 
-  .app--diff-moderate &,
-  .app--diff-hard & {
-    .dit-dah {
-      &--dit,
-      &--dah {
-        background: var(--K500);
-      }
+  @keyframes in-progress {
+    from {
+      transform: scaleX(0.25);
+    }
+    to {
+      transform: scaleX(1);
     }
   }
 
@@ -131,6 +251,9 @@
         width: $size;
       }
       &--dah {
+        width: calc($size * 3);
+      }
+      &--in-progress {
         width: calc($size * 3);
       }
     }

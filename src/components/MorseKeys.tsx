@@ -7,9 +7,10 @@ import { alphaToMorse } from "../data";
 import { Keyboard as KeyboardIcon } from "../icons/Keyboard";
 import { Backspace as BackspaceIcon } from "../icons/Backspace";
 import { Return as ReturnIcon } from "../icons/Return";
-import { MorseChar } from "./Word";
+import { inProgressChar, MorseChar } from "./Word";
 import { Delete as DeleteIcon } from "../icons/Delete";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { Close as CloseIcon } from "../icons/Close";
 
 interface Props {
   word: string;
@@ -31,8 +32,8 @@ export const MorseKeys = ({
   submitChar,
   addWordBreak,
 }: Props) => {
-  const { settings } = useContext(MorseContext);
-  const { playMorse, isPlaying, setIsPressed } = useMorseAudio();
+  const { settings, isPlayingTone } = useContext(MorseContext);
+  const { playMorse, setIsPressed } = useMorseAudio();
   const [type, setType] = useLocalStorage<"split" | "hold" | "select">(
     "keysType",
     "hold",
@@ -84,12 +85,26 @@ export const MorseKeys = ({
     if (matchRef.current.length !== 0 && matchRef.current !== invalidText) {
       submitChar(matchRef.current);
       setQueue("");
+    } else {
+      setQueue("");
     }
   }
 
   return (
     <div className="morse-keys">
       <div className="morse-keys__buttons">
+        {playWord && (
+          <button
+            className="btn btn--outlined"
+            onClick={() => {
+              playWord();
+            }}
+            disabled={isPlayingTone || word.length === 0}
+          >
+            <SpeakerIcon />
+          </button>
+        )}
+
         {resetWord && onBackspace && addWordBreak && (
           <>
             <button
@@ -100,6 +115,16 @@ export const MorseKeys = ({
               disabled={word.length === 0}
             >
               <DeleteIcon />
+            </button>
+
+            <button
+              className="btn btn--outlined"
+              onClick={() => {
+                onBackspace();
+              }}
+              disabled={word.length === 0}
+            >
+              <BackspaceIcon />
             </button>
             <button
               className="btn btn--outlined"
@@ -113,28 +138,7 @@ export const MorseKeys = ({
             >
               <span>Wordbreak</span>
             </button>
-            <button
-              className="btn btn--outlined"
-              onClick={() => {
-                onBackspace();
-              }}
-              disabled={word.length === 0}
-            >
-              <BackspaceIcon />
-            </button>
           </>
-        )}
-
-        {playWord && (
-          <button
-            className="btn btn--outlined"
-            onClick={() => {
-              playWord();
-            }}
-            disabled={isPlaying || word.length === 0}
-          >
-            <SpeakerIcon />
-          </button>
         )}
       </div>
 
@@ -146,7 +150,7 @@ export const MorseKeys = ({
             }}
             disabled={queue.length === 0}
           >
-            <DeleteIcon />
+            <CloseIcon />
           </button>
         )}
 
@@ -157,9 +161,11 @@ export const MorseKeys = ({
             {match}
           </div>
           <div className="morse-keys__queue__preview__morse">
-            {queue.split("").map((char, i) => {
-              return <MorseChar key={i} morse={char} size="xl" />;
-            })}
+            {queue.length !== 0 && <MorseChar morse={queue} size="xl" />}
+
+            {pressStart !== null && (
+              <MorseChar morse={inProgressChar} size="xl" />
+            )}
           </div>
         </div>
 
@@ -170,6 +176,7 @@ export const MorseKeys = ({
             }}
             disabled={queue.length === 0 || match === invalidText}
           >
+            <span>Send</span>
             <ReturnIcon />
           </button>
         )}

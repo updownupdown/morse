@@ -188,14 +188,15 @@ export const Settings = () => {
             <div className="setting__details">
               {settings.difficulty === Difficulty.Easy && (
                 <span className="small-text">
-                  Changes frequency, major hints
+                  Shows hints quickly, and uses different frequencies for dots
+                  and dashes.
                 </span>
               )}
               {settings.difficulty === Difficulty.Moderate && (
-                <span className="small-text">Shows hints</span>
+                <span className="small-text">Shows hints slowly</span>
               )}
               {settings.difficulty === Difficulty.Hard && (
-                <span className="small-text">Not hints</span>
+                <span className="small-text">No hints shown</span>
               )}
             </div>
           </div>

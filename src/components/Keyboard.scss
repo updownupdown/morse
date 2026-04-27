@@ -43,4 +43,11 @@
       }
     }
   }
+
+  .app--mode-decode.app--diff-moderate &,
+  .app--mode-decode.app--diff-hard & {
+    .keyboard__row .key .morse-char {
+      display: none;
+    }
+  }
 }

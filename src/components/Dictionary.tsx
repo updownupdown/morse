@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { alphaToMorse, IProsign, prosigns } from "../data";
 import "./Dictionary.scss";
 import clsx from "clsx";
 import { MorseChar } from "./Word";
 import { useMorseAudio } from "../hooks/useMorseAudio";
+import { MorseContext } from "../context/MorseContext";
 
 enum Categories {
   Letters = "ABC",
@@ -15,18 +16,28 @@ enum Categories {
 interface SymbolProps {
   text: string;
   morse: string;
+  disabled: boolean;
 }
 
-export const Symbol = ({ text, morse }: SymbolProps) => {
-  const { playMorse, isPlaying } = useMorseAudio();
+export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
+  const { playMorse } = useMorseAudio();
+
+  const [isPlayingThis, setIsPlayingThis] = useState(false);
+
+  useEffect(() => {
+    if (!disabled) {
+      setIsPlayingThis(false);
+    }
+  }, [disabled]);
 
   return (
     <button
-      className={`symbol symbol--${isPlaying && "is-playing"}`}
+      className={`symbol symbol--${isPlayingThis && "is-playing"}`}
       onClick={() => {
+        setIsPlayingThis(true);
         playMorse(morse);
       }}
-      disabled={isPlaying}
+      disabled={disabled}
     >
       <div className="symbol__text">{text}</div>
       <div className="symbol__morse">
@@ -37,6 +48,8 @@ export const Symbol = ({ text, morse }: SymbolProps) => {
 };
 
 export const Dictionary = () => {
+  const { isPlayingTone } = useContext(MorseContext);
+  const { playMorse } = useMorseAudio();
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
 
   const parseProsign = (sign: string) => {
@@ -69,14 +82,21 @@ export const Dictionary = () => {
         {list.map((sign) => {
           return (
             <div key={sign.prosign} className="prosign">
-              <div className="prosign__top">
+              <button
+                className="prosign__top"
+                onClick={() => {
+                  playMorse(sign.code);
+                }}
+                disabled={isPlayingTone}
+              >
                 <div className="prosign__top__sign">
                   {parseProsign(sign.prosign)}
                 </div>
                 <div className="prosign__top__code">
                   <MorseChar morse={sign.code} size="lg" />
                 </div>
-              </div>
+              </button>
+
               <div className="prosign__voice">{sign.voice}</div>
 
               <div className="prosign__details">{sign.details}</div>
@@ -133,7 +153,12 @@ export const Dictionary = () => {
               .filter((key) => key.match(regex))
               .map((key, val) => {
                 return (
-                  <Symbol key={key} text={key} morse={alphaToMorse[key]} />
+                  <Symbol
+                    key={key}
+                    text={key}
+                    morse={alphaToMorse[key]}
+                    disabled={isPlayingTone}
+                  />
                 );
               })}
           </div>

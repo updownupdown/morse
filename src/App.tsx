@@ -14,11 +14,13 @@ import { Decode } from "./components/Decode";
 import { Translate } from "./components/Translate";
 import { Simulator } from "./components/Simulator";
 import { Encode } from "./components/Encode";
+import { useState } from "react";
 
 function App() {
   const [selectedMenu, setSelectedMenu] = useLocalStorage("menu", Menus.None);
   const [selectedMode, setSelectedMode] = useLocalStorage("mode", Modes.Home);
   const [settings, setSettings] = useLocalStorage("settings", defaultSettings);
+  const [isPlayingTone, setIsPlayingTone] = useState(false);
 
   return (
     <MorseContext.Provider
@@ -29,6 +31,8 @@ function App() {
         setSelectedMenu,
         selectedMode,
         setSelectedMode,
+        isPlayingTone,
+        setIsPlayingTone,
       }}
     >
       <div

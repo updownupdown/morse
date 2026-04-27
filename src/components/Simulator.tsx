@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Simulator.scss";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { Status, Word } from "./Word";
+import { Word } from "./Word";
 import { MorseKeys } from "./MorseKeys";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { alphaToMorse } from "../data";
 
 export const Simulator = () => {
-  const { playMorse, isPlaying } = useMorseAudio();
+  const { playMorse } = useMorseAudio();
 
   const [message, setMessage] = useLocalStorage("simMessage", "My message");
 
