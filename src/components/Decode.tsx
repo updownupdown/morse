@@ -8,10 +8,11 @@ import { getRandomWord } from "../data/words";
 import { Status, Word } from "./Word";
 import { Difficulty, MorseContext } from "../context/MorseContext";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { Stop as StopIcon } from "../icons/Stop";
 
 export const Decode = () => {
   const { settings, isPlayingTone } = useContext(MorseContext);
-  const { playMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useMorseAudio();
 
   const [decodeWord, setDecodeWord] = useLocalStorage("decodeWord", "");
   const [morseWord, setMorseWord] = useState("");
@@ -37,8 +38,6 @@ export const Decode = () => {
     setWordIndex(0);
     setDecodeWord(currentWord);
     setMorseWord(newMorseWord.join(" "));
-
-    // playMorse(newMorseWord.join(" "));
   }, [decodeWord]);
 
   useEffect(() => {
@@ -91,12 +90,15 @@ export const Decode = () => {
         <button
           className="btn btn--outlined"
           onClick={() => {
-            playMorse(morseWord);
+            if (isPlayingTone) {
+              stopMorse();
+            } else {
+              playMorse(morseWord);
+            }
           }}
-          disabled={isPlayingTone}
         >
-          <SpeakerIcon />
-          <span>Word</span>
+          {isPlayingTone ? <StopIcon /> : <SpeakerIcon />}
+          <span>{isPlayingTone ? "Stop" : "Word"}</span>
         </button>
         <button
           className="btn btn--outlined"

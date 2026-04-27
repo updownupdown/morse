@@ -176,7 +176,7 @@ button {
     &--outlined {
       border: 2px solid var(--K800);
 
-      &:hover {
+      &:not(:disabled):hover {
         background: var(--K700);
         border-color: var(--K400);
 
@@ -188,7 +188,7 @@ button {
     &--full {
       background: var(--K800);
 
-      &:hover {
+      &:not(:disabled):hover {
         background: var(--K700);
 
         span {

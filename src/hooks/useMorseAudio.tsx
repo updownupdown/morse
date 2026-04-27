@@ -7,6 +7,7 @@ const maxPressTime = 1200; // ms
 const fadeDurationInSec = 0.02; // 20 ms
 
 export function useMorseAudio() {
+  const cancelPlaybackRef = useRef(false);
   const ctxRef = useRef<AudioContext | null>(null);
   const { settings, isPlayingTone, setIsPlayingTone } =
     useContext(MorseContext);
@@ -96,6 +97,11 @@ export function useMorseAudio() {
   // Helper to play a single beep and return a Promise that resolves when done
   function playBeep(duration: number, frequency: number) {
     return new Promise<void>((resolve) => {
+      if (cancelPlaybackRef.current) {
+        resolve();
+        return;
+      }
+
       if (!ctxRef.current) {
         ctxRef.current = new AudioContext();
       }
@@ -111,15 +117,11 @@ export function useMorseAudio() {
 
       const now = ctx.currentTime;
 
-      // const totalDuration = duration / 1000;
       let fadeDuration = duration / 8; // ms
-
       if (fadeDuration > maxFadeDuration) {
         fadeDuration = maxFadeDuration;
       }
-
       let beepDuration = duration - fadeDuration * 2; // ms
-
       beepDuration = beepDuration / 1000; // sec
       fadeDuration = fadeDuration / 1000; // sec
 
@@ -142,21 +144,55 @@ export function useMorseAudio() {
         o.disconnect();
         resolve();
       };
+
+      // If cancelled during beep, stop immediately
+      const checkCancel = () => {
+        if (cancelPlaybackRef.current) {
+          try {
+            o.stop();
+          } catch {}
+          try {
+            g.disconnect();
+          } catch {}
+          try {
+            o.disconnect();
+          } catch {}
+          resolve();
+        } else {
+          requestAnimationFrame(checkCancel);
+        }
+      };
+      checkCancel();
     });
   }
 
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
+  function stopMorse() {
+    stopPress();
+
+    cancelPlaybackRef.current = true;
+
+    if (ctxRef.current) {
+      ctxRef.current.close();
+      ctxRef.current = null;
+    }
+
+    setIsPlayingTone(false);
+  }
+
   async function playMorse(morse: string) {
     if (isPressed || isPlayingTone) return;
 
+    cancelPlaybackRef.current = false;
     setIsPlayingTone(true);
 
     const frequencyOffset =
       settings.difficulty === Difficulty.Easy ? easyFreqOffset : 0;
 
     for (let i = 0; i < morse.length; i++) {
+      if (cancelPlaybackRef.current) break;
       const symbol = morse[i];
 
       if (symbol === ".") {
@@ -178,6 +214,7 @@ export function useMorseAudio() {
         i < morse.length - 1 &&
         (morse[i + 1] === "." || morse[i + 1] === "-")
       ) {
+        if (cancelPlaybackRef.current) break;
         await new Promise((res) => setTimeout(res, settings.unitTime));
       }
     }
@@ -185,5 +222,5 @@ export function useMorseAudio() {
     setIsPlayingTone(false);
   }
 
-  return { playMorse, setIsPressed };
+  return { playMorse, stopMorse, setIsPressed };
 }
