@@ -6,7 +6,6 @@ import { alphaToMorse } from "../data/alphaToMorse";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { Status, Word } from "./Word";
 import { Difficulty, MorseContext } from "../context/MorseContext";
-import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Stop as StopIcon } from "../icons/Stop";
 import { getRandomSource, Sources } from "../data/dataSources";
 
@@ -15,55 +14,59 @@ export const Decode = () => {
   const { playMorse, stopMorse } = useMorseAudio();
 
   const [source, setSource] = useState<Sources>(Sources.Words);
-  const [decodeWord, setDecodeWord] = useLocalStorage("decodeWord", "");
+  const [decodeWord, setDecodeWord] = useState("");
   const [morseWord, setMorseWord] = useState("");
   const [status, setStatus] = useState<Status[]>([]);
   const [wordIndex, setWordIndex] = useState(0);
 
+  // Set/reset word
   useEffect(() => {
-    let currentWord = decodeWord;
+    if (decodeWord.length !== 0) return;
 
-    if (decodeWord.length === 0) {
-      currentWord = getRandomSource(source);
-    }
-
+    let newWord = getRandomSource(source);
     let newStatus: Status[] = [];
     let newMorseWord: string[] = [];
 
-    for (let i = 0; i < currentWord.length; i++) {
+    for (let i = 0; i < newWord.length; i++) {
       newStatus.push("empty");
-      newMorseWord.push(alphaToMorse[currentWord[i]]);
+      newMorseWord.push(alphaToMorse[newWord[i]]);
     }
 
-    setStatus(newStatus);
     setWordIndex(0);
-    setDecodeWord(currentWord);
+    setDecodeWord(newWord);
     setMorseWord(newMorseWord.join(" "));
+    setStatus(newStatus);
   }, [decodeWord]);
 
+  // Update on status change (key press)
   useEffect(() => {
+    if (status.length === 0) {
+      return;
+    } else if (status.find((val) => val !== "correct") === undefined) {
+      setDecodeWord("");
+      return;
+    }
+
     const newIndex = status.findIndex((s) =>
       ["empty", "incorrect"].includes(s),
     );
 
     setWordIndex(newIndex);
-
-    // Play next letter
-    if (
-      settings.difficulty !== Difficulty.Hard &&
-      decodeWord[wordIndex] !== undefined &&
-      alphaToMorse[decodeWord[newIndex]]
-    ) {
-      playMorse(alphaToMorse[decodeWord[newIndex]]);
-    }
-
-    if (
-      status.length !== 0 &&
-      status.find((val) => val !== "correct") === undefined
-    ) {
-      setDecodeWord("");
-    }
   }, [status]);
+
+  // Play letter on index change
+  useEffect(() => {
+    if (
+      wordIndex === -1 ||
+      settings.difficulty === Difficulty.Hard ||
+      decodeWord[wordIndex] === undefined ||
+      alphaToMorse[decodeWord[wordIndex]] === undefined
+    ) {
+      return;
+    }
+
+    playMorse(alphaToMorse[decodeWord[wordIndex]]);
+  }, [decodeWord, wordIndex]);
 
   function pressKey(key: string) {
     let newStatus = [...status];
@@ -104,6 +107,7 @@ export const Decode = () => {
           status={status}
           index={wordIndex}
           setIndex={setWordIndex}
+          playOnPress={false}
         />
       </div>
       <div className="decode__buttons">

@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Encode.scss";
 import { MorseKeys } from "./MorseKeys";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { Status, Word } from "./Word";
 import { getRandomSource, Sources } from "../data/dataSources";
+import { Difficulty, MorseContext } from "../context/MorseContext";
+import { useMorseAudio } from "../hooks/useMorseAudio";
 
 export const Encode = () => {
+  const { settings, isPlayingTone } = useContext(MorseContext);
+  const { playMorse, stopMorse } = useMorseAudio();
+
   const [word, setWord] = useLocalStorage("encodeWord", "");
   const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);
@@ -42,6 +47,14 @@ export const Encode = () => {
     }
   }
 
+  // Play morse on new index
+  useEffect(() => {
+    if (word.length !== 0 && settings.difficulty === Difficulty.Easy) {
+      playMorse(alphaToMorse[word[wordIndex]]);
+    }
+  }, [wordIndex, word]);
+
+  // Reset word on source change or word reset
   useEffect(() => {
     if (word.length !== 0) return;
 

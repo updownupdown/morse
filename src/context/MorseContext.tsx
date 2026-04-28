@@ -15,7 +15,6 @@ export type Settings = {
 
 export enum Menus {
   None = "None",
-  Start = "Start",
   Menu = "Menu",
   Settings = "Settings",
 }
@@ -45,6 +44,8 @@ interface ContextProps {
   setSelectedMode: (mode: Modes) => void;
   isPlayingTone: boolean;
   setIsPlayingTone: (playing: boolean) => void;
+  audioInitialized: boolean;
+  setAudioInitialized: (initialized: boolean) => void;
 }
 
 export const MorseContext = createContext<ContextProps>({
@@ -56,4 +57,6 @@ export const MorseContext = createContext<ContextProps>({
   setSelectedMode: () => {},
   isPlayingTone: false,
   setIsPlayingTone: () => {},
+  audioInitialized: false,
+  setAudioInitialized: () => {},
 });

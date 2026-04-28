@@ -7,6 +7,7 @@ import { Book as BookIcon } from "../icons/Book";
 import { Swap as SwapIcon } from "../icons/Swap";
 import { Touch as TouchIcon } from "../icons/Touch";
 import { Menus, Modes, MorseContext } from "../context/MorseContext";
+import { initCode, useMorseAudio } from "../hooks/useMorseAudio";
 
 export const MenuLinks = () => {
   const links = [
@@ -43,6 +44,7 @@ export const MenuLinks = () => {
   ];
 
   const { setSelectedMode, setSelectedMenu } = useContext(MorseContext);
+  const { playMorse } = useMorseAudio();
 
   return (
     <div className="menu-links">
@@ -52,6 +54,7 @@ export const MenuLinks = () => {
             key={link.title}
             className="link"
             onClick={() => {
+              playMorse(initCode);
               setSelectedMode(link.link);
               setSelectedMenu(Menus.None);
             }}
@@ -69,8 +72,10 @@ export const MenuLinks = () => {
 };
 
 export const Menu = () => {
+  const { selectedMode } = useContext(MorseContext);
+
   return (
-    <Modal title="Menu">
+    <Modal title="Menu" showTitle={selectedMode !== Modes.Home}>
       <div className="menu">
         <MenuLinks />
       </div>

@@ -15,13 +15,15 @@ import { Translate } from "./components/Translate";
 import { Simulator } from "./components/Simulator";
 import { Encode } from "./components/Encode";
 import { useState } from "react";
-import { Start } from "./components/Start";
+import { Home } from "./components/Home";
 
 function App() {
-  const [selectedMenu, setSelectedMenu] = useState(Menus.Start);
   const [selectedMode, setSelectedMode] = useLocalStorage("mode", Modes.Home);
   const [settings, setSettings] = useLocalStorage("settings", defaultSettings);
+
+  const [selectedMenu, setSelectedMenu] = useState(Menus.None);
   const [isPlayingTone, setIsPlayingTone] = useState(false);
+  const [audioInitialized, setAudioInitialized] = useState(false);
 
   return (
     <MorseContext.Provider
@@ -34,12 +36,13 @@ function App() {
         setSelectedMode,
         isPlayingTone,
         setIsPlayingTone,
+        audioInitialized,
+        setAudioInitialized,
       }}
     >
       <div
         className={`app app--mode-${selectedMode.replace(/[^a-zA-Z]/g, "").toLowerCase()} app--diff-${settings.difficulty.toLowerCase()}`}
       >
-        {selectedMenu === Menus.Start && <Start />}
         {selectedMenu === Menus.Menu && <Menu />}
         {selectedMenu === Menus.Settings && <Settings />}
 
@@ -52,9 +55,10 @@ function App() {
 
         <div className="main">
           <div className="main__content">
-            {selectedMenu === Menus.None && (
+            {!audioInitialized && <Home />}
+            {audioInitialized && selectedMenu === Menus.None && (
               <>
-                {selectedMode === Modes.Home && <MenuLinks />}
+                {selectedMode === Modes.Home && <Home />}
                 {selectedMode === Modes.Encode && <Encode />}
                 {selectedMode === Modes.Decode && <Decode />}
                 {selectedMode === Modes.Dictionary && <Dictionary />}
