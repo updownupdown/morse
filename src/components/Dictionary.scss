@@ -9,33 +9,8 @@
 
   &__menu {
     display: flex;
-    margin: 0 20px;
-    padding: 8px;
-
-    border-radius: 12px;
-    background: var(--K800);
-
-    .dict-menu-item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-      padding: 8px;
-
-      border-radius: 8px;
-
-      font-size: 18px;
-      color: var(--K400);
-
-      &--selected {
-        background: var(--K100);
-        color: var(--K850);
-      }
-      &--not-selected:hover {
-        background: var(--K700);
-        color: var(--K200);
-      }
-    }
+    width: 100%;
+    padding: 0 20px;
   }
 
   &__content {

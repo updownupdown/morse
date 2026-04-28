@@ -4,7 +4,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Word } from "./Word";
 import { MorseKeys } from "./MorseKeys";
 import { useMorseAudio } from "../hooks/useMorseAudio";
-import { alphaToMorse } from "../data";
+import { alphaToMorse } from "../data/alphaToMorse";
 
 export const Simulator = () => {
   const { playMorse } = useMorseAudio();

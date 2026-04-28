@@ -1,4 +1,4 @@
-const words = [
+export const words = [
   "ability",
   "able",
   "about",
@@ -2723,12 +2723,3 @@ const words = [
   "youth",
   "zone",
 ];
-
-const random = (min: number, max: number) =>
-  Math.floor(min + Math.random() * (max - min + 1));
-
-export default words;
-
-export function getRandomWord() {
-  return words[random(0, words.length - 1)].toUpperCase();
-}

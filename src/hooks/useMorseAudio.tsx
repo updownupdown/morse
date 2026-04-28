@@ -222,5 +222,5 @@ export function useMorseAudio() {
     setIsPlayingTone(false);
   }
 
-  return { playMorse, stopMorse, setIsPressed };
+  return { playMorse, stopMorse, setIsPressed, isPressed };
 }

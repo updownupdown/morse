@@ -1,12 +1,17 @@
 .word {
-  $word-height: 80px;
   $word-width: 64px;
+  $word-height: 80px;
+  $word-width-small: 30px;
+  $word-height-small: 36px;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
   gap: 4px;
+  // important; ensures centering without needing justify-content: center
+  // on parent container, which breaks when the content overflows
+  margin: auto;
 
   .slash {
     display: flex;
@@ -28,11 +33,13 @@
     gap: 8px;
     min-width: $word-width;
     min-height: $word-height;
+    padding: 0 8px;
 
     border-radius: 6px;
     background: var(--K950);
 
     &__value {
+      padding-top: 1px;
       font-size: 32px;
       font-weight: 700;
       color: var(--K300);
@@ -73,6 +80,24 @@
     &--empty {
       .letter__value {
         color: var(--K700);
+      }
+    }
+  }
+
+  &--small-letters {
+    .letter__morse {
+      display: none;
+    }
+
+    .letter,
+    .slash {
+      gap: 4px;
+      min-width: $word-width-small;
+      min-height: $word-height-small;
+
+      &,
+      .letter__value {
+        font-size: 22px;
       }
     }
   }
@@ -222,6 +247,7 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 
   .dit-dah {
     &--dit {

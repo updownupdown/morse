@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { alphaToMorse } from "../data";
+import { alphaToMorse } from "../data/alphaToMorse";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import "./Translate.scss";
 import { Swap as SwapIcon } from "../icons/Swap";

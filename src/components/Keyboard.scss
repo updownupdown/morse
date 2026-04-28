@@ -1,21 +1,25 @@
+.keyboard-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
 .keyboard {
-  $key-width: 34px;
+  $gap-width: 4px;
+  $key-width: calc((100% - $gap-width * 9) / 10);
+  $key-width-special: calc((100% - $gap-width * 6) / 7);
 
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 20px;
+  gap: $gap-width;
+  width: 100%;
 
   &__row {
     display: flex;
-    gap: 4px;
-
-    &:nth-child(2) {
-      padding-left: calc($key-width * 0.3);
-    }
-    &:nth-child(3) {
-      padding-left: calc($key-width * 0.9);
-    }
+    justify-content: center;
+    gap: $gap-width;
+    width: 100%;
 
     .key {
       display: flex;
@@ -23,23 +27,44 @@
       justify-content: center;
       align-items: center;
       white-space: nowrap;
-      width: $key-width;
-      height: calc($key-width * 1.6);
-      gap: 4px;
+      gap: $gap-width;
+      padding: 0 $gap-width;
 
       border-radius: 4px;
       background: var(--K850);
 
       &__letter {
-        width: 14px;
         font-size: 22px;
         text-align: center;
         font-weight: 700;
+      }
+      .morse-char {
+        min-height: calc(var(--dit-sm) * 2);
       }
 
       &:hover {
         color: var(--K100);
         background: var(--K700);
+      }
+    }
+
+    .keyboard--regular & {
+      .key {
+        width: $key-width;
+        aspect-ratio: 0.6;
+      }
+
+      &:nth-child(2) {
+        margin-left: calc($key-width * -0.3);
+      }
+      &:nth-child(3) {
+        margin-left: calc($key-width * -0.9);
+      }
+    }
+    .keyboard--special-chars & {
+      .key {
+        width: $key-width-special;
+        aspect-ratio: 1;
       }
     }
   }

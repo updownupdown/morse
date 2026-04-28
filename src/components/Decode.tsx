@@ -2,18 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Decode.scss";
 import { Speaker as SpeakerIcon } from "../icons/Speaker";
-import { alphaToMorse } from "../data";
+import { alphaToMorse } from "../data/alphaToMorse";
 import { useMorseAudio } from "../hooks/useMorseAudio";
-import { getRandomWord } from "../data/words";
 import { Status, Word } from "./Word";
 import { Difficulty, MorseContext } from "../context/MorseContext";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Stop as StopIcon } from "../icons/Stop";
+import { getRandomSource, Sources } from "../data/dataSources";
 
 export const Decode = () => {
   const { settings, isPlayingTone } = useContext(MorseContext);
   const { playMorse, stopMorse } = useMorseAudio();
 
+  const [source, setSource] = useState<Sources>(Sources.Words);
   const [decodeWord, setDecodeWord] = useLocalStorage("decodeWord", "");
   const [morseWord, setMorseWord] = useState("");
   const [status, setStatus] = useState<Status[]>([]);
@@ -23,7 +24,7 @@ export const Decode = () => {
     let currentWord = decodeWord;
 
     if (decodeWord.length === 0) {
-      currentWord = getRandomWord();
+      currentWord = getRandomSource(source);
     }
 
     let newStatus: Status[] = [];
@@ -78,6 +79,25 @@ export const Decode = () => {
 
   return (
     <div className="decode">
+      <div className="decode__buttons">
+        <div className="button-menu button-menu--small">
+          {Object.entries(Sources).map(([key, val]) => {
+            return (
+              <button
+                key={key}
+                className={`btn-menu-item btn-menu-item--${source === val ? "selected" : "not-selected"}`}
+                onClick={() => {
+                  setDecodeWord("");
+                  setSource(val as Sources);
+                }}
+              >
+                {val}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="decode__word">
         <Word
           word={decodeWord}
@@ -112,7 +132,10 @@ export const Decode = () => {
         </button>
       </div>
 
-      <Keyboard onPress={pressKey} />
+      <Keyboard
+        onPress={pressKey}
+        isSpecialChars={source === Sources.SpecialChars}
+      />
     </div>
   );
 };

@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import "./Encode.scss";
 import { MorseKeys } from "./MorseKeys";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { alphaToMorse } from "../data";
+import { alphaToMorse } from "../data/alphaToMorse";
 import { Status, Word } from "./Word";
-import { getRandomWord } from "../data/words";
+import { getRandomSource, Sources } from "../data/dataSources";
 
 export const Encode = () => {
   const [word, setWord] = useLocalStorage("encodeWord", "");
   const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);
+  const [source, setSource] = useState<Sources>(Sources.Words);
 
   function newWord(word: string) {
     let newStatus: Status[] = [];
@@ -42,13 +43,30 @@ export const Encode = () => {
   }
 
   useEffect(() => {
-    if (word.length === 0) {
-      newWord(getRandomWord());
-    }
-  }, [word]);
+    if (word.length !== 0) return;
+
+    newWord(getRandomSource(source));
+  }, [source, word]);
 
   return (
     <div className="encode">
+      <div className="button-menu button-menu--small">
+        {Object.entries(Sources).map(([key, val]) => {
+          return (
+            <button
+              key={key}
+              className={`btn-menu-item btn-menu-item--${source === val ? "selected" : "not-selected"}`}
+              onClick={() => {
+                setWord("");
+                setSource(val as Sources);
+              }}
+            >
+              {val}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="encode__word">
         <Word
           word={word}

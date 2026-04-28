@@ -10,7 +10,7 @@ import { Modal } from "./Modal";
 import { Speaker as SpeakerIcon } from "../icons/Speaker";
 import { Reset as ResetIcon } from "../icons/Reset";
 import { easyFreqOffset, useMorseAudio } from "../hooks/useMorseAudio";
-import { alphaToMorse } from "../data";
+import { alphaToMorse } from "../data/alphaToMorse";
 
 export const Settings = () => {
   const { playMorse } = useMorseAudio();
@@ -147,9 +147,9 @@ export const Settings = () => {
               <div className="setting__details">
                 <div>
                   <span className="small-text">
-                    Easy mode alters
+                    Easy difficulty
                     <br />
-                    frequency
+                    shifts frequencies
                   </span>
                 </div>
                 <div className="flex">

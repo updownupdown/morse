@@ -30,7 +30,7 @@
     button {
       position: absolute;
       top: 20px;
-      right: 30px;
+      right: 20px;
 
       svg {
         width: 32px;
@@ -40,8 +40,6 @@
     }
   }
   &__content {
-    // @include scrollbar-mixin;
-    // overflow-y: auto;
     overflow: hidden;
 
     display: flex;

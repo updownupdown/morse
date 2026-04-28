@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { alphaToMorse, IProsign, prosigns } from "../data";
+import { alphaToMorse } from "../data/alphaToMorse";
 import "./Dictionary.scss";
 import clsx from "clsx";
 import { MorseChar } from "./Word";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { MorseContext } from "../context/MorseContext";
+import { IProsign, prosigns } from "../data/prosigns";
 
 enum Categories {
   Letters = "ABC",
@@ -124,22 +125,24 @@ export const Dictionary = () => {
   return (
     <div className="dictionary">
       <div className="dictionary__menu">
-        {Object.values(Categories).map((cat) => {
-          return (
-            <button
-              key={cat}
-              className={clsx(
-                "dict-menu-item",
-                selectedCategory === cat
-                  ? "dict-menu-item--selected"
-                  : "dict-menu-item--not-selected",
-              )}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          );
-        })}
+        <div className="button-menu">
+          {Object.values(Categories).map((cat) => {
+            return (
+              <button
+                key={cat}
+                className={clsx(
+                  "btn-menu-item",
+                  selectedCategory === cat
+                    ? "btn-menu-item--selected"
+                    : "btn-menu-item--not-selected",
+                )}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="dictionary__content">

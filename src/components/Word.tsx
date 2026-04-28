@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import clsx from "clsx";
 import { useMorseAudio } from "../hooks/useMorseAudio";
-import { alphaToMorse } from "../data";
+import { alphaToMorse } from "../data/alphaToMorse";
 import "./Word.scss";
 import { MorseContext } from "../context/MorseContext";
 
@@ -47,10 +47,10 @@ interface Props {
 
 export const Word = ({ word, status, index, setIndex }: Props) => {
   const { isPlayingTone } = useContext(MorseContext);
-  const { playMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useMorseAudio();
 
   return (
-    <div className="word">
+    <div className={clsx("word", word.length > 20 && "word--small-letters")}>
       {word.length > 0 &&
         word.split("").map((letter, i) => {
           const thisStatus = status ? status[i] : "neutral";
@@ -72,13 +72,16 @@ export const Word = ({ word, status, index, setIndex }: Props) => {
                 status && i === index && "letter--current",
               )}
               onClick={() => {
-                playMorse(alphaToMorse[letter.toUpperCase()]);
+                if (isPlayingTone) {
+                  stopMorse();
+                } else {
+                  playMorse(alphaToMorse[letter.toUpperCase()]);
+                }
 
                 if (setIndex && thisStatus !== "correct") {
                   setIndex(i);
                 }
               }}
-              disabled={isPlayingTone}
             >
               <div className="letter__value">{word[i]}</div>
               <div className="letter__morse">
