@@ -80,7 +80,7 @@ export const Word = ({
               )}
               onClick={() => {
                 if (playOnPress) {
-                  playMorse(alphaToMorse[letter.toUpperCase()]);
+                  playMorse(alphaToMorse(letter));
                 }
 
                 if (setIndex && thisStatus !== "correct") {
@@ -91,10 +91,7 @@ export const Word = ({
             >
               <div className="letter__value">{word[i]}</div>
               <div className="letter__morse">
-                <MorseChar
-                  morse={alphaToMorse[letter.toUpperCase()]}
-                  size="md"
-                />
+                <MorseChar morse={alphaToMorse(letter)} size="md" />
               </div>
             </button>
           );

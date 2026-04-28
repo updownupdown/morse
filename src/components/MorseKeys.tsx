@@ -3,7 +3,7 @@ import "./MorseKeys.scss";
 import { MorseContext } from "../context/MorseContext";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { Speaker as SpeakerIcon } from "../icons/Speaker";
-import { alphaToMorse } from "../data/alphaToMorse";
+import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
 import { Keyboard as KeyboardIcon } from "../icons/Keyboard";
 import { Backspace as BackspaceIcon } from "../icons/Backspace";
 import { Return as ReturnIcon } from "../icons/Return";
@@ -76,7 +76,7 @@ export const MorseKeys = ({
 
     const match =
       queue.length !== 0 &&
-      Object.keys(alphaToMorse).find((key) => alphaToMorse[key] === queue);
+      Object.keys(alphaToMorseDict).find((key) => alphaToMorse(key) === queue);
 
     setMatch(match ? match : invalidText);
   }, [queue]);

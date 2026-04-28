@@ -29,7 +29,7 @@ export const Decode = () => {
 
     for (let i = 0; i < newWord.length; i++) {
       newStatus.push("empty");
-      newMorseWord.push(alphaToMorse[newWord[i]]);
+      newMorseWord.push(alphaToMorse(newWord[i]));
     }
 
     setWordIndex(0);
@@ -59,13 +59,12 @@ export const Decode = () => {
     if (
       wordIndex === -1 ||
       settings.difficulty === Difficulty.Hard ||
-      decodeWord[wordIndex] === undefined ||
-      alphaToMorse[decodeWord[wordIndex]] === undefined
+      decodeWord[wordIndex] === undefined
     ) {
       return;
     }
 
-    playMorse(alphaToMorse[decodeWord[wordIndex]]);
+    playMorse(alphaToMorse(decodeWord[wordIndex]));
   }, [decodeWord, wordIndex]);
 
   function pressKey(key: string) {
@@ -127,7 +126,7 @@ export const Decode = () => {
         <button
           className="btn btn--outlined"
           onClick={() => {
-            playMorse(alphaToMorse[decodeWord[wordIndex]]);
+            playMorse(alphaToMorse(decodeWord[wordIndex]));
           }}
           disabled={isPlayingTone}
         >

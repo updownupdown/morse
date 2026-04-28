@@ -23,7 +23,7 @@ export const Encode = () => {
 
     for (let i = 0; i < word.length; i++) {
       newStatus.push("empty");
-      newMorseWord.push(alphaToMorse[word[i]]);
+      newMorseWord.push(alphaToMorse(word[i]));
     }
 
     setStatus(newStatus);
@@ -50,7 +50,7 @@ export const Encode = () => {
   // Play morse on new index
   useEffect(() => {
     if (word.length !== 0 && settings.difficulty === Difficulty.Easy) {
-      playMorse(alphaToMorse[word[wordIndex]]);
+      playMorse(alphaToMorse(word[wordIndex]));
     }
   }, [wordIndex, word]);
 

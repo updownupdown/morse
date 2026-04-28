@@ -44,7 +44,7 @@ export const Settings = () => {
           <button
             className="btn btn--outlined"
             onClick={() => {
-              playMorse(alphaToMorse["F"]);
+              playMorse(alphaToMorse("F"));
             }}
           >
             <SpeakerIcon />

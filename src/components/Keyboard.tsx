@@ -24,7 +24,7 @@ export const Keyboard = ({ onPress, isSpecialChars }: KeyboardProps) => {
         }}
       >
         <span className="key__letter">{letter}</span>
-        <MorseChar morse={alphaToMorse[letter]} size="sm" />
+        <MorseChar morse={alphaToMorse(letter)} size="sm" />
       </button>
     );
   };

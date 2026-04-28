@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { alphaToMorse } from "../data/alphaToMorse";
+import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
 import "./Dictionary.scss";
 import clsx from "clsx";
 import { MorseChar } from "./Word";
@@ -152,14 +152,14 @@ export const Dictionary = () => {
 
         {selectedCategory !== Categories.Misc && (
           <div className="dictionary__content__symbols">
-            {Object.keys(alphaToMorse)
+            {Object.keys(alphaToMorseDict)
               .filter((key) => key.match(regex))
               .map((key, val) => {
                 return (
                   <Symbol
                     key={key}
                     text={key}
-                    morse={alphaToMorse[key]}
+                    morse={alphaToMorse(key)}
                     disabled={isPlayingTone}
                   />
                 );

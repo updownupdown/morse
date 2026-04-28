@@ -22,7 +22,7 @@ export const Simulator = () => {
         continue;
       }
 
-      const morse = alphaToMorse[message.charAt(i)];
+      const morse = alphaToMorse(message.charAt(i));
       if (!morse) continue;
 
       morseMessage.push(morse);
@@ -31,6 +31,9 @@ export const Simulator = () => {
         morseMessage.push(" ");
       }
     }
+
+    console.log(message);
+    console.log(morseMessage);
 
     playMorse(morseMessage.join(""));
   }
