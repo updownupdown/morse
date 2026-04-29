@@ -8,12 +8,16 @@ import { Status, Word } from "./Word";
 import { Difficulty, MorseContext } from "../context/MorseContext";
 import { Stop as StopIcon } from "../icons/Stop";
 import { getRandomSource, Sources } from "../data/dataSources";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export const Decode = () => {
   const { settings, isPlayingTone } = useContext(MorseContext);
   const { playMorse, stopMorse } = useMorseAudio();
 
-  const [source, setSource] = useState<Sources>(Sources.Words);
+  const [source, setSource] = useLocalStorage<Sources>(
+    "decodeSource",
+    Sources.Words,
+  );
   const [decodeWord, setDecodeWord] = useState("");
   const [morseWord, setMorseWord] = useState("");
   const [status, setStatus] = useState<Status[]>([]);
@@ -43,6 +47,7 @@ export const Decode = () => {
     if (status.length === 0) {
       return;
     } else if (status.find((val) => val !== "correct") === undefined) {
+      // Word done! Reset it.
       setDecodeWord("");
       return;
     }
@@ -51,23 +56,20 @@ export const Decode = () => {
       ["empty", "incorrect"].includes(s),
     );
 
+    // Play letter on index change (will trigger on auto index change, but not on manual)
+    if (
+      newIndex !== -1 &&
+      settings.difficulty !== Difficulty.Hard &&
+      decodeWord[newIndex] !== undefined
+    ) {
+      playMorse(alphaToMorse(decodeWord[newIndex]));
+    }
+
     setWordIndex(newIndex);
   }, [status]);
 
-  // Play letter on index change
-  useEffect(() => {
-    if (
-      wordIndex === -1 ||
-      settings.difficulty === Difficulty.Hard ||
-      decodeWord[wordIndex] === undefined
-    ) {
-      return;
-    }
-
-    playMorse(alphaToMorse(decodeWord[wordIndex]));
-  }, [decodeWord, wordIndex]);
-
   function pressKey(key: string) {
+    // Update status
     let newStatus = [...status];
 
     if (key === decodeWord[wordIndex]) {
@@ -106,7 +108,6 @@ export const Decode = () => {
           status={status}
           index={wordIndex}
           setIndex={setWordIndex}
-          playOnPress={false}
         />
       </div>
       <div className="decode__buttons">

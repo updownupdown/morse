@@ -50,6 +50,31 @@ export function morseToAlpha(morse: string) {
   return splitMorse.join("");
 }
 
+type Unit = "." | "-" | " " | "/";
+
+const unitLengths: Record<Unit, number> = {
+  ".": 1,
+  "-": 3,
+  " ": 3,
+  "/": 7,
+};
+
+export function calculateMorseUnitLength(morse: string) {
+  let splitMorse = sanitizeMorse(morse);
+
+  // Don't overcount spaces around slashes
+  splitMorse.replaceAll(" / ", "");
+  splitMorse.split("");
+
+  let totalLength = 0;
+
+  for (let i = 0; i < splitMorse.length; i++) {
+    totalLength += unitLengths[splitMorse[i] as Unit];
+  }
+
+  return totalLength;
+}
+
 export const alphaToMorseDict: Dictionary = {
   A: ".-",
   B: "-...",

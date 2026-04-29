@@ -19,6 +19,7 @@ interface Props {
   onBackspace?: () => void;
   submitChar: (char: string) => void;
   addWordBreak?: () => void;
+  startTimer?: (now: number) => void;
 }
 
 const invalidText = "No match found";
@@ -31,6 +32,7 @@ export const MorseKeys = ({
   onBackspace,
   submitChar,
   addWordBreak,
+  startTimer,
 }: Props) => {
   const { settings, isPlayingTone } = useContext(MorseContext);
   const { playMorse, setIsPressed, isPressed } = useMorseAudio();
@@ -95,6 +97,7 @@ export const MorseKeys = ({
 
     setIsPressed(true);
     setPressStart(Date.now());
+    startTimer && startTimer(Date.now());
   }
   function onPressUp() {
     setIsPressed(false);

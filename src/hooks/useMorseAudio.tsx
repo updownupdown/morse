@@ -199,10 +199,13 @@ export function useMorseAudio() {
   }
 
   async function playMorse(morse: string) {
+    // This must be at the top of the function, to allow initializing the audio instantly
     if (morse === initCode) {
       playBeep(1, 1);
       return;
     }
+
+    await stopMorse();
 
     cancelPlaybackRef.current = false;
     setIsPlayingTone(true);

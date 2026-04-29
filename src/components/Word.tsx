@@ -43,16 +43,9 @@ interface Props {
   index?: number;
   setIndex?: (i: number) => void;
   status?: Status[];
-  playOnPress?: boolean;
 }
 
-export const Word = ({
-  word,
-  status,
-  index,
-  setIndex,
-  playOnPress = true,
-}: Props) => {
+export const Word = ({ word, status, index, setIndex }: Props) => {
   const { isPlayingTone } = useContext(MorseContext);
   const { playMorse, stopMorse } = useMorseAudio();
 
@@ -79,9 +72,7 @@ export const Word = ({
                 status && i === index && "letter--current",
               )}
               onClick={() => {
-                if (playOnPress) {
-                  playMorse(alphaToMorse(letter));
-                }
+                playMorse(alphaToMorse(letter));
 
                 if (setIndex && thisStatus !== "correct") {
                   setIndex(i);

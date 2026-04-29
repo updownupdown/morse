@@ -1,65 +1,96 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Encode.scss";
 import { MorseKeys } from "./MorseKeys";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { alphaToMorse } from "../data/alphaToMorse";
+import { alphaToMorse, calculateMorseUnitLength } from "../data/alphaToMorse";
 import { Status, Word } from "./Word";
 import { getRandomSource, Sources } from "../data/dataSources";
-import { Difficulty, MorseContext } from "../context/MorseContext";
-import { useMorseAudio } from "../hooks/useMorseAudio";
 
 export const Encode = () => {
-  const { settings, isPlayingTone } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useMorseAudio();
-
-  const [word, setWord] = useLocalStorage("encodeWord", "");
+  const [encodeWord, setEncodeWord] = useLocalStorage("encodeWord", "");
   const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);
-  const [source, setSource] = useState<Sources>(Sources.Words);
+  const [source, setSource] = useLocalStorage<Sources>(
+    "encodeSource",
+    Sources.Words,
+  );
 
-  function newWord(word: string) {
+  // WPM counter
+  const [wpm, setWpm] = useLocalStorage("encodeWpm", 0);
+  const [enableWpm, setEnableWpm] = useState(false);
+  const [wordUnitLength, setWordUnitLength] = useState<number | undefined>(
+    undefined,
+  );
+  const timerRef = useRef<number>(null);
+
+  function startTimer(now: number) {
+    if (timerRef.current === null) {
+      timerRef.current = now;
+    }
+  }
+
+  function calculateWPM(timeInMs: number, unitsSent: number) {
+    const timeInSec = timeInMs / 1000;
+    return (1.2 * unitsSent) / timeInSec;
+  }
+
+  // Reset word on source change or word reset
+  useEffect(() => {
+    if (encodeWord.length !== 0) return;
+
+    let newWord = getRandomSource(source);
     let newStatus: Status[] = [];
     let newMorseWord: string[] = [];
 
-    for (let i = 0; i < word.length; i++) {
+    for (let i = 0; i < newWord.length; i++) {
       newStatus.push("empty");
-      newMorseWord.push(alphaToMorse(word[i]));
+      newMorseWord.push(alphaToMorse(newWord[i]));
     }
 
     setStatus(newStatus);
     setWordIndex(0);
-    setWord(word);
-  }
+    setEncodeWord(newWord);
+
+    // Enable/disable WPM timer
+    if (newWord.length > 1) {
+      setEnableWpm(true);
+
+      const unitLength = calculateMorseUnitLength(alphaToMorse(newWord));
+      setWordUnitLength(unitLength);
+    } else {
+      setEnableWpm(false);
+    }
+  }, [source, encodeWord]);
 
   function submitChar(char: string) {
-    const isCorrect = char === word.charAt(wordIndex).toUpperCase();
+    const isCorrect = char === encodeWord.charAt(wordIndex).toUpperCase();
 
     let newStatus = [...status];
     newStatus[wordIndex] = isCorrect ? "correct" : "incorrect";
     setStatus(newStatus);
 
     if (isCorrect) {
-      if (wordIndex === word.length - 1) {
-        setWord("");
+      if (wordIndex === encodeWord.length - 1) {
+        // Done word!
+
+        // Stop WPM timer
+        if (timerRef.current !== null) {
+          const timeEllapsed = Date.now() - timerRef.current;
+
+          if (wordUnitLength) {
+            setWpm(calculateWPM(timeEllapsed, wordUnitLength));
+          }
+
+          timerRef.current = null;
+        }
+
+        // Reset word
+        setEncodeWord("");
       } else {
         setWordIndex((prev) => prev + 1);
       }
     }
   }
-
-  // Play morse on new index
-  useEffect(() => {
-    if (word.length !== 0 && settings.difficulty === Difficulty.Easy) {
-      playMorse(alphaToMorse(word[wordIndex]));
-    }
-  }, [wordIndex, word]);
-
-  // Reset word on source change or word reset
-  useEffect(() => {
-    if (word.length !== 0) return;
-
-    newWord(getRandomSource(source));
-  }, [source, word]);
 
   return (
     <div className="encode">
@@ -70,7 +101,7 @@ export const Encode = () => {
               key={key}
               className={`btn-menu-item btn-menu-item--${source === val ? "selected" : "not-selected"}`}
               onClick={() => {
-                setWord("");
+                setEncodeWord("");
                 setSource(val as Sources);
               }}
             >
@@ -80,16 +111,21 @@ export const Encode = () => {
         })}
       </div>
 
+      {enableWpm && (
+        <div className="encode__wpm">
+          <span>{wpm.toFixed(2)} WPM</span>
+        </div>
+      )}
+
       <div className="encode__word">
-        <Word
-          word={word}
-          index={wordIndex}
-          status={status}
-          setIndex={setWordIndex}
-        />
+        <Word word={encodeWord} index={wordIndex} status={status} />
       </div>
 
-      <MorseKeys word={word} submitChar={submitChar} />
+      <MorseKeys
+        word={encodeWord}
+        submitChar={submitChar}
+        startTimer={startTimer}
+      />
     </div>
   );
 };

@@ -32,9 +32,6 @@ export const Simulator = () => {
       }
     }
 
-    console.log(message);
-    console.log(morseMessage);
-
     playMorse(morseMessage.join(""));
   }
 
