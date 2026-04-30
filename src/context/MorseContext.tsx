@@ -1,9 +1,9 @@
 import React, { createContext } from "react";
-import { Decode as DecodeIcon } from "../icons/Decode";
-import { Encode as EncodeIcon } from "../icons/Encode";
-import { MorseMachine as MorseMachineIcon } from "../icons/MorseMachine";
-import { Translate as TranslateIcon } from "../icons/Translate";
-import { Dictionary as DictionaryIcon } from "../icons/Dictionary";
+import { DecodeIcon } from "../icons/DecodeIcon";
+import { EncodeIcon } from "../icons/EncodeIcon";
+import { MorseMachineIcon } from "../icons/MorseMachineIcon";
+import { TranslateIcon } from "../icons/TranslateIcon";
+import { DictionaryIcon } from "../icons/DictionaryIcon";
 
 export enum Difficulty {
   Easy = "Easy",

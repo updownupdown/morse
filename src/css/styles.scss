@@ -243,12 +243,13 @@ button {
     justify-content: center;
     align-items: center;
     flex: 1;
-    padding: 8px 4px;
+    padding: 10px 4px;
 
     border-radius: 8px;
 
     font-size: 18px;
     color: var(--K400);
+    font-weight: 700;
     line-height: 1.1;
 
     &--selected {

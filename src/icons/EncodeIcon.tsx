@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Encode(props: React.SVGProps<SVGSVGElement>) {
+export function EncodeIcon() {
   return (
     <svg
       width="24"

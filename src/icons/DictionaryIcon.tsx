@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Dictionary(props: React.SVGProps<SVGSVGElement>) {
+export function DictionaryIcon() {
   return (
     <svg
       width="24"

@@ -3,19 +3,17 @@ import { useContext } from "react";
 import {
   defaultSettings,
   Difficulty,
-  KeyTypes,
-  KeyTypesDescription,
   MorseContext,
   settingsRange,
 } from "../context/MorseContext";
 import "./Settings.scss";
 import { Modal } from "./Modal";
-import { Speaker as SpeakerIcon } from "../icons/Speaker";
-import { Reset as ResetIcon } from "../icons/Reset";
+import { SpeakerIcon } from "../icons/SpeakerIcon";
+import { ResetIcon } from "../icons/ResetIcon";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
-import { ArrowLeft } from "../icons/ArrowLeft";
-import { ArrowRight } from "../icons/ArrowRight";
+import { ArrowLeftIcon } from "../icons/ArrowLeftIcon";
+import { ArrowRightIcon } from "../icons/ArrowRightIcon";
 
 export const Settings = () => {
   const { playMorse } = useMorseAudio();
@@ -72,7 +70,7 @@ export const Settings = () => {
                 }}
                 disabled={volume === settingsRange.volume.min}
               >
-                <ArrowLeft />
+                <ArrowLeftIcon />
               </button>
               <button
                 className="setting-btn"
@@ -81,7 +79,7 @@ export const Settings = () => {
                 }}
                 disabled={volume === settingsRange.volume.max}
               >
-                <ArrowRight />
+                <ArrowRightIcon />
               </button>
             </div>
 
@@ -120,7 +118,7 @@ export const Settings = () => {
                 }}
                 disabled={volume === settingsRange.unitTime.min}
               >
-                <ArrowLeft />
+                <ArrowLeftIcon />
               </button>
               <button
                 className="setting-btn"
@@ -129,7 +127,7 @@ export const Settings = () => {
                 }}
                 disabled={volume === settingsRange.unitTime.max}
               >
-                <ArrowRight />
+                <ArrowRightIcon />
               </button>
             </div>
 
@@ -169,7 +167,7 @@ export const Settings = () => {
                 }}
                 disabled={volume === settingsRange.frequency.min}
               >
-                <ArrowLeft />
+                <ArrowLeftIcon />
               </button>
               <button
                 className="setting-btn"
@@ -178,7 +176,7 @@ export const Settings = () => {
                 }}
                 disabled={volume === settingsRange.frequency.max}
               >
-                <ArrowRight />
+                <ArrowRightIcon />
               </button>
             </div>
 

@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Delete(props: React.SVGProps<SVGSVGElement>) {
+export function DeleteIcon() {
   return (
     <svg
       width="24"

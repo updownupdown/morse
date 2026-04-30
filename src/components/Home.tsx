@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { MenuLinks } from "./Menu";
 import "./Home.scss";
 import { Menus, ModeIcons, Modes, MorseContext } from "../context/MorseContext";
-import { Settings as SettingsIcon } from "../icons/Settings";
+import { SettingsIcon } from "../icons/SettingsIcon";
 import { initCode, useMorseAudio } from "../hooks/useMorseAudio";
 
 export const Home = () => {
@@ -14,7 +14,7 @@ export const Home = () => {
     <div className="home">
       <div className="home__header">
         <h3>
-          Morse<span>ED</span>
+          Morse<span>Play</span>
         </h3>
         <span>by James Carmichael</span>
         <a href="https://github.com/updownupdown/morse" target="_blank">

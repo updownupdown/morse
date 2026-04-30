@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Decode.scss";
-import { Speaker as SpeakerIcon } from "../icons/Speaker";
+import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { Status, Word } from "./Word";
 import { Difficulty, MorseContext } from "../context/MorseContext";
-import { Stop as StopIcon } from "../icons/Stop";
+import { StopIcon } from "../icons/StopIcon";
 import { getRandomSource, Sources } from "../data/dataSources";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 

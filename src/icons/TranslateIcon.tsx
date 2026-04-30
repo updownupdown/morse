@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Translate(props: React.SVGProps<SVGSVGElement>) {
+export function TranslateIcon() {
   return (
     <svg
       width="24"

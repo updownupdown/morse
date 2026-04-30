@@ -7,11 +7,11 @@ import {
 } from "../data/alphaToMorse";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import "./Translate.scss";
-import { Swap as SwapIcon } from "../icons/Swap";
+import { SwapIcon } from "../icons/SwapIcon";
 import clsx from "clsx";
-import { Reset as ResetIcon } from "../icons/Reset";
-import { Backspace as BackspaceIcon } from "../icons/Backspace";
-import { Speaker as SpeakerIcon } from "../icons/Speaker";
+import { ResetIcon } from "../icons/ResetIcon";
+import { BackspaceIcon } from "../icons/BackspaceIcon";
+import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { MorseContext } from "../context/MorseContext";
 

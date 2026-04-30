@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function ArrowLeft(props: React.SVGProps<SVGSVGElement>) {
+export function ArrowLeftIcon() {
   return (
     <svg
       width="24"

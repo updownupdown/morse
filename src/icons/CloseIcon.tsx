@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Close(props: React.SVGProps<SVGSVGElement>) {
+export function CloseIcon() {
   return (
     <svg
       width="24"

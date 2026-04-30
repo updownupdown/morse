@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function MorseMachine(props: React.SVGProps<SVGSVGElement>) {
+export function MorseMachineIcon() {
   return (
     <svg
       width="24"

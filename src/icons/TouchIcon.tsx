@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Touch(props: React.SVGProps<SVGSVGElement>) {
+export function TouchIcon() {
   return (
     <svg
       width="24"

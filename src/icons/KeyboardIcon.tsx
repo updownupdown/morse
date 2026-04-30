@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Keyboard(props: React.SVGProps<SVGSVGElement>) {
+export function KeyboardIcon() {
   return (
     <svg
       width="24"

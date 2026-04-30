@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Reset(props: React.SVGProps<SVGSVGElement>) {
+export function ResetIcon() {
   return (
     <svg
       width="24"

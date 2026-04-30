@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Swap(props: React.SVGProps<SVGSVGElement>) {
+export function SwapIcon() {
   return (
     <svg
       width="24"

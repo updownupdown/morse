@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Backspace(props: React.SVGProps<SVGSVGElement>) {
+export function BackspaceIcon() {
   return (
     <svg
       width="24"

@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Settings(props: React.SVGProps<SVGSVGElement>) {
+export function SettingsIcon() {
   return (
     <svg
       width="24"

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export function Speaker(props: React.SVGProps<SVGSVGElement>) {
+export function SpeakerIcon() {
   return (
     <svg
       width="24"

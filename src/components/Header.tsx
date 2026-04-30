@@ -1,25 +1,27 @@
 import React, { useContext } from "react";
-import { Menu as MenuIcon } from "../icons/Menu";
-import { Settings as SettingsIcon } from "../icons/Settings";
+import { MenuIcon } from "../icons/MenuIcon";
+import { SettingsIcon } from "../icons/SettingsIcon";
 import "./Header.scss";
-import { Difficulty, Menus, MorseContext } from "../context/MorseContext";
+import { Menus, MorseContext } from "../context/MorseContext";
 
 export const Header = () => {
   const { settings, setSelectedMenu, selectedMode } = useContext(MorseContext);
 
   return (
     <div className="header">
-      <button onClick={() => setSelectedMenu(Menus.Menu)}>
+      <button
+        className="header__menu-btn"
+        onClick={() => setSelectedMenu(Menus.Menu)}
+      >
         <MenuIcon />
+        <span>{selectedMode}</span>
       </button>
 
-      <span className="header__mode">{selectedMode}</span>
-
-      <span className="header__settings">
+      <button
+        className="header__settings-btn"
+        onClick={() => setSelectedMenu(Menus.Settings)}
+      >
         <span>{settings.difficulty}</span>
-      </span>
-
-      <button onClick={() => setSelectedMenu(Menus.Settings)}>
         <SettingsIcon />
       </button>
     </div>

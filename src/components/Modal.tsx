@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { Close as CloseIcon } from "../icons/Close";
+import { CloseIcon } from "../icons/CloseIcon";
 import "./Modal.scss";
-import { Menus, Modes, MorseContext } from "../context/MorseContext";
+import { Menus, MorseContext } from "../context/MorseContext";
 
 interface Props {
   title: string;

@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export function Decode(props: React.SVGProps<SVGSVGElement>) {
+export function DecodeIcon() {
   return (
     <svg
       width="24"

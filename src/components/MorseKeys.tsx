@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "./MorseKeys.scss";
 import { MorseContext } from "../context/MorseContext";
 import { useMorseAudio } from "../hooks/useMorseAudio";
-import { Speaker as SpeakerIcon } from "../icons/Speaker";
+import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
-import { Backspace as BackspaceIcon } from "../icons/Backspace";
+import { BackspaceIcon } from "../icons/BackspaceIcon";
 import { inProgressChar, MorseChar } from "./Word";
-import { Delete as DeleteIcon } from "../icons/Delete";
-import { Stop as StopIcon } from "../icons/Stop";
+import { DeleteIcon } from "../icons/DeleteIcon";
+import { StopIcon } from "../icons/StopIcon";
 
 interface Props {
   word: string;
