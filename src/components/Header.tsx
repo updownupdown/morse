@@ -16,7 +16,7 @@ export const Header = () => {
       <span className="header__mode">{selectedMode}</span>
 
       <span className="header__settings">
-        <span>Difficulty: {settings.difficulty}</span>
+        <span>{settings.difficulty}</span>
       </span>
 
       <button onClick={() => setSelectedMenu(Menus.Settings)}>

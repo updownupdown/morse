@@ -1,7 +1,10 @@
+@use "../css/mixins.scss" as *;
+
 .decode {
   display: flex;
   flex-direction: column;
   flex: 1;
+  height: 100%;
 
   &__buttons {
     display: flex;
@@ -10,6 +13,9 @@
   }
 
   &__word {
+    @include scrollbar-mixin;
+    overflow-y: auto;
+
     display: flex;
     align-items: center;
     justify-content: center;
