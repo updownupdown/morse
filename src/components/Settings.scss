@@ -19,22 +19,62 @@
 
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
     padding: 20px;
   }
 
   .setting {
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 18px;
     gap: 20px;
 
-    border-radius: 20px;
-    background: var(--K850);
+    border-radius: 12px;
+    background: var(--K950);
 
-    &__title {
-      font-size: 18px;
-      font-weight: 700;
+    &__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &__title {
+        flex: 1;
+
+        font-size: 18px;
+        font-weight: 700;
+      }
+      &__hint {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--K500);
+      }
+      &__unit {
+        padding-right: 4px;
+        min-width: 50px;
+
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--accent);
+        text-align: right;
+      }
+      .setting-btn {
+        display: flex;
+        padding: 4px;
+
+        border-radius: 4px;
+        background: var(--K850);
+
+        svg {
+          width: 24px;
+          height: 24px;
+          fill: var(--K100);
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.3;
+        }
+      }
     }
 
     &__input {
@@ -51,15 +91,12 @@
       .reset-btn {
         color: var(--link);
 
-        &:hover {
+        &:not(:disabled):hover {
           color: var(--link-hover);
         }
-      }
-
-      &__unit {
-        min-width: 50px;
-        color: var(--accent);
-        text-align: right;
+        &:disabled {
+          color: var(--K700);
+        }
       }
     }
 
@@ -68,66 +105,109 @@
       padding: 6px;
 
       border-radius: 8px;
-      background: var(--K800);
+      background: var(--K850);
 
       button {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 42px;
         flex: 1;
 
         border-radius: 4px;
 
-        color: var(--K200);
-        font-weight: 700;
-
-        &.selected {
-          background: var(--K200);
-          color: var(--K800);
-        }
         &.not-selected:hover {
           background: var(--K700);
         }
       }
-    }
 
-    &__details {
-      $details-col: var(--K500);
+      &--horizontal {
+        button {
+          padding: 8px;
 
-      display: flex;
-      gap: 16px;
+          span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--K500);
+          }
 
-      color: $details-col;
-      line-height: 1.2;
+          &.selected {
+            background: var(--K200);
 
-      div {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-
-        &.flex {
-          flex: 1;
+            span {
+              color: var(--K800);
+            }
+          }
         }
       }
+      &--vertical {
+        flex-direction: column;
 
-      .setting-example {
-        $height: 14px;
+        button {
+          align-items: flex-start;
+          gap: 2px;
+          padding: 10px 12px;
 
-        display: flex;
-        height: $height;
+          span:first-child {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--K200);
+          }
+          span:last-child {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--K500);
+          }
 
-        border-radius: calc($height / 2);
-        background: $details-col;
+          &.selected {
+            background: var(--K200);
 
-        &--dit {
-          width: $height;
+            span:first-child,
+            span:last-child {
+              color: var(--K800);
+            }
+          }
         }
-        &--dah {
-          width: calc($height * 3);
-        }
+      }
+    }
+  }
+
+  &__details {
+    $details-col: var(--K500);
+
+    display: flex;
+    padding: 20px 0;
+    gap: 16px;
+
+    color: $details-col;
+    line-height: 1.2;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+
+      &.flex {
+        flex: 1;
+      }
+    }
+
+    .setting-example {
+      $height: 14px;
+
+      display: flex;
+      height: $height;
+
+      border-radius: calc($height / 2);
+      background: $details-col;
+
+      &--dit {
+        width: $height;
+      }
+      &--dah {
+        width: calc($height * 3);
       }
     }
   }

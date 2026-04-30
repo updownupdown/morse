@@ -8,7 +8,7 @@ import {
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
 import { Settings } from "./components/Settings";
-import { Menu, MenuLinks } from "./components/Menu";
+import { Menu } from "./components/Menu";
 import { Dictionary } from "./components/Dictionary";
 import { Decode } from "./components/Decode";
 import { Translate } from "./components/Translate";
@@ -18,7 +18,11 @@ import { useState } from "react";
 import { Home } from "./components/Home";
 
 function App() {
-  const [selectedMode, setSelectedMode] = useLocalStorage("mode", Modes.Home);
+  const [lastSelectedMode, setLastSelectedMode] = useLocalStorage(
+    "lastMode",
+    Modes.Home,
+  );
+  const [selectedMode, setSelectedMode] = useState(Modes.Home);
   const [settings, setSettings] = useLocalStorage("settings", defaultSettings);
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
@@ -34,6 +38,8 @@ function App() {
         setSelectedMenu,
         selectedMode,
         setSelectedMode,
+        lastSelectedMode,
+        setLastSelectedMode,
         isPlayingTone,
         setIsPlayingTone,
         audioInitialized,
@@ -46,12 +52,7 @@ function App() {
         {selectedMenu === Menus.Menu && <Menu />}
         {selectedMenu === Menus.Settings && <Settings />}
 
-        <Header
-          selectedMenu={selectedMenu}
-          setSelectedMenu={setSelectedMenu}
-          selectedMode={selectedMode}
-          setSelectedMode={setSelectedMode}
-        />
+        {selectedMode !== Modes.Home && <Header />}
 
         <div className="main">
           <div className="main__content">

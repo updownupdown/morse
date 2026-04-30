@@ -3,37 +3,9 @@ import "./Simulator.scss";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Word } from "./Word";
 import { MorseKeys } from "./MorseKeys";
-import { useMorseAudio } from "../hooks/useMorseAudio";
-import { alphaToMorse } from "../data/alphaToMorse";
 
 export const Simulator = () => {
-  const { playMorse } = useMorseAudio();
-
   const [message, setMessage] = useLocalStorage("simMessage", "My message");
-
-  function playWord() {
-    if (message.length === 0) return;
-
-    let morseMessage: string[] = [];
-
-    for (let i = 0; i < message.length; i++) {
-      if (message.charAt(i) === " ") {
-        morseMessage.push("/");
-        continue;
-      }
-
-      const morse = alphaToMorse(message.charAt(i));
-      if (!morse) continue;
-
-      morseMessage.push(morse);
-
-      if (i !== message.length) {
-        morseMessage.push(" ");
-      }
-    }
-
-    playMorse(morseMessage.join(""));
-  }
 
   function onBackspace() {
     setMessage((prev) => prev.slice(0, -1));
@@ -59,8 +31,8 @@ export const Simulator = () => {
 
       <MorseKeys
         word={message}
+        playWord
         resetWord={resetWord}
-        playWord={playWord}
         onBackspace={onBackspace}
         submitChar={addCharacter}
         addWordBreak={addWordBreak}

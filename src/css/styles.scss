@@ -23,6 +23,7 @@ $theme-colors: (
   "K050": #fcfdfe,
   "K010": #fefefe,
   "accent": #ff975e,
+  "accent-hover": #da7842,
   "link": #69bcff,
   "link-hover": #9ed3ff,
   "link-active": #69bcff,
@@ -233,7 +234,7 @@ button {
   padding: 8px;
 
   border-radius: 12px;
-  background: var(--K800);
+  background: var(--K850);
 
   .btn-menu-item {
     display: flex;

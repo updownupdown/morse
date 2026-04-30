@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Difficulty, MorseContext } from "../context/MorseContext";
 
-export const easyFreqOffset = 50;
 const maxFadeDuration = 200; // ms
 const maxPressTime = 1200; // ms
 const fadeDurationInSec = 0.02; // 20 ms
@@ -50,7 +49,10 @@ export function useMorseAudio() {
 
     // Fade in
     g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(settings.volume, now + fadeDuration);
+    g.gain.exponentialRampToValueAtTime(
+      settings.volume / 100,
+      now + fadeDuration,
+    );
 
     o.start();
 
@@ -136,11 +138,14 @@ export function useMorseAudio() {
       fadeDuration = fadeDuration / 1000; // sec
 
       // Start
-      g.gain.setValueAtTime(settings.volume, now);
+      g.gain.setValueAtTime(settings.volume / 100, now);
       // Fade in
-      g.gain.exponentialRampToValueAtTime(settings.volume, now + fadeDuration);
+      g.gain.exponentialRampToValueAtTime(
+        settings.volume / 100,
+        now + fadeDuration,
+      );
       // Sustain
-      g.gain.setValueAtTime(settings.volume, now + beepDuration);
+      g.gain.setValueAtTime(settings.volume / 100, now + beepDuration);
       // Fade out
       g.gain.exponentialRampToValueAtTime(
         0.0001,
@@ -210,20 +215,14 @@ export function useMorseAudio() {
     cancelPlaybackRef.current = false;
     setIsPlayingTone(true);
 
-    const frequencyOffset =
-      settings.difficulty === Difficulty.Easy ? easyFreqOffset : 0;
-
     for (let i = 0; i < morse.length; i++) {
       if (cancelPlaybackRef.current) break;
       const symbol = morse[i];
 
       if (symbol === ".") {
-        await playBeep(settings.unitTime, settings.frequency + frequencyOffset);
+        await playBeep(settings.unitTime, settings.frequency);
       } else if (symbol === "-") {
-        await playBeep(
-          settings.unitTime * 3,
-          settings.frequency - frequencyOffset,
-        );
+        await playBeep(settings.unitTime * 3, settings.frequency);
       } else if (symbol === " ") {
         await sleep(settings.unitTime * 3);
       } else if (symbol === "/") {

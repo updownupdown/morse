@@ -1,49 +1,36 @@
 import React, { useContext } from "react";
 import { Modal } from "./Modal";
 import "./Menu.scss";
-import { TextDown as EncodeIcon } from "../icons/TextDown";
-import { TextUp as DecodeIcon } from "../icons/TextUp";
-import { Book as BookIcon } from "../icons/Book";
-import { Swap as SwapIcon } from "../icons/Swap";
-import { Touch as TouchIcon } from "../icons/Touch";
-import { Menus, Modes, MorseContext } from "../context/MorseContext";
+
+import { Menus, ModeIcons, Modes, MorseContext } from "../context/MorseContext";
 import { initCode, useMorseAudio } from "../hooks/useMorseAudio";
 
 export const MenuLinks = () => {
   const links = [
     {
-      title: "Encode words",
-      desc: "Type words into morse",
-      icon: <EncodeIcon />,
+      title: "Encode",
       link: Modes.Encode,
     },
     {
-      title: "Decode words",
-      desc: "Guess words from morse sound",
-      icon: <DecodeIcon />,
+      title: "Decode",
       link: Modes.Decode,
     },
     {
       title: "Dictionary",
-      desc: "Study letters, symbols and codes",
-      icon: <BookIcon />,
       link: Modes.Dictionary,
     },
     {
       title: "Translate",
-      desc: "Translate text to morse or v.v.",
-      icon: <SwapIcon />,
       link: Modes.Translate,
     },
     {
       title: "Simulator",
-      desc: "Send out morse",
-      icon: <TouchIcon />,
       link: Modes.Simulator,
     },
   ];
 
-  const { setSelectedMode, setSelectedMenu } = useContext(MorseContext);
+  const { setSelectedMode, setLastSelectedMode, setSelectedMenu } =
+    useContext(MorseContext);
   const { playMorse } = useMorseAudio();
 
   return (
@@ -56,14 +43,12 @@ export const MenuLinks = () => {
             onClick={() => {
               playMorse(initCode);
               setSelectedMode(link.link);
+              setLastSelectedMode(link.link);
               setSelectedMenu(Menus.None);
             }}
           >
-            <div className="link__text">
-              <span className="link__text__title">{link.title}</span>
-              <span className="link__text__desc">{link.desc}</span>
-            </div>
-            {link.icon}
+            {ModeIcons[link.link]}
+            <span>{link.title}</span>
           </button>
         );
       })}

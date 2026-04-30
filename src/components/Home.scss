@@ -1,4 +1,150 @@
 .home {
   display: flex;
   flex-direction: column;
+  padding: 30px;
+  flex: 1;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
+    h3 {
+      color: var(--K100);
+
+      &,
+      span {
+        font-size: 36px;
+        font-weight: 900;
+      }
+      span {
+        color: var(--accent);
+      }
+    }
+
+    span,
+    a {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    span {
+      color: var(--K600);
+    }
+    a {
+      color: var(--K300);
+
+      &:hover {
+        color: var(--link-hover);
+      }
+    }
+  }
+
+  &__settings {
+    display: flex;
+    align-items: center;
+    padding: 0 0 30px 20px;
+    gap: 30px;
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 10px;
+
+      div {
+        display: flex;
+        justify-content: space-between;
+
+        span {
+          &:first-child {
+            color: var(--K400);
+            font-weight: 500;
+          }
+          &:last-child {
+            color: var(--K200);
+            font-weight: 700;
+          }
+        }
+      }
+    }
+
+    button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 0;
+      width: 48px;
+
+      border-radius: 12px;
+      border: 2px solid var(--K800);
+
+      span {
+        font-size: 14px;
+        writing-mode: vertical-rl;
+        line-height: 24px;
+        color: var(--link);
+        font-weight: 700;
+
+        transform: rotate(180deg);
+      }
+      svg {
+        width: 24px;
+        height: 24px;
+        fill: var(--link);
+      }
+
+      &:hover {
+        border-color: var(--K700);
+        background: var(--K850);
+
+        span {
+          color: var(--accent);
+        }
+        svg {
+          fill: var(--accent);
+        }
+      }
+    }
+  }
+
+  .home-resume {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 30px;
+
+    border-radius: 32px;
+    background: var(--accent);
+
+    &__resume {
+      font-size: 22px;
+      font-weight: 750;
+      color: var(--K950);
+    }
+    &__last {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      span {
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(var(--K950-rgb), 0.6);
+      }
+      svg {
+        width: 24px;
+        height: 24px;
+        fill: rgba(var(--K950-rgb), 0.6);
+      }
+    }
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  }
 }

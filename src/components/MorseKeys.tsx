@@ -4,18 +4,15 @@ import { MorseContext } from "../context/MorseContext";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { Speaker as SpeakerIcon } from "../icons/Speaker";
 import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
-import { Keyboard as KeyboardIcon } from "../icons/Keyboard";
 import { Backspace as BackspaceIcon } from "../icons/Backspace";
-import { Return as ReturnIcon } from "../icons/Return";
 import { inProgressChar, MorseChar } from "./Word";
 import { Delete as DeleteIcon } from "../icons/Delete";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { Close as CloseIcon } from "../icons/Close";
+import { Stop as StopIcon } from "../icons/Stop";
 
 interface Props {
   word: string;
+  playWord?: boolean;
   resetWord?: () => void;
-  playWord?: () => void;
   onBackspace?: () => void;
   submitChar: (char: string) => void;
   addWordBreak?: () => void;
@@ -27,19 +24,20 @@ const maxCodeLength = 6;
 
 export const MorseKeys = ({
   word,
-  resetWord,
   playWord,
+  resetWord,
   onBackspace,
   submitChar,
   addWordBreak,
   startTimer,
 }: Props) => {
   const { settings, isPlayingTone } = useContext(MorseContext);
-  const { playMorse, setIsPressed, isPressed } = useMorseAudio();
-  const [type, setType] = useLocalStorage<"split" | "hold" | "select">(
-    "keysType",
-    "hold",
-  );
+  const { playMorse, stopMorse, setIsPressed, isPressed } = useMorseAudio();
+  // const [type, setType] = useLocalStorage<"split" | "hold" | "select">(
+  //   "keysType",
+  //   "hold",
+  // );
+  const type = "hold";
   const [queue, setQueue] = useState("");
   const [match, setMatch] = useState("");
   const matchRef = useRef(match);
@@ -145,11 +143,15 @@ export const MorseKeys = ({
             <button
               className="btn btn--outlined"
               onClick={() => {
-                playWord();
+                if (isPlayingTone) {
+                  stopMorse();
+                } else {
+                  playMorse(alphaToMorse(word));
+                }
               }}
-              disabled={isPlayingTone || word.length === 0}
+              disabled={word.length === 0}
             >
-              <SpeakerIcon />
+              {isPlayingTone ? <StopIcon /> : <SpeakerIcon />}
             </button>
           )}
 
@@ -192,7 +194,7 @@ export const MorseKeys = ({
       )}
 
       <div className="morse-keys__queue">
-        {type === "split" && (
+        {/* {type === "split" && (
           <button
             onClick={() => {
               setQueue("");
@@ -201,7 +203,7 @@ export const MorseKeys = ({
           >
             <CloseIcon />
           </button>
-        )}
+        )} */}
 
         <div className="morse-keys__queue__preview">
           <div className="morse-keys__queue__preview__morse">
@@ -218,7 +220,7 @@ export const MorseKeys = ({
           </div>
         </div>
 
-        {type === "split" && (
+        {/* {type === "split" && (
           <button
             onClick={() => {
               sendQueue();
@@ -228,11 +230,11 @@ export const MorseKeys = ({
             <span>Send</span>
             <ReturnIcon />
           </button>
-        )}
+        )} */}
       </div>
 
       <div className="morse-keys__keys">
-        {type === "select" && (
+        {/* {type === "select" && (
           <div className="morse-keys__select">
             <button
               className="btn btn--bright"
@@ -251,9 +253,9 @@ export const MorseKeys = ({
               Tap/hold
             </button>
           </div>
-        )}
+        )} */}
 
-        {type !== "select" && (
+        {/* {type !== "select" && (
           <button
             className="morse-key morse-key--switch"
             onClick={() => {
@@ -262,7 +264,7 @@ export const MorseKeys = ({
           >
             <KeyboardIcon />
           </button>
-        )}
+        )} */}
 
         {type === "hold" && (
           <button
@@ -275,7 +277,7 @@ export const MorseKeys = ({
           </button>
         )}
 
-        {type === "split" && (
+        {/* {type === "split" && (
           <>
             <button
               className="morse-key morse-key--dit"
@@ -298,7 +300,7 @@ export const MorseKeys = ({
               <div />
             </button>
           </>
-        )}
+        )} */}
       </div>
     </div>
   );

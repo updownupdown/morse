@@ -44,7 +44,7 @@ textarea {
 }
 
 // Slider
-$slider-height: 20px;
+$slider-height: 18px;
 $track-height: 4px;
 
 input[type="range"] {
@@ -65,7 +65,7 @@ input[type="range"]:focus {
   width: 100%;
   height: $track-height;
   border-radius: calc($track-height / 2);
-  background: var(--K700);
+  background: var(--K800);
 }
 input[type="range"]::-webkit-slider-runnable-track {
   @include track;
@@ -74,7 +74,7 @@ input[type="range"]::-moz-range-track {
   @include track;
 }
 input[type="range"]:focus::-webkit-slider-runnable-track {
-  background: var(--K600);
+  background: var(--K800);
 }
 
 // Slider Thumb
@@ -89,7 +89,7 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
   margin-top: -(($slider-height - $track-height) * 0.5);
 
   border-radius: 50%;
-  background: var(--K100);
+  background: var(--accent);
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
 }
 input[type="range"]::-webkit-slider-thumb {

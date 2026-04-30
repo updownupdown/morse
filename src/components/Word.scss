@@ -49,9 +49,9 @@
     &:disabled {
       cursor: not-allowed;
 
-      &:not(.letter--current) {
-        opacity: 0.5;
-      }
+      // &:not(.letter--current) {
+      //   opacity: 0.8;
+      // }
     }
     &:not(:disabled):hover {
       background: var(--K850);

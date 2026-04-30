@@ -1,4 +1,9 @@
-import { createContext } from "react";
+import React, { createContext } from "react";
+import { Decode as DecodeIcon } from "../icons/Decode";
+import { Encode as EncodeIcon } from "../icons/Encode";
+import { MorseMachine as MorseMachineIcon } from "../icons/MorseMachine";
+import { Translate as TranslateIcon } from "../icons/Translate";
+import { Dictionary as DictionaryIcon } from "../icons/Dictionary";
 
 export enum Difficulty {
   Easy = "Easy",
@@ -11,6 +16,7 @@ export type Settings = {
   frequency: number;
   volume: number;
   difficulty: Difficulty;
+  keyType: KeyTypes;
 };
 
 export enum Menus {
@@ -28,11 +34,51 @@ export enum Modes {
   Simulator = "Simulator",
 }
 
+export const ModeIcons: Record<Modes, React.ReactNode> = {
+  [Modes.Home]: <DecodeIcon />,
+  [Modes.Encode]: <EncodeIcon />,
+  [Modes.Decode]: <DecodeIcon />,
+  [Modes.Dictionary]: <DictionaryIcon />,
+  [Modes.Translate]: <TranslateIcon />,
+  [Modes.Simulator]: <MorseMachineIcon />,
+};
+
+export enum KeyTypes {
+  Straight = "Straight",
+  IambicA = "IambicA",
+  IambicB = "IambicB",
+}
+
+export const KeyTypesDescription: Record<KeyTypes, string> = {
+  [KeyTypes.Straight]: "One key, non-repeating",
+  [KeyTypes.IambicA]: "Two keys, first pressed key repeats?",
+  [KeyTypes.IambicB]: "Two keys, first pressed key repeats?",
+};
+
 export const defaultSettings: Settings = {
   unitTime: 80,
   frequency: 600,
-  volume: 0.2,
+  volume: 30,
   difficulty: Difficulty.Easy,
+  keyType: KeyTypes.Straight,
+};
+
+export const settingsRange = {
+  volume: {
+    min: 0,
+    max: 100,
+    step: 1,
+  },
+  frequency: {
+    min: 50,
+    max: 800,
+    step: 10,
+  },
+  unitTime: {
+    min: 30,
+    max: 200,
+    step: 2,
+  },
 };
 
 interface ContextProps {
@@ -42,6 +88,8 @@ interface ContextProps {
   setSelectedMenu: (menu: Menus) => void;
   selectedMode: Modes;
   setSelectedMode: (mode: Modes) => void;
+  lastSelectedMode: Modes;
+  setLastSelectedMode: (mode: Modes) => void;
   isPlayingTone: boolean;
   setIsPlayingTone: (playing: boolean) => void;
   audioInitialized: boolean;
@@ -53,8 +101,10 @@ export const MorseContext = createContext<ContextProps>({
   setSettings: () => {},
   selectedMenu: Menus.None,
   setSelectedMenu: () => {},
-  selectedMode: Modes.Decode,
+  selectedMode: Modes.Home,
   setSelectedMode: () => {},
+  lastSelectedMode: Modes.Home,
+  setLastSelectedMode: () => {},
   isPlayingTone: false,
   setIsPlayingTone: () => {},
   audioInitialized: false,

@@ -1,0 +1,15 @@
+import * as React from "react";
+
+export function ArrowLeft(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12.5861 8.70623L9.99611 11.2962C9.60611 11.6862 9.60611 12.3162 9.99611 12.7062L12.5861 15.2962C13.2161 15.9262 14.2961 15.4762 14.2961 14.5862V9.40623C14.2961 8.51623 13.2161 8.07623 12.5861 8.70623Z" />
+    </svg>
+  );
+}
