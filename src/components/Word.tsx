@@ -5,7 +5,7 @@ import { alphaToMorse } from "../data/alphaToMorse";
 import "./Word.scss";
 import { MorseContext } from "../context/MorseContext";
 
-export type Status = "empty" | "correct" | "incorrect" | "neutral";
+export type Status = "empty" | "correct" | "incorrect" | "neutral" | "space";
 
 interface MorseCharProps {
   morse: string;
@@ -47,7 +47,7 @@ interface Props {
 
 export const Word = ({ word, status, index, setIndex }: Props) => {
   const { isPlayingTone } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useMorseAudio();
+  const { playMorse } = useMorseAudio();
 
   return (
     <div className={clsx("word", word.length > 20 && "word--small-letters")}>

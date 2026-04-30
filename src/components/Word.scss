@@ -42,19 +42,21 @@
       padding-top: 1px;
       font-size: 32px;
       font-weight: 700;
-      color: var(--K300);
+      color: var(--K200);
       text-transform: uppercase;
     }
 
     &:disabled {
       cursor: not-allowed;
-
-      // &:not(.letter--current) {
-      //   opacity: 0.8;
-      // }
     }
     &:not(:disabled):hover {
       background: var(--K850);
+    }
+
+    &--empty {
+      .letter__value {
+        color: var(--K600);
+      }
     }
 
     &--current {
@@ -79,11 +81,6 @@
     &--incorrect {
       .letter__value {
         color: var(--status-red);
-      }
-    }
-    &--empty {
-      .letter__value {
-        color: var(--K700);
       }
     }
   }
@@ -192,6 +189,9 @@
       &--none,
       &--empty {
         .letter__value {
+          opacity: 0;
+        }
+        .letter__morse {
           opacity: 0;
         }
       }

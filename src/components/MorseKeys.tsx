@@ -46,17 +46,39 @@ export const MorseKeys = ({
   const [pressStart, setPressStart] = useState<number | null>(null);
   const [pressDuration, setPressDuration] = useState<number>(0);
 
+  const timeoutIdRef = useRef<number>(null);
+  const charBreakDuration = settings.unitTime * 3;
+
+  const startCharBreakTimeout = () => {
+    stopCharBreakTimeout();
+
+    timeoutIdRef.current = setTimeout(() => {
+      sendQueue();
+    }, charBreakDuration);
+  };
+
+  const stopCharBreakTimeout = () => {
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+  };
+
   useEffect(() => {
     if (pressStart === null) {
-      const wordBreakDuration = settings.unitTime * 7;
-
-      const timeout = setTimeout(() => {
-        sendQueue();
-      }, wordBreakDuration);
-
-      return () => clearTimeout(timeout);
+      startCharBreakTimeout();
+    } else {
+      stopCharBreakTimeout();
     }
   }, [pressStart]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (pressDuration === 0) return;

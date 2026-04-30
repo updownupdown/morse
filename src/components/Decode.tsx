@@ -32,7 +32,7 @@ export const Decode = () => {
     let newMorseWord: string[] = [];
 
     for (let i = 0; i < newWord.length; i++) {
-      newStatus.push("empty");
+      newStatus.push(newWord[i] === " " ? "space" : "empty");
       newMorseWord.push(alphaToMorse(newWord[i]));
     }
 
@@ -46,7 +46,9 @@ export const Decode = () => {
   useEffect(() => {
     if (status.length === 0) {
       return;
-    } else if (status.find((val) => val !== "correct") === undefined) {
+    } else if (
+      status.find((val) => !["correct", "space"].includes(val)) === undefined
+    ) {
       // Word done! Reset it.
       setDecodeWord("");
       return;

@@ -4,7 +4,7 @@
   flex-direction: column;
 
   .modal & {
-    margin: auto 30px;
+    margin: auto var(--modal-padding);
   }
 }
 

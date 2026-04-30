@@ -200,7 +200,6 @@ export const Settings = () => {
                 value={frequency}
                 onChange={(e) => setFrequency(Number(e.target.value))}
               />
-              <div className="setting__input__unit">{frequency}Hz</div>
             </div>
           </div>
 
@@ -242,7 +241,7 @@ export const Settings = () => {
           </div>
 
           {/* Key Type */}
-          <div className="setting">
+          {/* <div className="setting">
             <div className="setting__header">
               <span className="setting__header__title">Keys Type</span>
             </div>
@@ -265,7 +264,7 @@ export const Settings = () => {
                 );
               })}
             </div>
-          </div>
+          </div> */}
 
           {/* Details */}
           <div className="settings__details">

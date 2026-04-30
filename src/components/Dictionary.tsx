@@ -82,26 +82,28 @@ export const Dictionary = () => {
       <div className="prosigns">
         {list.map((sign) => {
           return (
-            <div key={sign.prosign} className="prosign">
-              <button
-                className="prosign__top"
-                onClick={() => {
-                  playMorse(sign.code);
-                }}
-                disabled={isPlayingTone}
-              >
+            <button
+              key={sign.prosign}
+              className="prosign"
+              onClick={() => {
+                playMorse(sign.code);
+              }}
+              disabled={isPlayingTone}
+            >
+              <div className="prosign__top">
                 <div className="prosign__top__sign">
                   {parseProsign(sign.prosign)}
                 </div>
-                <div className="prosign__top__code">
-                  <MorseChar morse={sign.code} size="lg" />
-                </div>
-              </button>
 
-              <div className="prosign__voice">{sign.voice}</div>
+                <div className="prosign__top__voice">{sign.voice}</div>
+              </div>
+
+              <div className="prosign__code">
+                <MorseChar morse={sign.code} size="lg" />
+              </div>
 
               <div className="prosign__details">{sign.details}</div>
-            </div>
+            </button>
           );
         })}
       </div>

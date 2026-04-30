@@ -69,31 +69,32 @@
 .prosigns {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 40px;
   padding: 10px;
 
   .prosign {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
+    padding: 14px;
+
+    border-radius: 12px;
+    background: transparent;
+
+    text-align: left;
 
     &__top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      padding: 10px;
-
-      border-radius: 12px;
-      background: transparent;
-
-      &:not(:disabled):hover {
-        background: var(--K950);
-      }
+      gap: 30px;
 
       &__sign {
+        display: flex;
+
         > span {
           display: flex;
+          flex-shrink: 0;
           gap: 6px;
 
           font-size: 28px;
@@ -104,25 +105,36 @@
           }
         }
       }
-      &__code {
-        font-size: 16px;
+
+      &__voice {
+        font-size: 14px;
         font-weight: 700;
+        text-align: right;
       }
     }
 
-    &__voice {
-      padding: 0 10px;
+    &__code {
+      display: flex;
 
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
+
+      .morse-char {
+        justify-content: flex-start;
+      }
     }
 
     &__details {
-      padding: 0 10px;
-
       font-size: 12px;
       line-height: 1.4;
       color: var(--K500);
+    }
+
+    &:not(:disabled) {
+      &:hover,
+      &:focus {
+        background: var(--K950);
+      }
     }
   }
 }

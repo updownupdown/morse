@@ -16,7 +16,7 @@
 
   &__header {
     display: flex;
-    padding: 20px 30px;
+    padding: var(--modal-padding);
 
     span {
       width: 100%;
@@ -29,8 +29,8 @@
 
     button {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: var(--modal-padding);
+      right: var(--modal-padding);
 
       svg {
         width: 32px;

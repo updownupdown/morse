@@ -1,7 +1,7 @@
 .home {
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: var(--modal-padding);
   flex: 1;
 
   &__header {

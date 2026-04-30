@@ -113,7 +113,7 @@ export const Encode = () => {
 
       {enableWpm && (
         <div className="encode__wpm">
-          <span>{wpm.toFixed(2)} WPM</span>
+          <span>{wpm.toFixed()} WPM</span>
         </div>
       )}
 
