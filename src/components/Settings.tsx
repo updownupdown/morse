@@ -308,7 +308,7 @@ export const Settings = () => {
             </div>
           </div>
 
-          {/* <KeySelector /> */}
+          <KeySelector />
 
           {/* Details */}
           <div className="settings__details">

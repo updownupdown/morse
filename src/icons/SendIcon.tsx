@@ -1,4 +1,4 @@
-export function EncodeIcon() {
+export function SendIcon() {
   return (
     <svg
       width="24"

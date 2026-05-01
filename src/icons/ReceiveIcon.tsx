@@ -1,4 +1,4 @@
-export function DecodeIcon() {
+export function ReceiveIcon() {
   return (
     <svg
       width="24"

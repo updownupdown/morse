@@ -1,10 +1,12 @@
 import React, { createContext } from "react";
-import { DecodeIcon } from "../icons/DecodeIcon";
-import { EncodeIcon } from "../icons/EncodeIcon";
+import { ReceiveIcon } from "../icons/ReceiveIcon";
+import { SendIcon } from "../icons/SendIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { Settings } from "../components/Settings";
+
+export const currentAppVersion = 1;
 
 export enum Difficulty {
   Easy = "Easy",
@@ -29,20 +31,20 @@ export enum Menus {
 
 export enum Modes {
   Home = "Home",
-  Encode = "Encode",
-  Decode = "Decode",
-  Dictionary = "Dictionary",
+  Send = "Send",
+  Receive = "Receive",
+  Study = "Study",
   Translate = "Translate",
-  Simulator = "Simulator",
+  Practice = "Practice",
 }
 
 export const ModeIcons: Record<Modes, React.ReactNode> = {
-  [Modes.Home]: <DecodeIcon />,
-  [Modes.Encode]: <EncodeIcon />,
-  [Modes.Decode]: <DecodeIcon />,
-  [Modes.Dictionary]: <DictionaryIcon />,
+  [Modes.Home]: <SendIcon />,
+  [Modes.Send]: <SendIcon />,
+  [Modes.Receive]: <ReceiveIcon />,
+  [Modes.Study]: <DictionaryIcon />,
   [Modes.Translate]: <TranslateIcon />,
-  [Modes.Simulator]: <MorseMachineIcon />,
+  [Modes.Practice]: <MorseMachineIcon />,
 };
 
 export enum KeyTypes {

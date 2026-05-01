@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
-import "./Dictionary.scss";
+import "./Study.scss";
 import clsx from "clsx";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { MorseContext } from "../context/MorseContext";
@@ -48,7 +48,7 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
   );
 };
 
-export const Dictionary = () => {
+export const Study = () => {
   const { isPlayingTone } = useContext(MorseContext);
   const { playMorse } = useMorseAudio();
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
@@ -125,8 +125,8 @@ export const Dictionary = () => {
   }
 
   return (
-    <div className="dictionary">
-      <div className="dictionary__menu">
+    <div className="study">
+      <div className="study__menu">
         <div className="button-menu">
           {Object.values(Categories).map((cat) => {
             return (
@@ -147,13 +147,11 @@ export const Dictionary = () => {
         </div>
       </div>
 
-      <div className="dictionary__content">
-        <span className="dictionary__content__instructions">
-          Tap symbol to hear
-        </span>
+      <div className="study__content">
+        <span className="study__content__instructions">Tap symbol to hear</span>
 
         {selectedCategory !== Categories.Misc && (
-          <div className="dictionary__content__symbols">
+          <div className="study__content__symbols">
             {Object.keys(alphaToMorseDict)
               .filter((key) => key.match(regex))
               .map((key, val) => {

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Keyboard } from "./Keyboard";
-import "./Decode.scss";
+import "./Receive.scss";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { useMorseAudio } from "../hooks/useMorseAudio";
@@ -10,22 +10,22 @@ import { StopIcon } from "../icons/StopIcon";
 import { getRandomSource, Sources } from "../data/dataSources";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
-export const Decode = () => {
+export const Receive = () => {
   const { settings, isPlayingTone } = useContext(MorseContext);
   const { playMorse, stopMorse } = useMorseAudio();
 
   const [source, setSource] = useLocalStorage<Sources>(
-    "decodeSource",
+    "receiveSource",
     Sources.Words,
   );
-  const [decodeWord, setDecodeWord] = useState("");
-  const [morseWord, setMorseWord] = useState("");
-  const [status, setStatus] = useState<Status[]>([]);
+  const [wordAlpha, setWordAlpha] = useState("");
+  const [wordMorse, setWordMorse] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
+  const [status, setStatus] = useState<Status[]>([]);
 
   // Set/reset word
   useEffect(() => {
-    if (decodeWord.length !== 0) return;
+    if (wordAlpha.length !== 0) return;
 
     let newWord = getRandomSource(source);
     let newStatus: Status[] = [];
@@ -37,10 +37,10 @@ export const Decode = () => {
     }
 
     setWordIndex(0);
-    setDecodeWord(newWord);
-    setMorseWord(newMorseWord.join(" "));
+    setWordAlpha(newWord);
+    setWordMorse(newMorseWord.join(" "));
     setStatus(newStatus);
-  }, [decodeWord]);
+  }, [wordAlpha]);
 
   // Update on status change (key press)
   useEffect(() => {
@@ -50,7 +50,7 @@ export const Decode = () => {
       status.find((val) => !["correct", "space"].includes(val)) === undefined
     ) {
       // Word done! Reset it.
-      setDecodeWord("");
+      setWordAlpha("");
       return;
     }
 
@@ -62,9 +62,9 @@ export const Decode = () => {
     if (
       newIndex !== -1 &&
       settings.difficulty !== Difficulty.Hard &&
-      decodeWord[newIndex] !== undefined
+      wordAlpha[newIndex] !== undefined
     ) {
-      playMorse(alphaToMorse(decodeWord[newIndex]));
+      playMorse(alphaToMorse(wordAlpha[newIndex]));
     }
 
     setWordIndex(newIndex);
@@ -74,7 +74,7 @@ export const Decode = () => {
     // Update status
     let newStatus = [...status];
 
-    if (key === decodeWord[wordIndex]) {
+    if (key === wordAlpha[wordIndex]) {
       newStatus[wordIndex] = "correct";
     } else {
       newStatus[wordIndex] = "incorrect";
@@ -84,8 +84,8 @@ export const Decode = () => {
   }
 
   return (
-    <div className="decode">
-      <div className="decode__buttons">
+    <div className="receive">
+      <div className="receive__buttons">
         <div className="button-menu button-menu--small">
           {Object.entries(Sources).map(([key, val]) => {
             return (
@@ -93,7 +93,7 @@ export const Decode = () => {
                 key={key}
                 className={`btn-menu-item btn-menu-item--${source === val ? "selected" : "not-selected"}`}
                 onClick={() => {
-                  setDecodeWord("");
+                  setWordAlpha("");
                   setSource(val as Sources);
                 }}
               >
@@ -104,22 +104,22 @@ export const Decode = () => {
         </div>
       </div>
 
-      <div className="decode__word">
+      <div className="receive__word">
         <Word
-          word={decodeWord}
+          word={wordAlpha}
           status={status}
           index={wordIndex}
           setIndex={setWordIndex}
         />
       </div>
-      <div className="decode__buttons">
+      <div className="receive__buttons">
         <button
           className="btn btn--outlined"
           onClick={() => {
             if (isPlayingTone) {
               stopMorse();
             } else {
-              playMorse(morseWord);
+              playMorse(wordMorse);
             }
           }}
         >
@@ -129,7 +129,7 @@ export const Decode = () => {
         <button
           className="btn btn--outlined"
           onClick={() => {
-            playMorse(alphaToMorse(decodeWord[wordIndex]));
+            playMorse(alphaToMorse(wordAlpha[wordIndex]));
           }}
           disabled={isPlayingTone}
         >

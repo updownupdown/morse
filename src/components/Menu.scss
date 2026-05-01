@@ -34,7 +34,7 @@
       gap: 6px;
       flex: 1;
 
-      font-weight: 700;
+      font-weight: 500;
       color: var(--K100);
     }
 
@@ -49,7 +49,14 @@
     &:nth-child(1),
     &:nth-child(2) {
       width: calc((100% - $gap) / 2);
-      padding: 24px 0;
+      padding: 32px 0;
+
+      @media (max-height: 800px) {
+        padding: 24px 0;
+      }
+      @media (max-height: 700px) {
+        padding: 18px 0;
+      }
 
       svg {
         width: 50px;
@@ -57,20 +64,35 @@
       }
       span {
         font-size: 22px;
+        font-weight: 600;
       }
     }
     &:nth-child(3),
     &:nth-child(4),
     &:nth-child(5) {
       width: calc((100% - $gap * 2) / 3 - 1px);
-      padding: 20px 0;
+      padding: 28px 0;
+
+      @media (max-height: 800px) {
+        padding: 22px 0;
+      }
+      @media (max-height: 700px) {
+        padding: 16px 0;
+      }
 
       svg {
         width: 40px;
         height: 40px;
       }
       span {
-        font-size: 14px;
+        font-size: 16px;
+
+        @media (max-width: 420px) {
+          font-size: 15px;
+        }
+        @media (max-width: 400px) {
+          font-size: 14px;
+        }
       }
     }
   }

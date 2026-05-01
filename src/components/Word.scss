@@ -88,9 +88,9 @@
   @include size("md", 4px, 6px, 42px, 52px, 30px);
   @include size("lg", 8px, 10px, 80px, 100px, 50px);
 
-  // ========== Decode ========== //
-  // Decode + Easy
-  .app--diff-easy.app--mode-decode & {
+  // ========== Receive ========== //
+  // Receive + Easy
+  .app--diff-easy.app--mode-receive & {
     .letter {
       &--none,
       &--empty {
@@ -115,8 +115,8 @@
     }
   }
 
-  // Decode + Moderate
-  .app--diff-moderate.app--mode-decode & {
+  // Receive + Moderate
+  .app--diff-moderate.app--mode-receive & {
     .letter {
       &--none,
       &--empty {
@@ -141,8 +141,8 @@
     }
   }
 
-  // Decode + Hard
-  .app--diff-hard.app--mode-decode & {
+  // Receive + Hard
+  .app--diff-hard.app--mode-receive & {
     .letter {
       &--empty {
         span {

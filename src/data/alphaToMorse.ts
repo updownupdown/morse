@@ -1,4 +1,7 @@
-interface Dictionary {
+export const maxCodeLength = 6;
+export const invalidCharText = "Invalid";
+
+interface Study {
   [letter: string]: string;
 }
 
@@ -75,7 +78,7 @@ export function calculateMorseUnitLength(morse: string) {
   return totalLength;
 }
 
-export const alphaToMorseDict: Dictionary = {
+export const alphaToMorseDict: Study = {
   A: ".-",
   B: "-...",
   C: "-.-.",

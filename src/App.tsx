@@ -5,16 +5,17 @@ import {
   Modes,
   MorseContext,
   defaultSettings,
+  currentAppVersion,
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
 import { Settings } from "./components/Settings";
 import { Menu } from "./components/Menu";
-import { Dictionary } from "./components/Dictionary";
-import { Decode } from "./components/Decode";
+import { Study } from "./components/Study";
+import { Receive } from "./components/Receive";
 import { Translate } from "./components/Translate";
-import { Simulator } from "./components/Simulator";
-import { Encode } from "./components/Encode";
-import { useState } from "react";
+import { Practice } from "./components/Practice";
+import { Send } from "./components/Send";
+import { useEffect, useState } from "react";
 import { Home } from "./components/Home";
 
 function App() {
@@ -24,6 +25,18 @@ function App() {
   );
   const [selectedMode, setSelectedMode] = useState(Modes.Home);
   const [settings, setSettings] = useLocalStorage("settings", defaultSettings);
+  const [appVersion, setAppVersion] = useLocalStorage(
+    "appVersion",
+    currentAppVersion,
+  );
+
+  useEffect(() => {
+    // Reset settings if version was incremented
+    if (appVersion < currentAppVersion) {
+      setSettings(defaultSettings);
+    }
+    setAppVersion(currentAppVersion);
+  }, [appVersion]);
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
   const [isPlayingTone, setIsPlayingTone] = useState(false);
@@ -60,11 +73,11 @@ function App() {
             {audioInitialized && selectedMenu === Menus.None && (
               <>
                 {selectedMode === Modes.Home && <Home />}
-                {selectedMode === Modes.Encode && <Encode />}
-                {selectedMode === Modes.Decode && <Decode />}
-                {selectedMode === Modes.Dictionary && <Dictionary />}
+                {selectedMode === Modes.Send && <Send />}
+                {selectedMode === Modes.Receive && <Receive />}
+                {selectedMode === Modes.Study && <Study />}
                 {selectedMode === Modes.Translate && <Translate />}
-                {selectedMode === Modes.Simulator && <Simulator />}
+                {selectedMode === Modes.Practice && <Practice />}
               </>
             )}
           </div>

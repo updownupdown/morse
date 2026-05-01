@@ -1,10 +1,10 @@
 import React from "react";
-import "./Simulator.scss";
+import "./Practice.scss";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Word } from "./Word";
 import { MorseKeys } from "./MorseKeys";
 
-export const Simulator = () => {
+export const Practice = () => {
   const [message, setMessage] = useLocalStorage("simMessage", "My message");
 
   function onBackspace() {
@@ -24,8 +24,8 @@ export const Simulator = () => {
   }
 
   return (
-    <div className="simulator">
-      <div className="simulator__word">
+    <div className="practice">
+      <div className="practice__word">
         <Word word={message} />
       </div>
 

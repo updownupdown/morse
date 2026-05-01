@@ -1,2 +1,0 @@
-- WPM score when finishing a word
-- Encode (and maybe others): select word source: random word, letters, numbers, special characters, known phrases (brown fox)

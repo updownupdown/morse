@@ -8,24 +8,24 @@ import { initCode, useMorseAudio } from "../hooks/useMorseAudio";
 export const MenuLinks = () => {
   const links = [
     {
-      title: "Encode",
-      link: Modes.Encode,
+      title: "Send",
+      link: Modes.Send,
     },
     {
-      title: "Decode",
-      link: Modes.Decode,
+      title: "Receive",
+      link: Modes.Receive,
     },
     {
-      title: "Dictionary",
-      link: Modes.Dictionary,
+      title: "Study",
+      link: Modes.Study,
     },
     {
       title: "Translate",
       link: Modes.Translate,
     },
     {
-      title: "Simulator",
-      link: Modes.Simulator,
+      title: "Practice",
+      link: Modes.Practice,
     },
   ];
 

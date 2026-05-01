@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "./Encode.scss";
+import "./Send.scss";
 import { MorseKeys } from "./MorseKeys";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { alphaToMorse, calculateMorseUnitLength } from "../data/alphaToMorse";
@@ -7,19 +7,19 @@ import { Status, Word } from "./Word";
 import { getRandomSource, Sources } from "../data/dataSources";
 import { MorseContext } from "../context/MorseContext";
 
-export const Encode = () => {
+export const Send = () => {
   const { settings } = useContext(MorseContext);
 
-  const [encodeWord, setEncodeWord] = useState("");
+  const [wordAlpha, setWordAlpha] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);
   const [source, setSource] = useLocalStorage<Sources>(
-    "encodeSource",
+    "sendSource",
     Sources.Words,
   );
 
   // WPM counter
-  const [wpm, setWpm] = useLocalStorage("encodeWpm", 0);
+  const [wpm, setWpm] = useLocalStorage("sendWpm", 0);
   const [enableWpm, setEnableWpm] = useState(false);
   const [wordUnitLength, setWordUnitLength] = useState<number | undefined>(
     undefined,
@@ -39,7 +39,7 @@ export const Encode = () => {
 
   // Reset word on source change or word reset
   useEffect(() => {
-    if (encodeWord.length !== 0) return;
+    if (wordAlpha.length !== 0) return;
 
     let newWord = getRandomSource(source);
     let newStatus: Status[] = [];
@@ -52,7 +52,7 @@ export const Encode = () => {
 
     setStatus(newStatus);
     setWordIndex(0);
-    setEncodeWord(newWord);
+    setWordAlpha(newWord);
 
     // Enable/disable WPM timer
     if (newWord.length > 1) {
@@ -63,10 +63,10 @@ export const Encode = () => {
     } else {
       setEnableWpm(false);
     }
-  }, [source, encodeWord]);
+  }, [source, wordAlpha]);
 
   function submitChar(char: string) {
-    const isCorrect = char === encodeWord.charAt(wordIndex).toUpperCase();
+    const isCorrect = char === wordAlpha.charAt(wordIndex).toUpperCase();
 
     let newStatus = [...status];
     newStatus[wordIndex] = isCorrect ? "correct" : "incorrect";
@@ -90,7 +90,7 @@ export const Encode = () => {
         timerRef.current = null;
       }
 
-      setEncodeWord("");
+      setWordAlpha("");
       return;
     } else {
       // Advance
@@ -103,7 +103,7 @@ export const Encode = () => {
   }, [status]);
 
   return (
-    <div className="encode">
+    <div className="send">
       <div className="button-menu button-menu--small">
         {Object.entries(Sources).map(([key, val]) => {
           return (
@@ -111,7 +111,7 @@ export const Encode = () => {
               key={key}
               className={`btn-menu-item btn-menu-item--${source === val ? "selected" : "not-selected"}`}
               onClick={() => {
-                setEncodeWord("");
+                setWordAlpha("");
                 setSource(val as Sources);
               }}
             >
@@ -122,18 +122,18 @@ export const Encode = () => {
       </div>
 
       {enableWpm && (
-        <div className="encode__wpm">
+        <div className="send__wpm">
           <span>{wpm.toFixed()} WPM</span>
         </div>
       )}
 
-      <div className="encode__word">
-        <Word word={encodeWord} index={wordIndex} status={status} />
+      <div className="send__word">
+        <Word word={wordAlpha} index={wordIndex} status={status} />
       </div>
 
       <MorseKeys
-        hint={alphaToMorse(encodeWord.charAt(wordIndex).toUpperCase())}
-        word={encodeWord}
+        hint={alphaToMorse(wordAlpha.charAt(wordIndex).toUpperCase())}
+        word={wordAlpha}
         submitChar={submitChar}
         startTimer={startTimer}
       />

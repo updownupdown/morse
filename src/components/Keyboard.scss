@@ -69,8 +69,8 @@
     }
   }
 
-  .app--mode-decode.app--diff-moderate &,
-  .app--mode-decode.app--diff-hard & {
+  .app--mode-receive.app--diff-moderate &,
+  .app--mode-receive.app--diff-hard & {
     .keyboard__row .key .morse-char {
       display: none;
     }

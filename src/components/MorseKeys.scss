@@ -103,15 +103,15 @@
             }
           }
 
-          // ========== Encode ========== //
+          // ========== Send ========== //
           // Easy
-          .app--diff-easy.app--mode-encode & {
+          .app--diff-easy.app--mode-send & {
             animation: 4s fade-in linear forwards;
             animation-delay: 2s;
           }
 
           // Moderate
-          .app--diff-moderate.app--mode-encode & {
+          .app--diff-moderate.app--mode-send & {
             animation: 6s fade-in linear forwards;
             animation-delay: 6s;
           }
@@ -177,6 +177,10 @@
   }
 
   .morse-key {
+    // Important! Without it, tap and dragging the button
+    // prevents onPointerUp from triggering!
+    touch-action: none;
+
     display: flex;
     align-items: center;
     justify-content: center;
