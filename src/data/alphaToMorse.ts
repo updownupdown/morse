@@ -50,9 +50,9 @@ export function morseToAlpha(morse: string) {
   return splitMorse.join("");
 }
 
-type Unit = "." | "-" | " " | "/";
+export type Unit = "." | "-" | " " | "/";
 
-const unitLengths: Record<Unit, number> = {
+export const unitLengths: Record<Unit, number> = {
   ".": 1,
   "-": 3,
   " ": 3,

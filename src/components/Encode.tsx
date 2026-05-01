@@ -1,13 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Encode.scss";
 import { MorseKeys } from "./MorseKeys";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { alphaToMorse, calculateMorseUnitLength } from "../data/alphaToMorse";
 import { Status, Word } from "./Word";
 import { getRandomSource, Sources } from "../data/dataSources";
+import { MorseContext } from "../context/MorseContext";
 
 export const Encode = () => {
-  const [encodeWord, setEncodeWord] = useLocalStorage("encodeWord", "");
+  const { settings } = useContext(MorseContext);
+
+  const [encodeWord, setEncodeWord] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);
   const [source, setSource] = useLocalStorage<Sources>(
@@ -43,7 +46,7 @@ export const Encode = () => {
     let newMorseWord: string[] = [];
 
     for (let i = 0; i < newWord.length; i++) {
-      newStatus.push("empty");
+      newStatus.push(newWord[i] === " " ? "space" : "empty");
       newMorseWord.push(alphaToMorse(newWord[i]));
     }
 
@@ -68,29 +71,36 @@ export const Encode = () => {
     let newStatus = [...status];
     newStatus[wordIndex] = isCorrect ? "correct" : "incorrect";
     setStatus(newStatus);
+  }
 
-    if (isCorrect) {
-      if (wordIndex === encodeWord.length - 1) {
-        // Done word!
+  useEffect(() => {
+    if (status.length === 0) {
+      return;
+    } else if (
+      status.find((val) => !["correct", "space"].includes(val)) === undefined
+    ) {
+      // Word done! Stop WPM timer and reset word
+      if (timerRef.current !== null) {
+        const timeEllapsed = Date.now() - timerRef.current;
 
-        // Stop WPM timer
-        if (timerRef.current !== null) {
-          const timeEllapsed = Date.now() - timerRef.current;
-
-          if (wordUnitLength) {
-            setWpm(calculateWPM(timeEllapsed, wordUnitLength));
-          }
-
-          timerRef.current = null;
+        if (wordUnitLength) {
+          setWpm(calculateWPM(timeEllapsed, wordUnitLength));
         }
 
-        // Reset word
-        setEncodeWord("");
-      } else {
-        setWordIndex((prev) => prev + 1);
+        timerRef.current = null;
       }
+
+      setEncodeWord("");
+      return;
+    } else {
+      // Advance
+      const newIndex = status.findIndex((s) =>
+        ["empty", "incorrect"].includes(s),
+      );
+
+      setWordIndex(newIndex);
     }
-  }
+  }, [status]);
 
   return (
     <div className="encode">
@@ -122,6 +132,7 @@ export const Encode = () => {
       </div>
 
       <MorseKeys
+        hint={alphaToMorse(encodeWord.charAt(wordIndex).toUpperCase())}
         word={encodeWord}
         submitChar={submitChar}
         startTimer={startTimer}

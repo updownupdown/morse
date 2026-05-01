@@ -1,8 +1,8 @@
 import React from "react";
 import { alphaToMorse } from "../data/alphaToMorse";
 import "./Keyboard.scss";
-import { MorseChar } from "./Word";
 import clsx from "clsx";
+import { MorseChar } from "./MorseChar";
 
 interface KeyProps {
   letter: string;

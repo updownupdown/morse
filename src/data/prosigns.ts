@@ -78,7 +78,7 @@ export const prosigns: IProsign[] = [
     voice: "DISREGARD THIS TRANSMISSION OUT",
     code: "........ .-.-.",
     details:
-      "he entire message just sent is in error, disregard it. (Same as eeeeeeee ar.)",
+      "The entire message just sent is in error, disregard it. (Same as eeeeeeee ar.)",
   },
   {
     prosign: "<BT>",

@@ -7,37 +7,6 @@ import { MorseContext } from "../context/MorseContext";
 
 export type Status = "empty" | "correct" | "incorrect" | "neutral" | "space";
 
-interface MorseCharProps {
-  morse: string;
-  size?: "sm" | "md" | "lg" | "xl";
-}
-
-export const inProgressChar = "in-progress";
-
-export const MorseChar = ({ morse, size }: MorseCharProps) => {
-  const { settings } = useContext(MorseContext);
-  const morseSplit = morse.split("");
-  const inProgress = morse === inProgressChar;
-
-  return (
-    <div className={`morse-char morse-char--${size}`}>
-      {inProgress ? (
-        <span
-          className={`dit-dah dit-dah--in-progress`}
-          style={{ animationDuration: `${settings.unitTime * 3}ms` }}
-        />
-      ) : (
-        morseSplit.map((char, index) => (
-          <span
-            key={index}
-            className={`dit-dah dit-dah--${char === " " ? "space" : char === "." ? "dit" : "dah"}`}
-          />
-        ))
-      )}
-    </div>
-  );
-};
-
 interface Props {
   word: string;
   index?: number;
@@ -49,8 +18,10 @@ export const Word = ({ word, status, index, setIndex }: Props) => {
   const { isPlayingTone } = useContext(MorseContext);
   const { playMorse } = useMorseAudio();
 
+  let letterSize = word.length > 30 ? "sm" : word.length > 2 ? "md" : "lg";
+
   return (
-    <div className={clsx("word", word.length > 20 && "word--small-letters")}>
+    <div className={`word word--size-${letterSize}`}>
       {word.length > 0 &&
         word.split("").map((letter, i) => {
           const thisStatus = status ? status[i] : "neutral";
@@ -80,10 +51,7 @@ export const Word = ({ word, status, index, setIndex }: Props) => {
               }}
               disabled={isPlayingTone}
             >
-              <div className="letter__value">{word[i]}</div>
-              <div className="letter__morse">
-                <MorseChar morse={alphaToMorse(letter)} size="md" />
-              </div>
+              <span>{word[i]}</span>
             </button>
           );
         })}

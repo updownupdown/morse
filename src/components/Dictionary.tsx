@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
 import "./Dictionary.scss";
 import clsx from "clsx";
-import { MorseChar } from "./Word";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { MorseContext } from "../context/MorseContext";
 import { IProsign, prosigns } from "../data/prosigns";
+import { MorseChar } from "./MorseChar";
 
 enum Categories {
   Letters = "ABC",

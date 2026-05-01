@@ -1,14 +1,6 @@
 .word {
-  $word-width: 64px;
-  $word-height: 80px;
-  $word-width-small: 30px;
-  $word-height-small: 36px;
-
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-  gap: 4px;
   // important; ensures centering without needing justify-content: center
   // on parent container, which breaks when the content overflows
   margin: auto;
@@ -17,10 +9,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: $word-height;
-    min-width: $word-width;
 
-    font-size: 32px;
     font-weight: 700;
     color: var(--K800);
   }
@@ -30,19 +19,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    min-width: $word-width;
-    min-height: $word-height;
-    padding: 0 8px;
 
-    border-radius: 6px;
     background: var(--K950);
 
-    &__value {
-      padding-top: 1px;
-      font-size: 32px;
+    span {
       font-weight: 700;
-      color: var(--K200);
+      color: var(--K400);
       text-transform: uppercase;
     }
 
@@ -54,9 +36,7 @@
     }
 
     &--empty {
-      .letter__value {
-        color: var(--K600);
-      }
+      color: var(--K600);
     }
 
     &--current {
@@ -65,7 +45,7 @@
       background: var(--K850);
       box-shadow: inset 0 0 0 2px var(--K300);
 
-      .letter__value {
+      span {
         color: var(--K100);
       }
     }
@@ -74,87 +54,39 @@
     }
 
     &--correct {
-      .letter__value {
+      span {
         color: var(--status-green);
       }
     }
     &--incorrect {
-      .letter__value {
+      span {
         color: var(--status-red);
       }
     }
   }
 
-  &--small-letters {
-    .letter__morse {
-      display: none;
-    }
+  // Sizes
+  @mixin size($size, $gap, $border-radius, $width, $height, $font-size) {
+    &--size-#{$size} {
+      gap: $gap;
 
-    .letter,
-    .slash {
-      gap: 4px;
-      min-width: $word-width-small;
-      min-height: $word-height-small;
+      .letter,
+      .slash {
+        min-width: $width;
+        min-height: $height;
+        border-radius: $border-radius;
 
-      &,
-      .letter__value {
-        font-size: 22px;
-      }
-    }
-  }
-
-  // ========== Encode ========== //
-  // Encode + Easy
-  .app--diff-easy.app--mode-encode & {
-    .letter {
-      &--none,
-      &--empty,
-      &--incorrect {
-        .letter__morse {
-          opacity: 0;
-        }
-      }
-      &--current {
-        .letter__morse {
-          animation: 4s fade-in linear forwards;
-          animation-delay: 1.75s;
+        &,
+        span {
+          font-size: $font-size;
         }
       }
     }
   }
 
-  // Encode + Moderate
-  .app--diff-moderate.app--mode-encode & {
-    .letter {
-      &--none,
-      &--empty,
-      &--incorrect {
-        .letter__morse {
-          opacity: 0;
-        }
-      }
-      &--current {
-        .letter__morse {
-          animation: 6s fade-in linear forwards;
-          animation-delay: 4s;
-        }
-      }
-    }
-  }
-
-  // Encode + Hard
-  .app--diff-hard.app--mode-encode & {
-    .letter {
-      &--none,
-      &--empty,
-      &--incorrect,
-      &--current {
-        .letter__morse {
-          opacity: 0;
-        }
-      }
-    }
-  }
+  @include size("sm", 2px, 4px, 30px, 36px, 22px);
+  @include size("md", 4px, 6px, 42px, 52px, 30px);
+  @include size("lg", 8px, 10px, 80px, 100px, 50px);
 
   // ========== Decode ========== //
   // Decode + Easy
@@ -162,12 +94,12 @@
     .letter {
       &--none,
       &--empty {
-        .letter__value {
+        span {
           opacity: 0;
         }
       }
       &--current {
-        .letter__value {
+        span {
           opacity: 0;
 
           animation: 4s fade-in linear forwards;
@@ -175,7 +107,7 @@
         }
       }
       &--incorrect {
-        .letter__value {
+        span {
           opacity: 1;
           animation: unset;
         }
@@ -188,15 +120,12 @@
     .letter {
       &--none,
       &--empty {
-        .letter__value {
-          opacity: 0;
-        }
-        .letter__morse {
+        span {
           opacity: 0;
         }
       }
       &--current {
-        .letter__value {
+        span {
           opacity: 0;
 
           animation: 5s fade-in linear forwards;
@@ -204,7 +133,7 @@
         }
       }
       &--incorrect {
-        .letter__value {
+        span {
           opacity: 1;
           animation: unset;
         }
@@ -216,20 +145,17 @@
   .app--diff-hard.app--mode-decode & {
     .letter {
       &--empty {
-        .letter__value {
-          opacity: 0;
-        }
-        .letter__morse {
+        span {
           opacity: 0;
         }
       }
       &--current {
-        .letter__value {
+        span {
           opacity: 0;
         }
       }
       &--incorrect {
-        .letter__value {
+        span {
           opacity: 1;
           animation: unset;
         }
@@ -244,70 +170,5 @@
     to {
       opacity: 1;
     }
-  }
-}
-
-.morse-char {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  .dit-dah {
-    &--dit {
-      background: var(--dit);
-    }
-    &--dah {
-      background: var(--dah);
-    }
-    &--in-progress {
-      background: var(--K700);
-
-      animation-name: in-progress;
-      animation-timing-function: linear;
-      transform-origin: center left;
-    }
-  }
-
-  @keyframes in-progress {
-    from {
-      transform: scaleX(0.25);
-    }
-    to {
-      transform: scaleX(1);
-    }
-  }
-
-  @mixin morse-size($size) {
-    gap: $size;
-
-    .dit-dah {
-      height: $size;
-      border-radius: calc($size / 2);
-
-      &--space,
-      &--dit {
-        width: $size;
-      }
-      &--dah {
-        width: calc($size * 3);
-      }
-      &--in-progress {
-        width: calc($size * 3);
-      }
-    }
-  }
-
-  &--sm {
-    @include morse-size(var(--dit-sm));
-  }
-  &--md {
-    @include morse-size(var(--dit-md));
-  }
-  &--lg {
-    @include morse-size(var(--dit-lg));
-  }
-  &--xl {
-    @include morse-size(var(--dit-xl));
   }
 }

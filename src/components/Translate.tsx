@@ -64,17 +64,17 @@ export const Translate = () => {
             <>
               <button
                 className="btn btn--small"
-                onClick={backspaceAlpha}
-                disabled={!alpha.length}
-              >
-                <BackspaceIcon />
-              </button>
-              <button
-                className="btn btn--small"
                 onClick={clearAlpha}
                 disabled={!alpha.length}
               >
                 <ResetIcon />
+              </button>
+              <button
+                className="btn btn--small"
+                onClick={backspaceAlpha}
+                disabled={!alpha.length}
+              >
+                <BackspaceIcon />
               </button>
             </>
           )}
@@ -111,25 +111,6 @@ export const Translate = () => {
         <div className="translate__header">
           <h3 aria-label="morse">Morse</h3>
 
-          {!isAlphaInput && (
-            <>
-              <button
-                className="btn btn--small"
-                onClick={backspaceMorse}
-                disabled={!morse.length}
-              >
-                <BackspaceIcon />
-              </button>
-              <button
-                className="btn btn--small"
-                onClick={clearMorse}
-                disabled={!morse.length}
-              >
-                <ResetIcon />
-              </button>
-            </>
-          )}
-
           <button
             className="btn btn--small"
             onClick={playMorseCode}
@@ -137,6 +118,25 @@ export const Translate = () => {
           >
             <SpeakerIcon />
           </button>
+
+          {!isAlphaInput && (
+            <>
+              <button
+                className="btn btn--small"
+                onClick={clearMorse}
+                disabled={!morse.length}
+              >
+                <ResetIcon />
+              </button>
+              <button
+                className="btn btn--small"
+                onClick={backspaceMorse}
+                disabled={!morse.length}
+              >
+                <BackspaceIcon />
+              </button>
+            </>
+          )}
         </div>
 
         <textarea

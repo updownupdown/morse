@@ -4,6 +4,7 @@ import { EncodeIcon } from "../icons/EncodeIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
+import { Settings } from "../components/Settings";
 
 export enum Difficulty {
   Easy = "Easy",
@@ -17,6 +18,7 @@ export type Settings = {
   volume: number;
   difficulty: Difficulty;
   keyType: KeyTypes;
+  farnsworthSpeed: number;
 };
 
 export enum Menus {
@@ -49,6 +51,12 @@ export enum KeyTypes {
   IambicB = "IambicB",
 }
 
+export const KeyTypesNames: Record<KeyTypes, string> = {
+  [KeyTypes.Straight]: "Straight Keys",
+  [KeyTypes.IambicA]: "Iambic A",
+  [KeyTypes.IambicB]: "Iambic B",
+};
+
 export const KeyTypesDescription: Record<KeyTypes, string> = {
   [KeyTypes.Straight]: "One key, non-repeating",
   [KeyTypes.IambicA]: "Two keys, first pressed key repeats?",
@@ -61,13 +69,14 @@ export const defaultSettings: Settings = {
   volume: 30,
   difficulty: Difficulty.Easy,
   keyType: KeyTypes.Straight,
+  farnsworthSpeed: 2,
 };
 
 export const settingsRange = {
   volume: {
     min: 0,
     max: 100,
-    step: 1,
+    step: 5,
   },
   frequency: {
     min: 50,
@@ -78,6 +87,11 @@ export const settingsRange = {
     min: 30,
     max: 200,
     step: 2,
+  },
+  farnsworthSpeed: {
+    min: 1,
+    max: 10,
+    step: 1,
   },
 };
 

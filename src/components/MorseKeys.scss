@@ -11,7 +11,7 @@
     align-items: center;
     padding: 8px;
 
-    border-radius: 20px;
+    border-radius: 12px;
     background: var(--K950);
 
     button {
@@ -76,12 +76,55 @@
       justify-content: space-between;
       flex: 1;
       height: 60px;
-      padding: 0 12px;
+      padding: 0 22px;
 
       &__morse {
+        position: relative;
         display: flex;
+        flex: 1;
         gap: var(--dit-xl);
         min-height: var(--dit-xl);
+
+        > .morse-char {
+          position: relative;
+          z-index: 2;
+        }
+
+        .morse-hint {
+          opacity: 0;
+          position: absolute;
+          z-index: 1;
+          top: 0;
+          left: 0;
+
+          .morse-char {
+            .dit-dah {
+              background: var(--K800);
+            }
+          }
+
+          // ========== Encode ========== //
+          // Easy
+          .app--diff-easy.app--mode-encode & {
+            animation: 4s fade-in linear forwards;
+            animation-delay: 2s;
+          }
+
+          // Moderate
+          .app--diff-moderate.app--mode-encode & {
+            animation: 6s fade-in linear forwards;
+            animation-delay: 6s;
+          }
+
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+        }
       }
       &__match {
         display: flex;
@@ -89,12 +132,14 @@
 
         font-size: 38px;
         font-weight: 700;
-        color: var(--K700);
+        color: var(--K600);
         line-height: 1;
         text-align: right;
 
+        // Hide "Invalid" message
+        // There may be a valid character after more dits/dahs.
         &--invalid {
-          font-size: 18px;
+          font-size: 0;
         }
       }
     }
@@ -168,20 +213,34 @@
     }
 
     &--switch {
-      width: calc($btn-height / 1.4);
+      flex-direction: column;
+      gap: 6px;
+      padding: 4px 10px 0;
 
-      border-radius: 12px;
-      background: rgba(var(--K200-rgb), 0.2);
+      border-radius: 6px;
+      background: var(--K850);
 
-      font-size: 24px;
-      color: var(--K200);
+      span {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--K200);
+        line-height: 1.2;
+      }
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
 
       &:not(:disabled):hover {
         background: rgba(var(--K200-rgb), 0.4);
       }
     }
 
-    &--hold {
+    &--straight {
       flex: 1;
 
       background: var(--K400);
@@ -218,9 +277,9 @@
       }
 
       &:not(:disabled) {
-        &:hover,
-        &:active {
-          background: rgba(var(--dit-rgb), 0.4);
+        &:active,
+        &:hover {
+          background: rgba(var(--dit-rgb), 0.6);
         }
       }
     }
@@ -238,9 +297,31 @@
         background: var(--dah);
       }
 
-      &:not(:disabled):hover {
-        background: rgba(var(--dah-rgb), 0.4);
+      &:not(:disabled) {
+        &:active,
+        &:hover {
+          background: rgba(var(--dah-rgb), 0.6);
+        }
       }
     }
+  }
+}
+
+.key-selector-modal {
+  position: fixed;
+  z-index: 20;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: rgba(var(--K950-rgb), 0.6);
+  backdrop-filter: blur(10px);
+
+  .setting {
+    gap: var(--modal-padding);
+    padding: var(--modal-padding);
+
+    border-radius: unset;
+    background: unset;
   }
 }

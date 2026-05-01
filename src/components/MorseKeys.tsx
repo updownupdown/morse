@@ -1,17 +1,24 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./MorseKeys.scss";
-import { MorseContext } from "../context/MorseContext";
+import { KeyTypes, MorseContext } from "../context/MorseContext";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
-import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
+import {
+  alphaToMorse,
+  alphaToMorseDict,
+  unitLengths,
+} from "../data/alphaToMorse";
 import { BackspaceIcon } from "../icons/BackspaceIcon";
-import { inProgressChar, MorseChar } from "./Word";
 import { DeleteIcon } from "../icons/DeleteIcon";
 import { StopIcon } from "../icons/StopIcon";
+import { KeySelector } from "./KeySelector";
+import { SettingsIcon } from "../icons/SettingsIcon";
+import { inProgressChar, MorseChar } from "./MorseChar";
 
 interface Props {
   word: string;
   playWord?: boolean;
+  hint?: string;
   resetWord?: () => void;
   onBackspace?: () => void;
   submitChar: (char: string) => void;
@@ -19,12 +26,13 @@ interface Props {
   startTimer?: (now: number) => void;
 }
 
-const invalidText = "No match found";
+const invalidText = "Invalid";
 const maxCodeLength = 6;
 
 export const MorseKeys = ({
   word,
   playWord,
+  hint,
   resetWord,
   onBackspace,
   submitChar,
@@ -33,62 +41,79 @@ export const MorseKeys = ({
 }: Props) => {
   const { settings, isPlayingTone } = useContext(MorseContext);
   const { playMorse, stopMorse, setIsPressed, isPressed } = useMorseAudio();
-  // const [type, setType] = useLocalStorage<"split" | "hold" | "select">(
-  //   "keysType",
-  //   "hold",
-  // );
-  const type = "hold";
+  const [selectKeyType, setSelectKeyType] = useState(false);
   const [queue, setQueue] = useState("");
+  const queueRef = useRef(queue);
+  queueRef.current = queue;
+
   const [match, setMatch] = useState("");
   const matchRef = useRef(match);
   matchRef.current = match;
 
-  const [pressStart, setPressStart] = useState<number | null>(null);
-  const [pressDuration, setPressDuration] = useState<number>(0);
+  // Presses
+  const [pressStartStraight, setPressStartStraight] = useState<number | null>(
+    null,
+  );
+  const [pressStartDit, setPressStartDit] = useState<number | null>(null);
+  const [pressStartDah, setPressStartDah] = useState<number | null>(null);
 
-  const timeoutIdRef = useRef<number>(null);
-  const charBreakDuration = settings.unitTime * 3;
+  const [pressDurationStraight, setPressDurationStraight] = useState<number>(0);
+  const pressStartStraightRef = useRef(pressStartStraight);
+  pressStartStraightRef.current = pressStartStraight;
 
+  const [pressDurationDit, setPressDurationDit] = useState<number>(0);
+  const [pressDurationDah, setPressDurationDah] = useState<number>(0);
+
+  const charBreakTimeoutRef = useRef<number>(null);
+  const charBreakDuration = settings.unitTime * unitLengths[" "];
+
+  // Character break
   const startCharBreakTimeout = () => {
     stopCharBreakTimeout();
 
-    timeoutIdRef.current = setTimeout(() => {
-      sendQueue();
+    charBreakTimeoutRef.current = setTimeout(() => {
+      // Character over! Send character.
+      if (matchRef.current.length !== 0 && matchRef.current !== invalidText) {
+        submitChar(matchRef.current);
+      }
+
+      setQueue("");
     }, charBreakDuration);
   };
 
   const stopCharBreakTimeout = () => {
-    if (timeoutIdRef.current) {
-      clearTimeout(timeoutIdRef.current);
+    if (charBreakTimeoutRef.current) {
+      clearTimeout(charBreakTimeoutRef.current);
     }
   };
 
   useEffect(() => {
-    if (pressStart === null) {
+    if (pressStartStraight === null) {
       startCharBreakTimeout();
     } else {
       stopCharBreakTimeout();
     }
-  }, [pressStart]);
+  }, [pressStartStraight]);
 
   // Cleanup timer on unmount
   useEffect(() => {
     return () => {
-      if (timeoutIdRef.current) {
-        clearTimeout(timeoutIdRef.current);
+      if (charBreakTimeoutRef.current) {
+        clearTimeout(charBreakTimeoutRef.current);
       }
     };
   }, []);
 
+  // Presses
   useEffect(() => {
-    if (pressDuration === 0) return;
+    if (pressDurationStraight === 0) return;
 
-    if (pressDuration < settings.unitTime * 2) {
+    if (pressDurationStraight < settings.unitTime * 2) {
       setQueue((prev) => prev + ".");
     } else {
       setQueue((prev) => prev + "-");
     }
-  }, [pressDuration]);
+  }, [pressDurationStraight]);
 
   useEffect(() => {
     if (queue.length === 0) {
@@ -103,46 +128,38 @@ export const MorseKeys = ({
     setMatch(match ? match : invalidText);
   }, [queue]);
 
-  function sendQueue() {
-    if (matchRef.current.length !== 0 && matchRef.current !== invalidText) {
-      submitChar(matchRef.current);
-      setQueue("");
-    } else {
-      setQueue("");
-    }
-  }
-
+  // Presses
   function onPressDown() {
-    if (isPressed || queue.length === maxCodeLength) return;
+    if (isPressed || queueRef.current.length === maxCodeLength) return;
 
     setIsPressed(true);
-    setPressStart(Date.now());
+    setPressStartStraight(Date.now());
     startTimer && startTimer(Date.now());
   }
   function onPressUp() {
     setIsPressed(false);
 
-    if (pressStart !== null) {
-      const duration = Date.now() - pressStart;
-      setPressDuration(duration);
-      setPressStart(null);
+    if (pressStartStraightRef.current !== null) {
+      const duration = Date.now() - pressStartStraightRef.current;
+      setPressDurationStraight(duration);
+      setPressStartStraight(null);
     }
   }
 
-  // Listen for spacebar press/release in hold mode
+  // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
-        (e.code === "Space" || e.key === "m") &&
+        (e.code === "Space" || e.key === "[") &&
         !isPressed &&
-        queue.length < maxCodeLength
+        queueRef.current.length < maxCodeLength
       ) {
         onPressDown();
         e.preventDefault();
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.code === "Space" || e.key === "m") {
+      if (e.code === "Space" || e.key === "[") {
         onPressUp();
         e.preventDefault();
       }
@@ -155,7 +172,7 @@ export const MorseKeys = ({
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [type, queue.length, pressStart]);
+  }, []);
 
   return (
     <div className="morse-keys">
@@ -216,23 +233,18 @@ export const MorseKeys = ({
       )}
 
       <div className="morse-keys__queue">
-        {/* {type === "split" && (
-          <button
-            onClick={() => {
-              setQueue("");
-            }}
-            disabled={queue.length === 0}
-          >
-            <CloseIcon />
-          </button>
-        )} */}
-
         <div className="morse-keys__queue__preview">
           <div className="morse-keys__queue__preview__morse">
             {queue.length !== 0 && <MorseChar morse={queue} size="xl" />}
 
-            {pressStart !== null && (
+            {pressStartStraight !== null && (
               <MorseChar morse={inProgressChar} size="xl" />
+            )}
+
+            {hint && (
+              <div key={hint} className="morse-hint">
+                <MorseChar morse={hint} size="xl" />
+              </div>
             )}
           </div>
           <div
@@ -241,65 +253,41 @@ export const MorseKeys = ({
             {match}
           </div>
         </div>
-
-        {/* {type === "split" && (
-          <button
-            onClick={() => {
-              sendQueue();
-            }}
-            disabled={queue.length === 0 || match === invalidText}
-          >
-            <span>Send</span>
-            <ReturnIcon />
-          </button>
-        )} */}
       </div>
 
       <div className="morse-keys__keys">
-        {/* {type === "select" && (
-          <div className="morse-keys__select">
-            <button
-              className="btn btn--bright"
-              onClick={() => {
-                setType("split");
+        {selectKeyType && (
+          <div className="key-selector-modal">
+            <KeySelector
+              onClose={() => {
+                setSelectKeyType(false);
               }}
-            >
-              Split
-            </button>
-            <button
-              className="btn btn--bright"
-              onClick={() => {
-                setType("hold");
-              }}
-            >
-              Tap/hold
-            </button>
+            />
           </div>
-        )} */}
-
-        {/* {type !== "select" && (
-          <button
-            className="morse-key morse-key--switch"
-            onClick={() => {
-              setType("select");
-            }}
-          >
-            <KeyboardIcon />
-          </button>
-        )} */}
-
-        {type === "hold" && (
-          <button
-            className="morse-key morse-key--hold"
-            onPointerDown={onPressDown}
-            onPointerUp={onPressUp}
-            disabled={queue.length === maxCodeLength}
-          >
-            Tap/hold
-          </button>
         )}
 
-        {/* {type === "split" && (
+        {/* <button
+          className="morse-key morse-key--switch"
+          onClick={() => {
+            setSelectKeyType(true);
+          }}
+        >
+          <span>Keys</span>
+          <SettingsIcon />
+        </button> */}
+
+        {/* {settings.keyType === KeyTypes.Straight && ( */}
+        <button
+          className="morse-key morse-key--straight"
+          onPointerDown={onPressDown}
+          onPointerUp={onPressUp}
+          disabled={queue.length === maxCodeLength}
+        >
+          Tap/hold
+        </button>
+        {/* )} */}
+
+        {/* {settings.keyType === KeyTypes.IambicA && (
           <>
             <button
               className="morse-key morse-key--dit"

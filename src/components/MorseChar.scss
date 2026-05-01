@@ -1,0 +1,64 @@
+.morse-char {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .dit-dah {
+    &--dit {
+      background: var(--dit);
+    }
+    &--dah {
+      background: var(--dah);
+    }
+    &--in-progress {
+      background: var(--K400);
+
+      animation-name: in-progress;
+      animation-timing-function: linear;
+      transform-origin: center left;
+    }
+  }
+
+  @keyframes in-progress {
+    from {
+      transform: scaleX(0.25);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @mixin morse-size($size) {
+    gap: $size;
+
+    .dit-dah {
+      height: $size;
+      border-radius: calc($size / 2);
+
+      &--space,
+      &--dit {
+        width: $size;
+      }
+      &--dah {
+        width: calc($size * 3);
+      }
+      &--in-progress {
+        width: calc($size * 3);
+      }
+    }
+  }
+
+  &--sm {
+    @include morse-size(var(--dit-sm));
+  }
+  &--md {
+    @include morse-size(var(--dit-md));
+  }
+  &--lg {
+    @include morse-size(var(--dit-lg));
+  }
+  &--xl {
+    @include morse-size(var(--dit-xl));
+  }
+}

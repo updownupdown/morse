@@ -3,8 +3,12 @@ import { useContext } from "react";
 import {
   defaultSettings,
   Difficulty,
+  KeyTypes,
+  KeyTypesDescription,
+  KeyTypesNames,
   MorseContext,
   settingsRange,
+  Settings as SettingsType,
 } from "../context/MorseContext";
 import "./Settings.scss";
 import { Modal } from "./Modal";
@@ -14,6 +18,7 @@ import { useMorseAudio } from "../hooks/useMorseAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { ArrowLeftIcon } from "../icons/ArrowLeftIcon";
 import { ArrowRightIcon } from "../icons/ArrowRightIcon";
+import { KeySelector } from "./KeySelector";
 
 export const Settings = () => {
   const { playMorse } = useMorseAudio();
@@ -24,14 +29,25 @@ export const Settings = () => {
   const [frequency, setFrequency] = useState(settings.frequency);
   const [difficulty, setDifficulty] = useState(settings.difficulty);
   const [keyType, setKeyType] = useState(settings.keyType);
+  const [farnsworthSpeed, setFarnsworthSpeed] = useState(
+    settings.farnsworthSpeed,
+  );
 
   useEffect(() => {
-    setSettings({ unitTime, frequency, difficulty, volume, keyType });
-  }, [volume, unitTime, frequency, difficulty, keyType]);
+    setSettings({
+      unitTime,
+      frequency,
+      difficulty,
+      volume,
+      keyType,
+      farnsworthSpeed,
+    });
+  }, [volume, unitTime, frequency, difficulty, keyType, farnsworthSpeed]);
 
   return (
     <Modal title="Settings">
       <div className="settings">
+        {/* Reset all / Play button */}
         <div className="settings__buttons">
           <button
             className="btn btn--outlined"
@@ -48,7 +64,7 @@ export const Settings = () => {
           <button
             className="btn btn--outlined"
             onClick={() => {
-              playMorse(alphaToMorse("F"));
+              playMorse(alphaToMorse("ABC"));
             }}
           >
             <SpeakerIcon />
@@ -57,51 +73,40 @@ export const Settings = () => {
         </div>
 
         <div className="settings__content">
-          {/* Volume */}
+          {/* Difficulty */}
           <div className="setting">
             <div className="setting__header">
-              <span className="setting__header__title">Volume</span>
-              <div className="setting__header__unit">{volume}%</div>
+              <span className="setting__header__title">Difficulty</span>
 
-              <button
-                className="setting-btn"
-                onClick={() => {
-                  setVolume((prev) => prev - settingsRange.volume.step);
-                }}
-                disabled={volume === settingsRange.volume.min}
-              >
-                <ArrowLeftIcon />
-              </button>
-              <button
-                className="setting-btn"
-                onClick={() => {
-                  setVolume((prev) => prev + settingsRange.volume.step);
-                }}
-                disabled={volume === settingsRange.volume.max}
-              >
-                <ArrowRightIcon />
-              </button>
+              <div className="setting__header__hint">
+                {settings.difficulty === Difficulty.Easy && (
+                  <span>Shows hints quickly</span>
+                )}
+                {settings.difficulty === Difficulty.Moderate && (
+                  <span>Shows hints slowly</span>
+                )}
+                {settings.difficulty === Difficulty.Hard && (
+                  <span>No hints shown</span>
+                )}
+              </div>
             </div>
 
-            <div className="setting__input">
-              <button
-                className="reset-btn"
-                onClick={() => {
-                  setVolume(defaultSettings.volume);
-                }}
-                disabled={volume === defaultSettings.volume}
-              >
-                Reset
-              </button>
-
-              <input
-                type="range"
-                min={settingsRange.volume.min}
-                max={settingsRange.volume.max}
-                step={settingsRange.volume.step}
-                value={volume}
-                onChange={(e) => setVolume(Math.round(Number(e.target.value)))}
-              />
+            <div className="setting__radios setting__radios--horizontal">
+              {Object.values(Difficulty).map((diff) => {
+                return (
+                  <button
+                    key={diff}
+                    onClick={() => {
+                      setDifficulty(diff as Difficulty);
+                    }}
+                    className={
+                      settings.difficulty === diff ? "selected" : "not-selected"
+                    }
+                  >
+                    <span>{diff}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -148,6 +153,60 @@ export const Settings = () => {
                 step={settingsRange.unitTime.step}
                 value={unitTime}
                 onChange={(e) => setUnitTime(Number(e.target.value))}
+              />
+            </div>
+          </div>
+
+          {/* Farnsworth Speed */}
+          <div className="setting">
+            <div className="setting__header">
+              <span className="setting__header__title">Farnsworth</span>
+              <div className="setting__header__unit">{farnsworthSpeed}x</div>
+
+              <button
+                className="setting-btn"
+                onClick={() => {
+                  setFarnsworthSpeed(
+                    (prev) => prev - settingsRange.farnsworthSpeed.step,
+                  );
+                }}
+                disabled={farnsworthSpeed === settingsRange.farnsworthSpeed.min}
+              >
+                <ArrowLeftIcon />
+              </button>
+              <button
+                className="setting-btn"
+                onClick={() => {
+                  setFarnsworthSpeed(
+                    (prev) => prev + settingsRange.farnsworthSpeed.step,
+                  );
+                }}
+                disabled={farnsworthSpeed === settingsRange.farnsworthSpeed.max}
+              >
+                <ArrowRightIcon />
+              </button>
+            </div>
+
+            <div className="setting__input">
+              <button
+                className="reset-btn"
+                onClick={() => {
+                  setFarnsworthSpeed(defaultSettings.farnsworthSpeed);
+                }}
+                disabled={farnsworthSpeed === defaultSettings.farnsworthSpeed}
+              >
+                Reset
+              </button>
+
+              <input
+                type="range"
+                min={settingsRange.farnsworthSpeed.min}
+                max={settingsRange.farnsworthSpeed.max}
+                step={settingsRange.farnsworthSpeed.step}
+                value={farnsworthSpeed}
+                onChange={(e) =>
+                  setFarnsworthSpeed(Math.round(Number(e.target.value)))
+                }
               />
             </div>
           </div>
@@ -201,68 +260,55 @@ export const Settings = () => {
             </div>
           </div>
 
-          {/* Difficulty */}
+          {/* Volume */}
           <div className="setting">
             <div className="setting__header">
-              <span className="setting__header__title">Difficulty</span>
+              <span className="setting__header__title">Volume</span>
+              <div className="setting__header__unit">{volume}%</div>
 
-              <div className="setting__header__hint">
-                {settings.difficulty === Difficulty.Easy && (
-                  <span>Shows hints quickly</span>
-                )}
-                {settings.difficulty === Difficulty.Moderate && (
-                  <span>Shows hints slowly</span>
-                )}
-                {settings.difficulty === Difficulty.Hard && (
-                  <span>No hints shown</span>
-                )}
-              </div>
+              <button
+                className="setting-btn"
+                onClick={() => {
+                  setVolume((prev) => prev - settingsRange.volume.step);
+                }}
+                disabled={volume === settingsRange.volume.min}
+              >
+                <ArrowLeftIcon />
+              </button>
+              <button
+                className="setting-btn"
+                onClick={() => {
+                  setVolume((prev) => prev + settingsRange.volume.step);
+                }}
+                disabled={volume === settingsRange.volume.max}
+              >
+                <ArrowRightIcon />
+              </button>
             </div>
 
-            <div className="setting__radios setting__radios--horizontal">
-              {Object.values(Difficulty).map((diff) => {
-                return (
-                  <button
-                    key={diff}
-                    onClick={() => {
-                      setDifficulty(diff as Difficulty);
-                    }}
-                    className={
-                      settings.difficulty === diff ? "selected" : "not-selected"
-                    }
-                  >
-                    <span>{diff}</span>
-                  </button>
-                );
-              })}
+            <div className="setting__input">
+              <button
+                className="reset-btn"
+                onClick={() => {
+                  setVolume(defaultSettings.volume);
+                }}
+                disabled={volume === defaultSettings.volume}
+              >
+                Reset
+              </button>
+
+              <input
+                type="range"
+                min={settingsRange.volume.min}
+                max={settingsRange.volume.max}
+                step={settingsRange.volume.step}
+                value={volume}
+                onChange={(e) => setVolume(Math.round(Number(e.target.value)))}
+              />
             </div>
           </div>
 
-          {/* Key Type */}
-          {/* <div className="setting">
-            <div className="setting__header">
-              <span className="setting__header__title">Keys Type</span>
-            </div>
-
-            <div className="setting__radios setting__radios--vertical">
-              {Object.values(KeyTypes).map((keyType) => {
-                return (
-                  <button
-                    key={keyType}
-                    onClick={() => {
-                      setKeyType(keyType as KeyTypes);
-                    }}
-                    className={
-                      settings.keyType === keyType ? "selected" : "not-selected"
-                    }
-                  >
-                    <span>{keyType}</span>
-                    <span>{KeyTypesDescription[keyType]}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div> */}
+          {/* <KeySelector /> */}
 
           {/* Details */}
           <div className="settings__details">

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Difficulty, MorseContext } from "../context/MorseContext";
+import { unitLengths } from "../data/alphaToMorse";
 
 const maxFadeDuration = 200; // ms
 const maxPressTime = 1200; // ms
@@ -222,11 +223,18 @@ export function useMorseAudio() {
       if (symbol === ".") {
         await playBeep(settings.unitTime, settings.frequency);
       } else if (symbol === "-") {
-        await playBeep(settings.unitTime * 3, settings.frequency);
+        await playBeep(
+          settings.unitTime * unitLengths["-"],
+          settings.frequency,
+        );
       } else if (symbol === " ") {
-        await sleep(settings.unitTime * 3);
+        await sleep(
+          settings.unitTime * unitLengths[" "] * settings.farnsworthSpeed,
+        );
       } else if (symbol === "/") {
-        await sleep(settings.unitTime * 7);
+        await sleep(
+          settings.unitTime * unitLengths["/"] * settings.farnsworthSpeed,
+        );
       }
 
       // Add space after dot/dash except after last symbol
