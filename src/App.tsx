@@ -5,7 +5,6 @@ import {
   Modes,
   MorseContext,
   defaultSettings,
-  currentAppVersion,
   Setting,
   IsPlaying,
 } from "./context/MorseContext";
@@ -22,23 +21,14 @@ import { Home } from "./components/Home";
 
 function App() {
   const [lastSelectedMode, setLastSelectedMode] = useLocalStorage(
-    "lastMode",
+    "lastSelectedMode",
     Modes.Home,
   );
   const [selectedMode, setSelectedMode] = useState(Modes.Home);
-  const [settings, setSettings] = useLocalStorage("settings", defaultSettings);
-  const [appVersion, setAppVersion] = useLocalStorage(
-    "appVersion",
-    currentAppVersion,
+  const [settings, setSettings] = useLocalStorage(
+    "settingsv3",
+    defaultSettings,
   );
-
-  useEffect(() => {
-    // Reset settings if version was incremented
-    if (appVersion < currentAppVersion) {
-      setSettings(defaultSettings);
-    }
-    setAppVersion(currentAppVersion);
-  }, [appVersion]);
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
   const [isPlaying, setIsPlaying] = useState<IsPlaying>(undefined);

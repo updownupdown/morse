@@ -9,7 +9,7 @@ import {
   unitLengths,
 } from "../data/alphaToMorse";
 import clsx from "clsx";
-import { inProgressChar, MorseChar } from "../components/MorseChar";
+import { MorseChar } from "../components/MorseChar";
 
 type PressedState = {
   dit?: number;

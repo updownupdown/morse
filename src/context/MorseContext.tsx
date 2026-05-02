@@ -5,8 +5,6 @@ import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
 
-export const currentAppVersion = 2;
-
 export enum Difficulty {
   Easy = "Easy",
   Moderate = "Moderate",
