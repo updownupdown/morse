@@ -33,7 +33,7 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
 
   return (
     <button
-      className={`symbol symbol--${isPlayingThis && "is-playing"}`}
+      className={clsx("symbol", isPlayingThis && "symbol--is-playing")}
       onClick={() => {
         setIsPlayingThis(true);
         playMorse(morse);
@@ -49,7 +49,7 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
 };
 
 export const Study = () => {
-  const { isPlayingTone } = useContext(MorseContext);
+  const { isPlaying } = useContext(MorseContext);
   const { playMorse } = useMorseAudio();
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
 
@@ -88,7 +88,7 @@ export const Study = () => {
               onClick={() => {
                 playMorse(sign.code);
               }}
-              disabled={isPlayingTone}
+              disabled={isPlaying !== undefined}
             >
               <div className="prosign__top">
                 <div className="prosign__top__sign">
@@ -160,7 +160,7 @@ export const Study = () => {
                     key={key}
                     text={key}
                     morse={alphaToMorse(key)}
-                    disabled={isPlayingTone}
+                    disabled={isPlaying !== undefined}
                   />
                 );
               })}

@@ -14,4 +14,9 @@
     width: 100%;
     flex: 1;
   }
+
+  &__buttons {
+    display: flex;
+    gap: 12px;
+  }
 }

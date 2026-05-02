@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Difficulty, MorseContext } from "../context/MorseContext";
+import { Difficulty, MorseContext, Setting } from "../context/MorseContext";
 import { unitLengths } from "../data/alphaToMorse";
 
 const maxFadeDuration = 200; // ms
@@ -8,13 +8,8 @@ const fadeDurationInSec = 0.02; // 20 ms
 export const initCode = "init";
 
 export function useMorseAudio() {
-  const {
-    settings,
-    isPlayingTone,
-    setIsPlayingTone,
-    audioInitialized,
-    setAudioInitialized,
-  } = useContext(MorseContext);
+  const { settings, setIsPlaying, audioInitialized, setAudioInitialized } =
+    useContext(MorseContext);
 
   const cancelPlaybackRef = useRef(false);
   const ctxRef = useRef<AudioContext | null>(null);
@@ -36,12 +31,14 @@ export function useMorseAudio() {
       return;
     }
 
+    setIsPlaying("symbol");
+
     const ctx = ctxRef.current;
     const o = ctx.createOscillator();
     const g = ctx.createGain();
 
     o.type = "sine";
-    o.frequency.value = settings.frequency;
+    o.frequency.value = settings[Setting.Frequency];
     o.connect(g);
     g.connect(ctx.destination);
 
@@ -51,7 +48,7 @@ export function useMorseAudio() {
     // Fade in
     g.gain.setValueAtTime(0.0001, now);
     g.gain.exponentialRampToValueAtTime(
-      settings.volume / 100,
+      settings[Setting.Volume] / 100,
       now + fadeDuration,
     );
 
@@ -62,6 +59,8 @@ export function useMorseAudio() {
   }
 
   function stopPress() {
+    setIsPlaying(undefined);
+
     const o = pressOscRef.current;
     const g = pressGainRef.current;
 
@@ -139,14 +138,14 @@ export function useMorseAudio() {
       fadeDuration = fadeDuration / 1000; // sec
 
       // Start
-      g.gain.setValueAtTime(settings.volume / 100, now);
+      g.gain.setValueAtTime(settings[Setting.Volume] / 100, now);
       // Fade in
       g.gain.exponentialRampToValueAtTime(
-        settings.volume / 100,
+        settings[Setting.Volume] / 100,
         now + fadeDuration,
       );
       // Sustain
-      g.gain.setValueAtTime(settings.volume / 100, now + beepDuration);
+      g.gain.setValueAtTime(settings[Setting.Volume] / 100, now + beepDuration);
       // Fade out
       g.gain.exponentialRampToValueAtTime(
         0.0001,
@@ -198,7 +197,7 @@ export function useMorseAudio() {
         ctxRef.current = null;
       }
 
-      setIsPlayingTone(false);
+      setIsPlaying(undefined);
 
       setTimeout(resolve, 10);
     });
@@ -214,26 +213,30 @@ export function useMorseAudio() {
     await stopMorse();
 
     cancelPlaybackRef.current = false;
-    setIsPlayingTone(true);
+    setIsPlaying(morse.length > 1 ? "charOrWord" : "symbol");
 
     for (let i = 0; i < morse.length; i++) {
       if (cancelPlaybackRef.current) break;
       const symbol = morse[i];
 
       if (symbol === ".") {
-        await playBeep(settings.unitTime, settings.frequency);
+        await playBeep(settings[Setting.UnitTime], settings[Setting.Frequency]);
       } else if (symbol === "-") {
         await playBeep(
-          settings.unitTime * unitLengths["-"],
-          settings.frequency,
+          settings[Setting.UnitTime] * unitLengths["-"],
+          settings[Setting.Frequency],
         );
       } else if (symbol === " ") {
         await sleep(
-          settings.unitTime * unitLengths[" "] * settings.farnsworthSpeed,
+          settings[Setting.UnitTime] *
+            unitLengths[" "] *
+            settings[Setting.Farnsworth],
         );
       } else if (symbol === "/") {
         await sleep(
-          settings.unitTime * unitLengths["/"] * settings.farnsworthSpeed,
+          settings[Setting.UnitTime] *
+            unitLengths["/"] *
+            settings[Setting.Farnsworth],
         );
       }
 
@@ -244,11 +247,11 @@ export function useMorseAudio() {
         (morse[i + 1] === "." || morse[i + 1] === "-")
       ) {
         if (cancelPlaybackRef.current) break;
-        await new Promise((res) => setTimeout(res, settings.unitTime));
+        await new Promise((res) => setTimeout(res, settings[Setting.UnitTime]));
       }
     }
 
-    setIsPlayingTone(false);
+    setIsPlaying(undefined);
   }
 
   return { playMorse, stopMorse, setIsPressed, isPressed };

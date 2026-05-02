@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import "./Word.scss";
-import { MorseContext } from "../context/MorseContext";
+import { Modes, MorseContext } from "../context/MorseContext";
 
 export type Status = "empty" | "correct" | "incorrect" | "neutral" | "space";
 
@@ -15,10 +15,16 @@ interface Props {
 }
 
 export const Word = ({ word, status, index, setIndex }: Props) => {
-  const { isPlayingTone } = useContext(MorseContext);
+  const { isPlaying: isPlaying } = useContext(MorseContext);
   const { playMorse } = useMorseAudio();
 
-  let letterSize = word.length > 30 ? "sm" : word.length > 2 ? "md" : "lg";
+  let letterSize = "sm";
+
+  if (word.length < 2) {
+    letterSize = "lg";
+  } else if (word.length < 30) {
+    letterSize = "md";
+  }
 
   return (
     <div className={`word word--size-${letterSize}`}>
@@ -49,7 +55,7 @@ export const Word = ({ word, status, index, setIndex }: Props) => {
                   setIndex(i);
                 }
               }}
-              disabled={isPlayingTone}
+              disabled={isPlaying !== undefined}
             >
               <span>{word[i]}</span>
             </button>

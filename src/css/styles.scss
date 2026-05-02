@@ -57,6 +57,8 @@ $theme-colors: (
   --dit-xl: 10px;
 
   --modal-padding: 24px;
+
+  --morse-key-height: 80px;
 }
 
 * {
@@ -168,38 +170,73 @@ button {
       fill: var(--K200);
     }
 
-    &:not(:disabled):hover {
-      span {
-        color: var(--K100);
-      }
-      svg {
-        fill: var(--K100);
+    &:not(:disabled) {
+      &:hover,
+      &:active {
+        span {
+          color: var(--K100);
+        }
+        svg {
+          fill: var(--K100);
+        }
       }
     }
 
     &--outlined {
       border: 2px solid var(--K800);
 
-      &:not(:disabled):hover {
-        background: var(--K700);
-        border-color: var(--K400);
+      &:not(:disabled) {
+        &:hover,
+        &:active {
+          background: var(--K700);
+          border-color: var(--K400);
 
-        span {
-          color: var(--K100);
+          span {
+            color: var(--K100);
+          }
         }
       }
     }
+
+    &--outlined-stop {
+      &:not(:disabled) {
+        background: rgba(var(--status-red-rgb), 0.2);
+
+        &,
+        &:hover,
+        &:active {
+          border: 2px solid var(--status-red);
+
+          span {
+            color: var(--status-red);
+          }
+          svg {
+            fill: var(--status-red);
+          }
+        }
+
+        &:hover,
+        &:active {
+          background: rgba(var(--status-red-rgb), 0.4);
+        }
+      }
+    }
+
     &--full {
       background: var(--K800);
 
-      &:not(:disabled):hover {
-        background: var(--K700);
+      &:not(:disabled) {
+        &:hover,
+        &:active {
+          background: var(--K700);
 
-        span {
-          color: var(--K100);
+          span {
+            color: var(--K100);
+          }
         }
       }
     }
+
     &--bright {
       background: var(--K300);
       color: var(--K800);
@@ -215,6 +252,7 @@ button {
         }
       }
     }
+
     &--small {
       width: 36px;
       height: 24px;

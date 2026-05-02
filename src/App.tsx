@@ -6,9 +6,11 @@ import {
   MorseContext,
   defaultSettings,
   currentAppVersion,
+  Setting,
+  IsPlaying,
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
-import { Settings } from "./components/Settings";
+import { SettingsModal } from "./components/SettingsModal";
 import { Menu } from "./components/Menu";
 import { Study } from "./components/Study";
 import { Receive } from "./components/Receive";
@@ -39,7 +41,7 @@ function App() {
   }, [appVersion]);
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
-  const [isPlayingTone, setIsPlayingTone] = useState(false);
+  const [isPlaying, setIsPlaying] = useState<IsPlaying>(undefined);
   const [audioInitialized, setAudioInitialized] = useState(false);
 
   return (
@@ -53,17 +55,17 @@ function App() {
         setSelectedMode,
         lastSelectedMode,
         setLastSelectedMode,
-        isPlayingTone,
-        setIsPlayingTone,
+        isPlaying,
+        setIsPlaying,
         audioInitialized,
         setAudioInitialized,
       }}
     >
       <div
-        className={`app app--mode-${selectedMode.replace(/[^a-zA-Z]/g, "").toLowerCase()} app--diff-${settings.difficulty.toLowerCase()}`}
+        className={`app app--mode-${selectedMode.replace(/[^a-zA-Z]/g, "").toLowerCase()} app--diff-${settings[Setting.Difficulty].toLowerCase()}`}
       >
         {selectedMenu === Menus.Menu && <Menu />}
-        {selectedMenu === Menus.Settings && <Settings />}
+        {selectedMenu === Menus.Settings && <SettingsModal />}
 
         {selectedMode !== Modes.Home && <Header />}
 

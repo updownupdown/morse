@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import "./MorseChar.scss";
-import { MorseContext } from "../context/MorseContext";
+import { MorseContext, Setting } from "../context/MorseContext";
 
 interface MorseCharProps {
   morse: string;
@@ -18,8 +18,8 @@ export const MorseChar = ({ morse, size }: MorseCharProps) => {
     <div className={`morse-char morse-char--${size}`}>
       {inProgress ? (
         <span
-          className={`dit-dah dit-dah--in-progress`}
-          style={{ animationDuration: `${settings.unitTime * 3}ms` }}
+          className="dit-dah dit-dah--in-progress"
+          style={{ animationDuration: `${settings[Setting.UnitTime] * 3}ms` }}
         />
       ) : (
         morseSplit.map((char, index) => (

@@ -1,14 +1,47 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { MenuLinks } from "./Menu";
 import "./Home.scss";
-import { Menus, ModeIcons, Modes, MorseContext } from "../context/MorseContext";
+import {
+  Menus,
+  ModeIcons,
+  Modes,
+  MorseContext,
+  Setting,
+  settingsSpecs,
+} from "../context/MorseContext";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { initCode, useMorseAudio } from "../hooks/useMorseAudio";
+import { SettingButtons } from "./SettingsModal";
 
 export const Home = () => {
   const { settings, setSelectedMenu, lastSelectedMode, setSelectedMode } =
     useContext(MorseContext);
   const { playMorse } = useMorseAudio();
+
+  function resume() {
+    playMorse(initCode);
+    setSelectedMode(lastSelectedMode);
+  }
+
+  const showResumeButton = lastSelectedMode !== Modes.Home;
+
+  // Keyboard support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
+
+      if ([" ", ".", "[", "]"].includes(e.key)) {
+        resume();
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="home">
@@ -26,26 +59,20 @@ export const Home = () => {
 
       <div className="home__settings">
         <div className="home__settings__list">
-          <div>
-            <span>Difficulty</span>
-            <span>{settings.difficulty}</span>
-          </div>
-          <div>
-            <span>Units Time</span>
-            <span>{settings.unitTime}ms</span>
-          </div>
-          <div>
-            <span>Frequency</span>
-            <span>{settings.frequency}Hz</span>
-          </div>
-          <div>
-            <span>Keys</span>
-            <span>{settings.keyType}</span>
-          </div>
-          <div>
-            <span>Volume</span>
-            <span>{settings.volume}%</span>
-          </div>
+          {Object.values(Setting).map((key) => {
+            const specs = settingsSpecs[key];
+            const currentValue = settings[key];
+
+            return (
+              <div key={key}>
+                <span>{specs.title}</span>
+                <span>
+                  {currentValue}
+                  {specs.unit}
+                </span>
+              </div>
+            );
+          })}
         </div>
 
         <button onClick={() => setSelectedMenu(Menus.Settings)}>
@@ -54,20 +81,16 @@ export const Home = () => {
         </button>
       </div>
 
-      {lastSelectedMode !== Modes.Home && (
-        <button
-          className="home-resume"
-          onClick={() => {
-            playMorse(initCode);
-            setSelectedMode(lastSelectedMode);
-          }}
-        >
-          <span className="home-resume__resume">Resume</span>
-
-          <span className="home-resume__last">
-            <span>{lastSelectedMode}</span>
-            {ModeIcons[lastSelectedMode]}
+      {showResumeButton && (
+        <button className="home-resume" onClick={resume}>
+          <span className="home-resume__resume">
+            Resume
+            <span className="home-resume__resume__last">
+              {lastSelectedMode}
+            </span>
           </span>
+
+          {ModeIcons[lastSelectedMode]}
         </button>
       )}
     </div>

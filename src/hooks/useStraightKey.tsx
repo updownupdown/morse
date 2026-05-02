@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { MorseContext } from "../context/MorseContext";
+import { KeyTypes, MorseContext, Setting } from "../context/MorseContext";
 import {
   alphaToMorse,
   alphaToMorseDict,
@@ -9,6 +9,7 @@ import {
 } from "../data/alphaToMorse";
 import { useMorseAudio } from "./useMorseAudio";
 import { inProgressChar, MorseChar } from "../components/MorseChar";
+import clsx from "clsx";
 
 interface Props {
   submitChar: (char: string) => void;
@@ -16,30 +17,20 @@ interface Props {
 }
 
 export const useStraightKey = ({ submitChar, startTimer }: Props) => {
+  // ========== MAIN =========== //
   const { settings } = useContext(MorseContext);
-  const { setIsPressed, isPressed } = useMorseAudio();
 
-  // Presses
-  const [pressStartStraight, setPressStartStraight] = useState<number | null>(
-    null,
-  );
-
-  const [pressDurationStraight, setPressDurationStraight] = useState<number>(0);
-  const pressStartStraightRef = useRef(pressStartStraight);
-  pressStartStraightRef.current = pressStartStraight;
-
-  const charBreakTimeoutRef = useRef<number>(null);
-  const charBreakDuration = settings.unitTime * unitLengths[" "];
-
+  // ========== QUEUE LOGIC =========== //
   const [queue, setQueue] = useState("");
-  const queueRef = useRef(queue);
-  queueRef.current = queue;
-
   const [match, setMatch] = useState("");
   const matchRef = useRef(match);
   matchRef.current = match;
 
   // Character break
+  const charBreakTimeoutRef = useRef<number>(null);
+  const charBreakDuration =
+    settings[Setting.UnitTime] * unitLengths["charBreak"];
+
   const startCharBreakTimeout = () => {
     stopCharBreakTimeout();
 
@@ -62,13 +53,18 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
     }
   };
 
+  // ========== PRESS LOGIC =========== //
+  const { setIsPressed, isPressed } = useMorseAudio();
+  const [pressStart, setPressStart] = useState<number | null>(null);
+  const [pressDuration, setPressDuration] = useState<number>(0);
+
   useEffect(() => {
-    if (pressStartStraight === null) {
+    if (pressStart === null) {
       startCharBreakTimeout();
     } else {
       stopCharBreakTimeout();
     }
-  }, [pressStartStraight]);
+  }, [pressStart]);
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -81,14 +77,14 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
 
   // Presses
   useEffect(() => {
-    if (pressDurationStraight === 0) return;
+    if (pressDuration === 0) return;
 
-    if (pressDurationStraight < settings.unitTime * 2) {
+    if (pressDuration < settings[Setting.UnitTime] * 2) {
       setQueue((prev) => prev + ".");
     } else {
       setQueue((prev) => prev + "-");
     }
-  }, [pressDurationStraight]);
+  }, [pressDuration, settings]);
 
   useEffect(() => {
     if (queue.length === 0) {
@@ -105,36 +101,38 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
 
   // Presses
   function onPressDown() {
-    if (isPressed || queueRef.current.length === maxCodeLength) return;
+    if (isPressed || queue.length === maxCodeLength) return;
 
     setIsPressed(true);
-    setPressStartStraight(Date.now());
+    setPressStart(Date.now());
     startTimer && startTimer(Date.now());
   }
   function onPressUp() {
     setIsPressed(false);
 
-    if (pressStartStraightRef.current !== null) {
-      const duration = Date.now() - pressStartStraightRef.current;
-      setPressDurationStraight(duration);
-      setPressStartStraight(null);
+    if (pressStart !== null) {
+      const duration = Date.now() - pressStart;
+      setPressDuration(duration);
+      setPressStart(null);
     }
   }
 
   // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (
-        (e.code === "Space" || e.key === "[") &&
-        !isPressed &&
-        queueRef.current.length < maxCodeLength
-      ) {
+      if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
+
+      if (settings[Setting.KeyType] !== KeyTypes.Straight) return;
+
+      if (e.key === "." && !isPressed && queue.length < maxCodeLength) {
         onPressDown();
         e.preventDefault();
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.code === "Space" || e.key === "[") {
+      if (settings[Setting.KeyType] !== KeyTypes.Straight) return;
+
+      if (e.key === ".") {
         onPressUp();
         e.preventDefault();
       }
@@ -147,12 +145,15 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [queue, settings, isPressed, pressStart]);
 
-  const StraightKey = () => {
+  const KeyButton = () => {
     return (
       <button
-        className="morse-key morse-key--straight"
+        className={clsx(
+          "morse-key morse-key--straight",
+          isPressed && "morse-key--pressed",
+        )}
         onPointerDown={onPressDown}
         onPointerUp={onPressUp}
         onPointerLeave={onPressUp}
@@ -163,15 +164,15 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
     );
   };
 
-  const StraightQueue = () => {
+  const MorseQueue = () => {
     return queue.length !== 0 ? <MorseChar morse={queue} size="xl" /> : null;
   };
 
-  const StraightProgress = () => {
-    return pressStartStraight !== null ? (
+  const MorseProgress = () => {
+    return pressStart !== null ? (
       <MorseChar morse={inProgressChar} size="xl" />
     ) : null;
   };
 
-  return { StraightKey, StraightQueue, StraightProgress, match };
+  return { KeyButton, MorseQueue, MorseProgress, match };
 };

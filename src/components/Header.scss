@@ -21,14 +21,18 @@
 
     font-size: 20px;
     font-weight: 800;
-    fill: var(--K400);
+    color: var(--K200);
 
     svg {
       fill: var(--K200);
     }
 
-    &:hover svg {
-      fill: var(--accent);
+    &:hover {
+      color: var(--accent);
+
+      svg {
+        fill: var(--accent);
+      }
     }
   }
 

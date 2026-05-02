@@ -1,17 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Receive.scss";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { Status, Word } from "./Word";
-import { Difficulty, MorseContext } from "../context/MorseContext";
+import { Difficulty, MorseContext, Setting } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
 import { getRandomSource, Sources } from "../data/dataSources";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import clsx from "clsx";
 
 export const Receive = () => {
-  const { settings, isPlayingTone } = useContext(MorseContext);
+  const { settings, isPlaying: isPlaying } = useContext(MorseContext);
+  const isPlayingRef = useRef(isPlaying);
+  isPlayingRef.current = isPlaying;
+
   const { playMorse, stopMorse } = useMorseAudio();
 
   const [source, setSource] = useLocalStorage<Sources>(
@@ -20,8 +24,15 @@ export const Receive = () => {
   );
   const [wordAlpha, setWordAlpha] = useState("");
   const [wordMorse, setWordMorse] = useState("");
+
   const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);
+
+  const [lastPlayBtnPressed, setLastPlayBtnPressed] = useState<
+    "word" | "letter"
+  >("letter");
+  const lastPlayBtnPressedRef = useRef(lastPlayBtnPressed);
+  lastPlayBtnPressedRef.current = lastPlayBtnPressed;
 
   // Set/reset word
   useEffect(() => {
@@ -61,7 +72,7 @@ export const Receive = () => {
     // Play letter on index change (will trigger on auto index change, but not on manual)
     if (
       newIndex !== -1 &&
-      settings.difficulty !== Difficulty.Hard &&
+      settings[Setting.Difficulty] !== Difficulty.Hard &&
       wordAlpha[newIndex] !== undefined
     ) {
       playMorse(alphaToMorse(wordAlpha[newIndex]));
@@ -82,6 +93,56 @@ export const Receive = () => {
 
     setStatus(newStatus);
   }
+
+  const wordBtnIsStop = () =>
+    isPlayingRef.current && lastPlayBtnPressedRef.current === "word";
+
+  const letterBtnIsStop = () =>
+    isPlayingRef.current && lastPlayBtnPressedRef.current === "letter";
+
+  function playPauseWord() {
+    setLastPlayBtnPressed("word");
+
+    if (wordBtnIsStop()) {
+      stopMorse();
+    } else {
+      playMorse(wordMorse);
+    }
+  }
+
+  function playPauseLetter() {
+    setLastPlayBtnPressed("letter");
+
+    if (letterBtnIsStop()) {
+      stopMorse();
+    } else {
+      playMorse(alphaToMorse(wordAlpha[wordIndex]));
+    }
+  }
+
+  // Keyboard support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
+
+      if (e.key === " " && !letterBtnIsStop()) {
+        playPauseWord();
+        e.preventDefault();
+      } else if (e.code === "ArrowRight" && !wordBtnIsStop()) {
+        playPauseLetter();
+        e.preventDefault();
+      } else if (/^[a-z]$/i.test(e.key)) {
+        pressKey(e.key.toUpperCase());
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [wordAlpha, wordIndex, wordMorse]);
 
   return (
     <div className="receive">
@@ -114,26 +175,25 @@ export const Receive = () => {
       </div>
       <div className="receive__buttons">
         <button
-          className="btn btn--outlined"
-          onClick={() => {
-            if (isPlayingTone) {
-              stopMorse();
-            } else {
-              playMorse(wordMorse);
-            }
-          }}
+          className={clsx(
+            "btn btn--outlined",
+            wordBtnIsStop() && "btn--outlined-stop",
+          )}
+          onClick={playPauseWord}
+          disabled={letterBtnIsStop()}
         >
-          {isPlayingTone ? <StopIcon /> : <SpeakerIcon />}
-          <span>{isPlayingTone ? "Stop" : "Word"}</span>
+          {wordBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
+          <span>{wordBtnIsStop() ? "Stop" : "Word"}</span>
         </button>
         <button
-          className="btn btn--outlined"
-          onClick={() => {
-            playMorse(alphaToMorse(wordAlpha[wordIndex]));
-          }}
-          disabled={isPlayingTone}
+          className={clsx(
+            "btn btn--outlined",
+            letterBtnIsStop() && "btn--outlined-stop",
+          )}
+          onClick={playPauseLetter}
+          disabled={wordBtnIsStop()}
         >
-          <SpeakerIcon />
+          {letterBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
           <span>Letter</span>
         </button>
       </div>

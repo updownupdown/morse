@@ -133,7 +133,6 @@ export const Send = () => {
 
       <MorseKeys
         hint={alphaToMorse(wordAlpha.charAt(wordIndex).toUpperCase())}
-        word={wordAlpha}
         submitChar={submitChar}
         startTimer={startTimer}
       />

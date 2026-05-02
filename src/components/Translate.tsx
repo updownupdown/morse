@@ -16,7 +16,7 @@ import { useMorseAudio } from "../hooks/useMorseAudio";
 import { MorseContext } from "../context/MorseContext";
 
 export const Translate = () => {
-  const { isPlayingTone } = useContext(MorseContext);
+  const { isPlaying: isPlaying } = useContext(MorseContext);
   const { playMorse } = useMorseAudio();
 
   const [alpha, setAlpha] = useLocalStorage("convertedAlpha", "");
@@ -114,7 +114,7 @@ export const Translate = () => {
           <button
             className="btn btn--small"
             onClick={playMorseCode}
-            disabled={!morse.length || isPlayingTone}
+            disabled={!morse.length || isPlaying !== undefined}
           >
             <SpeakerIcon />
           </button>

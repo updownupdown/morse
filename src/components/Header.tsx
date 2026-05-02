@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { MenuIcon } from "../icons/MenuIcon";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import "./Header.scss";
-import { Menus, MorseContext } from "../context/MorseContext";
+import { Menus, MorseContext, Setting } from "../context/MorseContext";
 
 export const Header = () => {
   const { settings, setSelectedMenu, selectedMode } = useContext(MorseContext);
@@ -21,7 +21,7 @@ export const Header = () => {
         className="header__settings-btn"
         onClick={() => setSelectedMenu(Menus.Settings)}
       >
-        <span>{settings.difficulty}</span>
+        <span>{settings[Setting.Difficulty]}</span>
         <SettingsIcon />
       </button>
     </div>

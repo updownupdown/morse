@@ -4,9 +4,8 @@ import { SendIcon } from "../icons/SendIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
-import { Settings } from "../components/Settings";
 
-export const currentAppVersion = 1;
+export const currentAppVersion = 2;
 
 export enum Difficulty {
   Easy = "Easy",
@@ -14,13 +13,111 @@ export enum Difficulty {
   Hard = "Hard",
 }
 
+export enum KeyTypes {
+  Straight = "Straight",
+  IambicA = "IambicA",
+  IambicB = "IambicB",
+  Ultimatic = "Ultimatic",
+}
+
+type SettingsValues = typeof Difficulty | typeof KeyTypes;
+
+export const KeyTypesNames: Record<KeyTypes, string> = {
+  [KeyTypes.Straight]: "Straight Key",
+  [KeyTypes.IambicA]: "Iambic A",
+  [KeyTypes.IambicB]: "Iambic B",
+  [KeyTypes.Ultimatic]: "Ultimatic",
+};
+
+export enum Setting {
+  Difficulty = "Difficulty",
+  KeyType = "KeyType",
+  UnitTime = "UnitTime",
+  Farnsworth = "Farnsworth",
+  Frequency = "Frequency",
+  Volume = "Volume",
+}
+
 export type Settings = {
-  unitTime: number;
-  frequency: number;
-  volume: number;
-  difficulty: Difficulty;
-  keyType: KeyTypes;
-  farnsworthSpeed: number;
+  [Setting.Difficulty]: Difficulty;
+  [Setting.KeyType]: KeyTypes;
+  [Setting.UnitTime]: number;
+  [Setting.Farnsworth]: number;
+  [Setting.Frequency]: number;
+  [Setting.Volume]: number;
+};
+
+export const defaultSettings: Settings = {
+  [Setting.Difficulty]: Difficulty.Easy,
+  [Setting.KeyType]: KeyTypes.Straight,
+  [Setting.UnitTime]: 80,
+  [Setting.Farnsworth]: 2,
+  [Setting.Frequency]: 600,
+  [Setting.Volume]: 30,
+};
+
+export const settingsSpecs: Record<
+  Setting,
+  {
+    title: string;
+    unit?: string;
+    min?: number;
+    max?: number;
+    step?: number;
+    values?: SettingsValues;
+    hints?: Record<string, string>;
+  }
+> = {
+  // Buttons
+  [Setting.Difficulty]: {
+    title: "Difficulty",
+    values: Difficulty,
+    hints: {
+      [Difficulty.Easy]: "Shows hints quickly",
+      [Difficulty.Moderate]: "Shows hints slowly",
+      [Difficulty.Hard]: "No hints shown",
+    },
+  },
+  [Setting.KeyType]: {
+    title: "Key",
+    values: KeyTypes,
+    hints: {
+      [KeyTypes.Straight]: "One key, non-repeating",
+      [KeyTypes.IambicA]: "First squeeze key repeats",
+      [KeyTypes.IambicB]:
+        "First squeeze key repeats; additional symbol on release",
+      [KeyTypes.Ultimatic]: "Last squeezed key repeats",
+    },
+  },
+  // Ranges
+  [Setting.UnitTime]: {
+    title: "Unit Time",
+    unit: "ms",
+    min: 30,
+    max: 200,
+    step: 2,
+  },
+  [Setting.Farnsworth]: {
+    title: "Farnsworth",
+    unit: "x",
+    min: 1,
+    max: 10,
+    step: 1,
+  },
+  [Setting.Frequency]: {
+    title: "Frequency",
+    unit: "Hz",
+    min: 50,
+    max: 800,
+    step: 10,
+  },
+  [Setting.Volume]: {
+    title: "Volume",
+    unit: "%",
+    min: 0,
+    max: 100,
+    step: 2,
+  },
 };
 
 export enum Menus {
@@ -47,55 +144,7 @@ export const ModeIcons: Record<Modes, React.ReactNode> = {
   [Modes.Practice]: <MorseMachineIcon />,
 };
 
-export enum KeyTypes {
-  Straight = "Straight",
-  IambicA = "IambicA",
-  IambicB = "IambicB",
-}
-
-export const KeyTypesNames: Record<KeyTypes, string> = {
-  [KeyTypes.Straight]: "Straight Keys",
-  [KeyTypes.IambicA]: "Iambic A",
-  [KeyTypes.IambicB]: "Iambic B",
-};
-
-export const KeyTypesDescription: Record<KeyTypes, string> = {
-  [KeyTypes.Straight]: "One key, non-repeating",
-  [KeyTypes.IambicA]: "Two keys, first pressed key repeats?",
-  [KeyTypes.IambicB]: "Two keys, first pressed key repeats?",
-};
-
-export const defaultSettings: Settings = {
-  unitTime: 80,
-  frequency: 600,
-  volume: 30,
-  difficulty: Difficulty.Easy,
-  keyType: KeyTypes.Straight,
-  farnsworthSpeed: 2,
-};
-
-export const settingsRange = {
-  volume: {
-    min: 0,
-    max: 100,
-    step: 5,
-  },
-  frequency: {
-    min: 50,
-    max: 800,
-    step: 10,
-  },
-  unitTime: {
-    min: 30,
-    max: 200,
-    step: 2,
-  },
-  farnsworthSpeed: {
-    min: 1,
-    max: 10,
-    step: 1,
-  },
-};
+export type IsPlaying = "symbol" | "charOrWord" | undefined;
 
 interface ContextProps {
   settings: Settings;
@@ -106,8 +155,8 @@ interface ContextProps {
   setSelectedMode: (mode: Modes) => void;
   lastSelectedMode: Modes;
   setLastSelectedMode: (mode: Modes) => void;
-  isPlayingTone: boolean;
-  setIsPlayingTone: (playing: boolean) => void;
+  isPlaying: IsPlaying;
+  setIsPlaying: (playing: IsPlaying) => void;
   audioInitialized: boolean;
   setAudioInitialized: (initialized: boolean) => void;
 }
@@ -121,8 +170,8 @@ export const MorseContext = createContext<ContextProps>({
   setSelectedMode: () => {},
   lastSelectedMode: Modes.Home,
   setLastSelectedMode: () => {},
-  isPlayingTone: false,
-  setIsPlayingTone: () => {},
+  isPlaying: undefined,
+  setIsPlaying: () => {},
   audioInitialized: false,
   setAudioInitialized: () => {},
 });
