@@ -11,6 +11,10 @@
     display: flex;
     gap: 12px;
     padding: 0 var(--modal-padding);
+
+    button {
+      flex: 1;
+    }
   }
 
   &__content {
@@ -19,7 +23,7 @@
 
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    gap: 30px;
     padding: var(--modal-padding);
   }
 
@@ -66,7 +70,8 @@
 
 .setting {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 
   &--slider {
     gap: 16px;
@@ -75,87 +80,99 @@
     gap: 6px;
   }
 
-  &__top {
+  &__left {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 32px;
+    flex-direction: column;
+    flex: 1;
+    gap: 4px;
 
-    &__title {
+    &__top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+
+      &__title {
+        flex: 1;
+
+        font-size: 17px;
+        font-weight: 700;
+      }
+      &__hint {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--K500);
+      }
+
+      .setting-close-btn {
+        svg {
+          width: 32px;
+          height: 32px;
+          fill: var(--link);
+        }
+
+        &:hover svg {
+          fill: var(--link-hover);
+        }
+      }
+
+      .reset-btn {
+        margin-right: 4px;
+        color: var(--link);
+
+        &:not(:disabled):hover {
+          color: var(--link-hover);
+        }
+        &:disabled {
+          color: var(--K700);
+        }
+      }
+    }
+
+    &__bottom {
+      display: flex;
+      align-items: center;
+      gap: 20px;
       flex: 1;
 
-      font-size: 17px;
-      font-weight: 700;
-    }
-    &__hint {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--K500);
-    }
+      &__value {
+        margin-top: -6px;
+        min-width: 50px;
 
-    .setting-close-btn {
-      svg {
-        width: 32px;
-        height: 32px;
-        fill: var(--link);
+        font-weight: 700;
+        font-size: 17px;
+        color: var(--accent);
+        text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
       }
 
-      &:hover svg {
-        fill: var(--link-hover);
+      input[type="range"] {
+        flex: 1;
+        width: 100%;
       }
     }
-
-    .reset-btn {
-      margin-right: 4px;
-      color: var(--link);
-
-      &:not(:disabled):hover {
-        color: var(--link-hover);
-      }
-      &:disabled {
-        color: var(--K700);
-      }
-    }
+  }
+  &__right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 
     .setting-btn {
       display: flex;
-      padding: 4px;
+      padding: 6px;
 
       border-radius: 4px;
       background: var(--K850);
 
       svg {
-        width: 24px;
-        height: 24px;
-        fill: var(--K100);
+        width: 20px;
+        height: 20px;
+        fill: var(--K200);
       }
 
       &:disabled {
         cursor: not-allowed;
         opacity: 0.3;
       }
-    }
-  }
-
-  &__bottom {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex: 1;
-
-    &__value {
-      margin-top: -6px;
-      min-width: 50px;
-
-      font-weight: 700;
-      font-size: 17px;
-      color: var(--accent);
-      text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.6);
-    }
-
-    input[type="range"] {
-      flex: 1;
-      width: 100%;
     }
   }
 

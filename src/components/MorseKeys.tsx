@@ -53,20 +53,14 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
   return (
     <div className="morse-keys">
       <div className="morse-keys__top">
-        <div className="morse-keys__top__select">
-          {/* Switch keyboard button */}
-          <span className="morse-key-select">
-            <span>{KeyTypesNames[settings[Setting.KeyType]]}</span>
-            <button
-              className="morse-key-select-btn"
-              onClick={() => {
-                setSelectKeyType(true);
-              }}
-            >
-              Change Key
-            </button>
-          </span>
-        </div>
+        <button
+          className="key-select-btn"
+          onClick={() => {
+            setSelectKeyType(true);
+          }}
+        >
+          {KeyTypesNames[settings[Setting.KeyType]]} [Change]
+        </button>
 
         <div className="morse-keys__top__queue">
           <div className="morse-keys__top__queue__morse">

@@ -83,13 +83,7 @@ export const Home = () => {
 
       {showResumeButton && (
         <button className="home-resume" onClick={resume}>
-          <span className="home-resume__resume">
-            Resume
-            <span className="home-resume__resume__last">
-              {lastSelectedMode}
-            </span>
-          </span>
-
+          <span>Resume {lastSelectedMode}</span>
           {ModeIcons[lastSelectedMode]}
         </button>
       )}

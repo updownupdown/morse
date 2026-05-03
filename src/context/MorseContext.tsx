@@ -4,6 +4,7 @@ import { SendIcon } from "../icons/SendIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
+import { TouchIcon } from "../icons/TouchIcon";
 
 export enum Difficulty {
   Easy = "Easy",
@@ -122,6 +123,7 @@ export enum Menus {
   None = "None",
   Menu = "Menu",
   Settings = "Settings",
+  Shortcuts = "Shortcuts",
 }
 
 export enum Modes {
@@ -135,11 +137,11 @@ export enum Modes {
 
 export const ModeIcons: Record<Modes, React.ReactNode> = {
   [Modes.Home]: <SendIcon />,
-  [Modes.Send]: <SendIcon />,
+  [Modes.Send]: <MorseMachineIcon />,
   [Modes.Receive]: <ReceiveIcon />,
   [Modes.Study]: <DictionaryIcon />,
   [Modes.Translate]: <TranslateIcon />,
-  [Modes.Practice]: <MorseMachineIcon />,
+  [Modes.Practice]: <TouchIcon />,
 };
 
 export type IsPlaying = "symbol" | "charOrWord" | undefined;

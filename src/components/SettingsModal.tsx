@@ -11,9 +11,11 @@ import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { ResetIcon } from "../icons/ResetIcon";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
-import { ArrowLeftIcon } from "../icons/ArrowLeftIcon";
-import { ArrowRightIcon } from "../icons/ArrowRightIcon";
 import { CloseIcon } from "../icons/CloseIcon";
+import { PlusIcon } from "../icons/PlusIcon";
+import { MinusIcon } from "../icons/MinusIcon";
+import { StopIcon } from "../icons/StopIcon";
+import clsx from "clsx";
 
 interface SettingSliderProps {
   setting: Setting;
@@ -39,28 +41,38 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
 
   return (
     <div className="setting setting--slider">
-      <div className="setting__top">
-        <span className="setting__top__title">{specs.title}</span>
+      <div className="setting__left">
+        <div className="setting__left__top">
+          <span className="setting__left__top__title">{specs.title}</span>
 
-        <button
-          className="reset-btn"
-          onClick={() => {
-            setThisSetting(Number(defaultSettings[setting]));
-          }}
-          disabled={currentValue === defaultSettings[setting]}
-        >
-          Reset
-        </button>
+          <button
+            className="reset-btn"
+            onClick={() => {
+              setThisSetting(Number(defaultSettings[setting]));
+            }}
+            disabled={currentValue === defaultSettings[setting]}
+          >
+            Reset
+          </button>
+        </div>
 
-        <button
-          className="setting-btn"
-          onClick={() => {
-            setThisSetting(currentValue - specs.step!);
-          }}
-          disabled={settings[setting] === specs.min}
-        >
-          <ArrowLeftIcon />
-        </button>
+        <div className="setting__left__bottom">
+          <div className="setting__left__bottom__value">
+            {settings[setting]}
+            {specs.unit}
+          </div>
+
+          <input
+            type="range"
+            min={specs.min}
+            max={specs.max}
+            step={specs.step}
+            value={currentValue}
+            onChange={(e) => setThisSetting(Number(e.target.value))}
+          />
+        </div>
+      </div>
+      <div className="setting__right">
         <button
           className="setting-btn"
           onClick={() => {
@@ -68,24 +80,17 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
           }}
           disabled={currentValue === specs.max}
         >
-          <ArrowRightIcon />
+          <PlusIcon />
         </button>
-      </div>
-
-      <div className="setting__bottom">
-        <div className="setting__bottom__value">
-          {settings[setting]}
-          {specs.unit}
-        </div>
-
-        <input
-          type="range"
-          min={specs.min}
-          max={specs.max}
-          step={specs.step}
-          value={currentValue}
-          onChange={(e) => setThisSetting(Number(e.target.value))}
-        />
+        <button
+          className="setting-btn"
+          onClick={() => {
+            setThisSetting(currentValue - specs.step!);
+          }}
+          disabled={settings[setting] === specs.min}
+        >
+          <MinusIcon />
+        </button>
       </div>
     </div>
   );
@@ -111,56 +116,58 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
 
   return (
     <div className="setting setting--buttons">
-      <div className="setting__top">
-        <span className="setting__top__title">{specs.title}</span>
+      <div className="setting__left">
+        <div className="setting__left__top">
+          <span className="setting__left__top__title">{specs.title}</span>
 
-        {onClose && (
-          <button
-            className="setting-close-btn"
-            onClick={() => {
-              onClose();
-            }}
-          >
-            <CloseIcon />
-          </button>
-        )}
-
-        {!isKeySelector && specs.hints?.[currentValue] && (
-          <div className="setting__top__hint">
-            <span>{specs.hints?.[currentValue]}</span>
-          </div>
-        )}
-      </div>
-
-      <div
-        className={`button-menu button-menu--${isKeySelector ? "vertical" : "horizontal"}`}
-      >
-        {Object.values(specs.values).map((key) => {
-          return (
+          {onClose && (
             <button
-              key={key}
+              className="setting-close-btn"
               onClick={() => {
-                setThisSetting(key);
-                onClose && onClose();
+                onClose();
               }}
-              className={`btn-menu-item btn-menu-item--${currentValue === key ? "selected" : "not-selected"}`}
             >
-              <span>{key}</span>
-
-              {isKeySelector && specs.hints?.[key] && (
-                <span>{specs.hints?.[key]}</span>
-              )}
+              <CloseIcon />
             </button>
-          );
-        })}
+          )}
+
+          {!isKeySelector && specs.hints?.[currentValue] && (
+            <div className="setting__left__top__hint">
+              <span>{specs.hints?.[currentValue]}</span>
+            </div>
+          )}
+        </div>
+
+        <div
+          className={`button-menu button-menu--${isKeySelector ? "vertical" : "horizontal"}`}
+        >
+          {Object.values(specs.values).map((key) => {
+            return (
+              <button
+                key={key}
+                onClick={() => {
+                  setThisSetting(key);
+                  onClose && onClose();
+                }}
+                className={`btn-menu-item btn-menu-item--${currentValue === key ? "selected" : "not-selected"}`}
+              >
+                <span>{key}</span>
+
+                {isKeySelector && specs.hints?.[key] && (
+                  <span>{specs.hints?.[key]}</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 };
 
 export const SettingsModal = () => {
-  const { playMorse } = useMorseAudio();
-  const { settings, setSettings } = useContext(MorseContext);
+  const { playMorse, stopMorse } = useMorseAudio();
+  const { settings, setSettings, isPlaying } = useContext(MorseContext);
 
   return (
     <Modal title="Settings">
@@ -176,13 +183,20 @@ export const SettingsModal = () => {
             <span>Reset all</span>
           </button>
           <button
-            className="btn btn--outlined"
+            className={clsx(
+              "btn btn--outlined",
+              isPlaying && "btn--outlined-stop",
+            )}
             onClick={() => {
-              playMorse(alphaToMorse("ABC"));
+              if (isPlaying) {
+                stopMorse();
+              } else {
+                playMorse(alphaToMorse("ABC"));
+              }
             }}
           >
-            <SpeakerIcon />
-            <span>Play sample</span>
+            {isPlaying ? <StopIcon /> : <SpeakerIcon />}
+            <span>{isPlaying ? "Stop" : "Play sample"}</span>
           </button>
         </div>
 

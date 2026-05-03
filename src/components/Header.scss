@@ -1,54 +1,75 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  width: 100%;
+  gap: 10px;
   padding: var(--modal-padding);
 
   button {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 14px;
+
+    font-size: 18px;
 
     svg {
-      width: 32px;
-      height: 32px;
-    }
-  }
-
-  &__menu-btn {
-    gap: 12px;
-
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--K200);
-
-    svg {
-      fill: var(--K200);
+      width: 28px;
+      height: 28px;
     }
 
-    &:hover {
-      color: var(--accent);
+    &.header__menu-btn {
+      color: var(--K200);
+      text-transform: uppercase;
+      font-weight: 700;
 
       svg {
-        fill: var(--accent);
+        fill: var(--K200);
+      }
+
+      &:hover {
+        color: var(--accent);
+
+        svg {
+          fill: var(--accent);
+        }
       }
     }
-  }
 
-  &__settings-btn {
-    gap: 10px;
+    &.header__right-btn {
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--K600);
+      font-size: 14px;
+      font-weight: 600;
 
-    font-size: 14px;
-    color: var(--K500);
-    font-weight: 700;
+      &--settings {
+        flex: 1;
 
-    svg {
-      fill: var(--K500);
-    }
+        .header-diff {
+          font-size: 18px;
+          font-weight: 400;
+          color: var(--K700);
+          text-transform: uppercase;
+        }
+      }
+      &--shortcuts {
+        margin-left: 6px;
+      }
 
-    &:hover svg {
-      fill: var(--accent);
+      svg {
+        fill: var(--K600);
+      }
+
+      &:hover {
+        &,
+        span {
+          color: var(--accent);
+        }
+
+        svg {
+          fill: var(--accent);
+        }
+      }
     }
   }
 }

@@ -57,9 +57,6 @@
       &:nth-child(2) {
         margin-left: calc($key-width * -0.3);
       }
-      &:nth-child(3) {
-        margin-left: calc($key-width * -0.9);
-      }
     }
     .keyboard--special-chars & {
       .key {

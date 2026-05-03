@@ -23,7 +23,9 @@
     background: var(--K950);
 
     span {
-      font-weight: 700;
+      transition: 0.3s ease all;
+
+      font-weight: 600;
       color: var(--K400);
       text-transform: uppercase;
     }

@@ -18,6 +18,7 @@ import { Practice } from "./components/Practice";
 import { Send } from "./components/Send";
 import { useEffect, useState } from "react";
 import { Home } from "./components/Home";
+import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
 
 function App() {
   const [lastSelectedMode, setLastSelectedMode] = useLocalStorage(
@@ -56,13 +57,14 @@ function App() {
       >
         {selectedMenu === Menus.Menu && <Menu />}
         {selectedMenu === Menus.Settings && <SettingsModal />}
+        {selectedMenu === Menus.Shortcuts && <KeyboardShortcuts />}
 
         {selectedMode !== Modes.Home && <Header />}
 
         <div className="main">
           <div className="main__content">
             {!audioInitialized && <Home />}
-            {audioInitialized && selectedMenu === Menus.None && (
+            {audioInitialized && (
               <>
                 {selectedMode === Modes.Home && <Home />}
                 {selectedMode === Modes.Send && <Send />}

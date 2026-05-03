@@ -22,6 +22,7 @@ $theme-colors: (
   "K075": #f8fafc,
   "K050": #fcfdfe,
   "K010": #fefefe,
+  "accent-light": #ffa573,
   "accent": #f37c3c,
   "accent-hover": #da7842,
   "link": #69bcff,
@@ -171,10 +172,10 @@ button {
     border-radius: 24px;
 
     span {
-      color: var(--K200);
+      color: var(--K400);
     }
     svg {
-      fill: var(--K200);
+      fill: var(--K400);
     }
 
     &:not(:disabled) {

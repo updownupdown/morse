@@ -2,10 +2,11 @@ import React, { useContext } from "react";
 import { MenuIcon } from "../icons/MenuIcon";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import "./Header.scss";
-import { Menus, MorseContext, Setting } from "../context/MorseContext";
+import { Menus, Modes, MorseContext, Setting } from "../context/MorseContext";
+import { KeyboardIcon } from "../icons/KeyboardIcon";
 
 export const Header = () => {
-  const { settings, setSelectedMenu, selectedMode } = useContext(MorseContext);
+  const { setSelectedMenu, selectedMode, settings } = useContext(MorseContext);
 
   return (
     <div className="header">
@@ -18,11 +19,22 @@ export const Header = () => {
       </button>
 
       <button
-        className="header__settings-btn"
+        className="header__right-btn header__right-btn--settings"
         onClick={() => setSelectedMenu(Menus.Settings)}
       >
-        <span>{settings[Setting.Difficulty]}</span>
+        <span className="header-diff">
+          {[Modes.Receive, Modes.Send].includes(selectedMode) && (
+            <>[{settings[Setting.Difficulty]}]</>
+          )}
+        </span>
         <SettingsIcon />
+      </button>
+
+      <button
+        className="header__right-btn header__right-btn--shortcuts"
+        onClick={() => setSelectedMenu(Menus.Shortcuts)}
+      >
+        <KeyboardIcon />
       </button>
     </div>
   );

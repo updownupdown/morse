@@ -5,42 +5,34 @@
 
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 
   &__top {
+    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 
     @include inset-black-box;
 
-    &__select {
+    .key-select-btn {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      right: 0;
+
       display: flex;
-      width: 100%;
+      padding: 12px 14px;
 
-      .morse-key-select {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--K700);
 
-        span {
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--K700);
-        }
-
-        button {
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--K700);
-
-          &:not(:disabled) {
-            &:hover,
-            &:active {
-              span:last-child {
-                color: var(--K300);
-              }
-            }
+      &:not(:disabled) {
+        &:hover,
+        &:active {
+          span:last-child {
+            color: var(--K300);
           }
         }
       }
@@ -48,11 +40,12 @@
 
     &__queue {
       position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 22px 24px;
-      height: 44px;
+      padding: 0 22px;
+      height: 80px;
 
       &__morse {
         position: relative;
@@ -105,8 +98,9 @@
       &__match {
         display: flex;
         align-items: center;
+        margin-top: 16px;
 
-        font-size: 32px;
+        font-size: 28px;
         font-weight: 600;
         color: var(--K600);
         line-height: 1;
@@ -158,15 +152,14 @@
 
       background: rgba(var(--K500-rgb), 0.7);
       box-shadow:
-        inset 0 0 20px rgba(var(--K100-rgb), 0.2),
+        inset 0 0 20px rgba(var(--K100-rgb), 0.6),
         0 0 8px rgba(var(--K200-rgb), 0.2);
 
       font-size: 18px;
-      color: var(--K900);
+      color: var(--K800);
 
       &:not(:disabled) {
         &.morse-key--pressed,
-        &:hover,
         &:active {
           background: var(--K500);
           box-shadow:
@@ -196,8 +189,7 @@
 
       &:not(:disabled) {
         &.morse-key--pressed,
-        &:active,
-        &:hover {
+        &:active {
           background: rgba(var(--dit-rgb), 0.4);
           box-shadow:
             inset 0 0 20px rgba(var(--dit-rgb), 0.3),
@@ -225,8 +217,7 @@
 
       &:not(:disabled) {
         &.morse-key--pressed,
-        &:active,
-        &:hover {
+        &:active {
           background: rgba(var(--dah-rgb), 0.5);
           box-shadow:
             inset 0 0 20px rgba(var(--dah-rgb), 0.3),
