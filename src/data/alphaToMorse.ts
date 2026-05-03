@@ -53,11 +53,12 @@ export function morseToAlpha(morse: string) {
   return splitMorse.join("");
 }
 
-export type Unit = "." | "-" | " " | "/" | "dit" | "dah";
+export type Unit = "." | "-" | " " | "/" | "dit" | "dah" | "autoCharBreak";
 
 export const unitLengths: Record<Unit, number> = {
   dit: 1,
   dah: 3,
+  autoCharBreak: 2.3,
   ".": 1,
   "-": 3,
   " ": 3,

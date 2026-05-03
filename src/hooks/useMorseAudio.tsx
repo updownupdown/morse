@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Difficulty, MorseContext, Setting } from "../context/MorseContext";
+import { MorseContext, Setting } from "../context/MorseContext";
 import { unitLengths } from "../data/alphaToMorse";
 
 const maxFadeDuration = 200; // ms
@@ -9,7 +9,6 @@ export const initCode = "init";
 
 function beepGlow(on: boolean) {
   const beeps = document.getElementsByClassName("beep-glow");
-
   for (let i = 0; i < beeps.length; i++) {
     if (on) {
       beeps[i].classList.add("beep-glow--on");

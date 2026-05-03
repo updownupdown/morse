@@ -39,12 +39,18 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
 
   return (
     <div className="setting setting--slider">
-      <div className="setting__header">
-        <span className="setting__header__title">{specs.title}</span>
-        <div className="setting__header__unit">
-          {settings[setting]}
-          {specs.unit}
-        </div>
+      <div className="setting__top">
+        <span className="setting__top__title">{specs.title}</span>
+
+        <button
+          className="reset-btn"
+          onClick={() => {
+            setThisSetting(Number(defaultSettings[setting]));
+          }}
+          disabled={currentValue === defaultSettings[setting]}
+        >
+          Reset
+        </button>
 
         <button
           className="setting-btn"
@@ -66,16 +72,12 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
         </button>
       </div>
 
-      <div className="setting__input">
-        <button
-          className="reset-btn"
-          onClick={() => {
-            setThisSetting(Number(defaultSettings[setting]));
-          }}
-          disabled={currentValue === defaultSettings[setting]}
-        >
-          Reset
-        </button>
+      <div className="setting__bottom">
+        <div className="setting__bottom__value">
+          {settings[setting]}
+          {specs.unit}
+        </div>
+
         <input
           type="range"
           min={specs.min}
@@ -109,11 +111,12 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
 
   return (
     <div className="setting setting--buttons">
-      <div className="setting__header">
-        <span className="setting__header__title">{specs.title}</span>
+      <div className="setting__top">
+        <span className="setting__top__title">{specs.title}</span>
 
         {onClose && (
           <button
+            className="setting-close-btn"
             onClick={() => {
               onClose();
             }}
@@ -123,14 +126,14 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
         )}
 
         {!isKeySelector && specs.hints?.[currentValue] && (
-          <div className="setting__header__hint">
+          <div className="setting__top__hint">
             <span>{specs.hints?.[currentValue]}</span>
           </div>
         )}
       </div>
 
       <div
-        className={`setting__radios setting__radios--${isKeySelector ? "vertical" : "horizontal"}`}
+        className={`button-menu button-menu--${isKeySelector ? "vertical" : "horizontal"}`}
       >
         {Object.values(specs.values).map((key) => {
           return (
@@ -140,7 +143,7 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
                 setThisSetting(key);
                 onClose && onClose();
               }}
-              className={currentValue === key ? "selected" : "not-selected"}
+              className={`btn-menu-item btn-menu-item--${currentValue === key ? "selected" : "not-selected"}`}
             >
               <span>{key}</span>
 

@@ -29,15 +29,8 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
 
   // Character break
   const charBreakTimeoutRef = useRef<number>(null);
-
-  const multiplier = clamp(
-    settings[Setting.Farnsworth],
-    1.25,
-    settings[Setting.Farnsworth],
-  );
-
   const charBreakDuration =
-    settings[Setting.UnitTime] * unitLengths["dit"] * multiplier;
+    settings[Setting.UnitTime] * unitLengths["autoCharBreak"];
 
   const startCharBreakTimeout = () => {
     stopCharBreakTimeout();
@@ -148,10 +141,12 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      document.removeEventListener("contextmenu", (e) => e.preventDefault());
     };
   }, [queue, settings, isPressed, pressStart]);
 

@@ -1,6 +1,11 @@
 import React, { useContext, useState } from "react";
 import "./MorseKeys.scss";
-import { KeyTypes, MorseContext, Setting } from "../context/MorseContext";
+import {
+  KeyTypes,
+  KeyTypesNames,
+  MorseContext,
+  Setting,
+} from "../context/MorseContext";
 import { invalidCharText } from "../data/alphaToMorse";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { MorseChar } from "./MorseChar";
@@ -42,9 +47,24 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
 
   return (
     <div className="morse-keys">
-      <div className="morse-keys__queue">
-        <div className="morse-keys__queue__preview">
-          <div className="morse-keys__queue__preview__morse">
+      <div className="morse-keys__top">
+        <div className="morse-keys__top__select">
+          {/* Switch keyboard button */}
+          <span className="morse-key-select">
+            <span>{KeyTypesNames[settings[Setting.KeyType]]}</span>
+            <button
+              className="morse-key-select-btn"
+              onClick={() => {
+                setSelectKeyType(true);
+              }}
+            >
+              Change Key
+            </button>
+          </span>
+        </div>
+
+        <div className="morse-keys__top__queue">
+          <div className="morse-keys__top__queue__morse">
             {settings[Setting.KeyType] === KeyTypes.Straight ? (
               <>
                 <StraightMorseQueue />
@@ -64,12 +84,12 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
           </div>
           <div
             className={clsx(
-              "morse-keys__queue__preview__match",
+              "morse-keys__top__queue__match",
               ((settings[Setting.KeyType] === KeyTypes.Straight &&
                 StraightMatch === invalidCharText) ||
                 (settings[Setting.KeyType] !== KeyTypes.Straight &&
                   IambicMatch === invalidCharText)) &&
-                "morse-keys__queue__preview__match--invalid",
+                "morse-keys__top__queue__match--invalid",
             )}
           >
             {settings[Setting.KeyType] === KeyTypes.Straight
@@ -80,17 +100,6 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
       </div>
 
       <div className="morse-keys__keys">
-        {/* Switch keyboard button */}
-        <button
-          className="morse-key morse-key--select"
-          onClick={() => {
-            setSelectKeyType(true);
-          }}
-        >
-          <span>Key</span>
-          <SettingsIcon />
-        </button>
-
         {settings[Setting.KeyType] === KeyTypes.Straight ? (
           <StraightKeyButton />
         ) : (

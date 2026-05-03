@@ -15,3 +15,13 @@
     }
   }
 }
+
+@mixin inset-black-box {
+  border-radius: 12px;
+  background: var(--K950);
+  box-shadow:
+    inset 0 0 8px rgba(var(--black-rgb), 0.6),
+    inset 0 0 20px rgba(var(--black-rgb), 0.7),
+    0 0 8px rgba(var(--K500-rgb), 0.1),
+    0 0 24px rgba(var(--K600-rgb), 0.15);
+}

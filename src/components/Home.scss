@@ -121,6 +121,7 @@
     align-items: center;
     justify-content: space-between;
     height: var(--morse-key-height);
+    gap: 14px;
     padding: 0 30px;
 
     border-radius: calc(var(--morse-key-height) / 2);
@@ -131,7 +132,9 @@
 
     &__resume {
       display: flex;
-      gap: 8px;
+      justify-content: space-between;
+
+      flex: 1;
 
       font-size: 22px;
       font-weight: 800;

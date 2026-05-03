@@ -1,81 +1,58 @@
+@use "../css/mixins.scss" as *;
+
 .morse-keys {
   $bar-height: 18px;
 
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 
-  &__queue {
+  &__top {
     display: flex;
-    align-items: center;
-    padding: 8px;
+    flex-direction: column;
 
-    border-radius: 12px;
-    background: var(--K950);
+    @include inset-black-box;
 
-    button {
+    &__select {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 50px;
-      height: 100%;
-      gap: 6px;
+      width: 100%;
 
-      border-radius: 12px;
-
-      svg {
-        width: 24px;
-        height: 24px;
-      }
-
-      &:first-child {
-        svg {
-          fill: var(--K600);
-        }
-      }
-      &:last-child {
-        background: var(--K850);
+      .morse-key-select {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 12px 14px;
 
         span {
-          color: var(--K300);
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--K700);
         }
-        svg {
-          fill: var(--K300);
-        }
-      }
 
-      &:not(:disabled):hover {
-        background: var(--K700);
+        button {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--K700);
 
-        span {
-          color: var(--K100);
-        }
-        svg {
-          fill: var(--K100);
-        }
-      }
-
-      &:disabled {
-        cursor: not-allowed;
-        background: transparent;
-
-        span {
-          color: var(--K800);
-        }
-        svg {
-          fill: var(--K800);
+          &:not(:disabled) {
+            &:hover,
+            &:active {
+              span:last-child {
+                color: var(--K300);
+              }
+            }
+          }
         }
       }
     }
 
-    &__preview {
+    &__queue {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex: 1;
-      height: 60px;
-      padding: 0 22px;
+      padding: 6px 22px 24px;
+      height: 44px;
 
       &__morse {
         position: relative;
@@ -129,8 +106,8 @@
         display: flex;
         align-items: center;
 
-        font-size: 38px;
-        font-weight: 700;
+        font-size: 32px;
+        font-weight: 600;
         color: var(--K600);
         line-height: 1;
         text-align: right;
@@ -141,27 +118,6 @@
           font-size: 0;
         }
       }
-    }
-  }
-
-  &__select {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-    height: var(--morse-key-height);
-    padding: 8px;
-
-    border-radius: 12px;
-    background: rgba(var(--K200-rgb), 0.2);
-
-    .btn {
-      flex: 1;
-      height: 100%;
-
-      border-radius: 8px;
-
-      font-size: 16px;
-      font-weight: 700;
     }
   }
 
@@ -195,35 +151,6 @@
     &:disabled {
       cursor: not-allowed;
       opacity: 0.4;
-    }
-
-    &--select {
-      flex-direction: column;
-      gap: 6px;
-      padding: 6px 10px 0;
-
-      border-radius: 6px;
-      background: unset;
-
-      span {
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--K400);
-        line-height: 1.2;
-      }
-
-      svg {
-        width: 18px;
-        height: 18px;
-        fill: var(--K400);
-      }
-
-      &:not(:disabled):hover {
-        background: rgba(var(--K200-rgb), 0.4);
-      }
     }
 
     &--straight {
@@ -321,8 +248,8 @@
   background: linear-gradient(
     to bottom,
     rgba(var(--K950-rgb), 0.2) 0%,
-    rgba(var(--K950-rgb), 0.4) 70%,
-    rgba(var(--K950-rgb), 0.7) 100%
+    rgba(var(--K950-rgb), 0.6) 70%,
+    rgba(var(--K950-rgb), 0.8) 100%
   );
   backdrop-filter: blur(6px);
 }
@@ -338,8 +265,5 @@
     z-index: 2;
     gap: var(--modal-padding);
     padding: var(--modal-padding);
-
-    border-radius: unset;
-    background: unset;
   }
 }

@@ -47,15 +47,8 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
 
   // Character break
   const charBreakTimeoutRef = useRef<number>(null);
-
-  const multiplier = clamp(
-    settings[Setting.Farnsworth],
-    1.25,
-    settings[Setting.Farnsworth],
-  );
-
   const charBreakDuration =
-    settings[Setting.UnitTime] * unitLengths["dit"] * multiplier;
+    settings[Setting.UnitTime] * unitLengths["autoCharBreak"];
 
   const startCharBreakTimeout = () => {
     stopCharBreakTimeout();
@@ -231,10 +224,12 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      document.removeEventListener("contextmenu", (e) => e.preventDefault());
     };
   }, [settings]);
 
@@ -345,10 +340,10 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
           onPointerDown={() => {
             onKeyDown("dit");
           }}
-          onPointerMove={() => {
+          onPointerUp={() => {
             onKeyUp("dit");
           }}
-          onPointerUp={() => {
+          onPointerLeave={() => {
             onKeyUp("dit");
           }}
           disabled={queue.length === maxCodeLength}
@@ -363,13 +358,10 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
           onPointerDown={() => {
             onKeyDown("dah");
           }}
-          onPointerMove={() => {
-            onKeyUp("dah");
-          }}
           onPointerUp={() => {
             onKeyUp("dah");
           }}
-          onPointerCancel={() => {
+          onPointerLeave={() => {
             onKeyUp("dah");
           }}
           disabled={queue.length === maxCodeLength}

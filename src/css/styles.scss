@@ -1,5 +1,5 @@
 @use "./media.scss";
-@use "./mixins.scss";
+@use "./mixins.scss" as *;
 @use "./inputs.scss";
 @use "sass:color";
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
@@ -22,13 +22,13 @@ $theme-colors: (
   "K075": #f8fafc,
   "K050": #fcfdfe,
   "K010": #fefefe,
-  "accent": #ff975e,
+  "accent": #f37c3c,
   "accent-hover": #da7842,
   "link": #69bcff,
   "link-hover": #9ed3ff,
   "link-active": #69bcff,
-  "dit": #ffef76,
-  "dah": #c478e8,
+  "dit": #ffff4e,
+  "dah": #d06cff,
   "status-green": #3fdd93,
   "status-red": #fb5d5d,
 );
@@ -69,6 +69,7 @@ $theme-colors: (
 
 html {
   height: 100%;
+  user-select: none;
 }
 
 body {
@@ -277,42 +278,63 @@ button {
 .button-menu {
   display: flex;
   width: 100%;
-  padding: 8px;
+  padding: 6px;
 
-  border-radius: 12px;
-  background: var(--K850);
+  @include inset-black-box;
 
   .btn-menu-item {
     display: flex;
     justify-content: center;
     align-items: center;
     flex: 1;
-    padding: 10px 4px;
+    padding: 12px 4px;
 
-    border-radius: 8px;
+    border-radius: 6px;
 
-    font-size: 18px;
-    color: var(--K400);
+    font-size: 14px;
+    color: var(--K600);
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1;
 
     &--selected {
-      background: var(--K100);
-      color: var(--K850);
+      background: var(--K400);
+      color: var(--K950);
     }
     &--not-selected:hover {
-      background: var(--K700);
+      background: var(--K850);
       color: var(--K200);
     }
   }
 
-  &--small {
-    border-radius: 6px;
-    padding: 6px;
+  &--vertical {
+    flex-direction: column;
 
     .btn-menu-item {
-      border-radius: 4px;
-      font-size: 14px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 16px 12px;
+
+      text-align: left;
+
+      span:first-child {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--K200);
+      }
+      span:last-child {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--K600);
+        line-height: 1.2;
+      }
+
+      &--selected {
+        span:first-child,
+        span:last-child {
+          color: var(--K900);
+        }
+      }
     }
   }
 }

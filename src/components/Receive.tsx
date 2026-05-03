@@ -147,7 +147,7 @@ export const Receive = () => {
   return (
     <div className="receive">
       <div className="receive__buttons">
-        <div className="button-menu button-menu--small">
+        <div className="button-menu">
           {Object.entries(Sources).map(([key, val]) => {
             return (
               <button
