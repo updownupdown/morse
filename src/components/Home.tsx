@@ -49,10 +49,12 @@ export const Home = () => {
         <h3>
           Morse<span>Play</span>
         </h3>
-        <span>by James Carmichael</span>
-        <a href="https://github.com/updownupdown/morse" target="_blank">
-          GitHub
-        </a>
+        <span>
+          by James Carmichael |{" "}
+          <a href="https://github.com/updownupdown/morse" target="_blank">
+            GitHub
+          </a>
+        </span>
       </div>
 
       <MenuLinks />
@@ -83,7 +85,9 @@ export const Home = () => {
 
       {showResumeButton && (
         <button className="home-resume" onClick={resume}>
-          <span>Resume {lastSelectedMode}</span>
+          <span>
+            Resume <span>{lastSelectedMode}</span>
+          </span>
           {ModeIcons[lastSelectedMode]}
         </button>
       )}

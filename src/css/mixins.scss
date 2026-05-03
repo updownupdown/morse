@@ -4,14 +4,14 @@
     height: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: var(--K800);
+    background-color: var(--K950);
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-color: var(--K700);
+    background-color: var(--K800);
 
     &:hover {
-      background-color: var(--K850);
+      background-color: var(--K700);
     }
   }
 }
@@ -22,6 +22,6 @@
   box-shadow:
     inset 0 0 8px rgba(var(--black-rgb), 0.6),
     inset 0 0 20px rgba(var(--black-rgb), 0.7),
-    0 0 8px rgba(var(--K500-rgb), 0.1),
-    0 0 24px rgba(var(--K600-rgb), 0.15);
+    0 0 8px rgba(var(--K600-rgb), 0.1),
+    0 0 24px rgba(var(--K700-rgb), 0.15);
 }

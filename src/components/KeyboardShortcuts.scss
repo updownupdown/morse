@@ -14,7 +14,7 @@
     padding: 10px 0;
 
     font-size: 18px;
-    color: var(--K200);
+    color: var(--accent);
     font-weight: 700;
 
     &:not(:first-child) {
@@ -34,7 +34,7 @@
     }
 
     span {
-      color: var(--K400);
+      color: var(--K300);
       line-height: 1.3;
 
       &:first-child {
@@ -50,11 +50,12 @@
         min-width: 42px;
         height: 42px;
 
-        border-radius: 8px;
+        border-radius: 6px;
         background: var(--K850);
 
         font-size: 14px;
         font-weight: 700;
+        color: var(--K100);
       }
     }
 

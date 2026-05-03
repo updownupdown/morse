@@ -28,7 +28,8 @@ input[type="number"] {
     background: var(--K950);
   }
   &:disabled {
-    background: var(--K850);
+    background: var(--K900);
+    border: 2px solid var(--K850);
     box-shadow: unset;
   }
 
@@ -44,6 +45,8 @@ input[type="number"] {
 }
 
 textarea {
+  @include scrollbar-mixin;
+
   resize: none;
   height: 120px;
 }

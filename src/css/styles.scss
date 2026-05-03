@@ -9,6 +9,7 @@ $theme-colors: (
   "white": #ffffff,
   "K950": #121518,
   "K900": #23292f,
+  "K875": #2c3238,
   "K850": #363c42,
   "K800": #494f55,
   "K700": #696f75,
@@ -173,6 +174,7 @@ button {
 
     span {
       color: var(--K400);
+      font-weight: 550;
     }
     svg {
       fill: var(--K400);
@@ -243,21 +245,6 @@ button {
       }
     }
 
-    &--small {
-      width: 48px;
-      height: 48px;
-      padding: 0 12px;
-
-      border: 2px solid var(--K800);
-      border-radius: 50%;
-      flex-grow: 0;
-
-      svg {
-        width: 24px;
-        height: 24px;
-      }
-    }
-
     &:disabled {
       cursor: not-allowed;
       opacity: 0.4;
@@ -308,8 +295,8 @@ button {
       text-align: left;
 
       span:first-child {
-        font-size: 16px;
-        font-weight: 800;
+        font-size: 18px;
+        font-weight: 650;
         color: var(--K200);
       }
       span:last-child {

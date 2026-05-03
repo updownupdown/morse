@@ -45,12 +45,12 @@ export function morseToAlpha(morse: string) {
         const match = Object.keys(alphaToMorseDict).find(
           (key) => alphaToMorseDict[key] === symbol,
         );
-        alpha.push(match ?? "");
+        alpha.push(match ?? "�");
       }
     });
   }
 
-  return splitMorse.join("");
+  return alpha.join("");
 }
 
 export type Unit = "." | "-" | " " | "/" | "dit" | "dah" | "autoCharBreak";
@@ -118,20 +118,20 @@ export const alphaToMorseDict: Study = {
   "8": "---..",
   "9": "----.",
   "0": "-----",
-  "&": ".-...",
-  "'": ".----.",
-  "@": ".--.-.",
-  "(": "-.--.",
-  ")": "-.--.-",
+  ".": ".-.-.-",
+  ";": "-.-.-.",
   ":": "---...",
   ",": "--..--",
-  ".": ".-.-.-",
   "!": "-.-.--",
   "?": "..--..",
-  ";": "-.-.-.",
+  "&": ".-...",
+  "@": ".--.-.",
   "/": "-..-.",
-  "-": "-....-",
-  '"': ".-..-.",
-  "=": "-...-",
+  "(": "-.--.",
+  ")": "-.--.-",
   "+": ".-.-.",
+  "-": "-....-",
+  "=": "-...-",
+  "'": ".----.",
+  '"': ".-..-.",
 };

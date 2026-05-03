@@ -28,6 +28,11 @@
       font-weight: 600;
       color: var(--K700);
 
+      span {
+        padding-left: 7px;
+        color: var(--K400);
+      }
+
       &:not(:disabled) {
         &:hover,
         &:active {

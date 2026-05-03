@@ -60,7 +60,7 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
             setSelectKeyType(true);
           }}
         >
-          {KeyTypesNames[settings[Setting.KeyType]]} [Change]
+          {KeyTypesNames[settings[Setting.KeyType]]} / <span>Change</span>
         </button>
 
         <div className="morse-keys__top__queue">
