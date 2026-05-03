@@ -108,7 +108,7 @@ export const Keyboard = ({ onPress, isSpecialChars }: KeyboardProps) => {
               <Key letter="N" />
               <Key letter="M" />
               <Key letter="," />
-              <Key letter="?" />
+              <Key letter="'" />
             </div>
           </>
         )}

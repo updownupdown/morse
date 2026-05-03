@@ -14,7 +14,7 @@ import { SlashIcon } from "../icons/SlashIcon";
 import clsx from "clsx";
 
 export const Practice = () => {
-  const { isPlaying } = useContext(MorseContext);
+  const { isPlaying, selectedMenu } = useContext(MorseContext);
 
   const { playMorse, stopMorse } = useMorseAudio();
 
@@ -45,6 +45,10 @@ export const Practice = () => {
       }
     }
   }
+
+  useEffect(() => {
+    stopMorse();
+  }, [selectedMenu]);
 
   const deleteAllIsDisabled = isWordEmpty || isPlayingWord;
   function deleteAll() {

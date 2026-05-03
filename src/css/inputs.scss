@@ -1,3 +1,5 @@
+@use "../css/mixins.scss" as *;
+
 textarea,
 select,
 input[type="text"],
@@ -8,8 +10,10 @@ input[type="number"] {
   width: 100%;
   padding: 12px;
 
-  border-radius: 8px;
-  border: 2px solid transparent;
+  margin: unset;
+  border: unset;
+
+  @include inset-black-box;
 
   font-family: var(--font);
   font-size: 16px;
@@ -25,6 +29,7 @@ input[type="number"] {
   }
   &:disabled {
     background: var(--K850);
+    box-shadow: unset;
   }
 
   &:not(:disabled):hover,

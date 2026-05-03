@@ -243,28 +243,19 @@ button {
       }
     }
 
-    &--bright {
-      background: var(--K300);
-      color: var(--K800);
-
-      &:not(:disabled) {
-        &:hover,
-        &:active {
-          background: var(--K500);
-
-          span {
-            color: var(--K900);
-          }
-        }
-      }
-    }
-
     &--small {
-      width: 36px;
-      height: 24px;
+      width: 48px;
+      height: 48px;
+      padding: 0 12px;
 
-      border-radius: 12px;
+      border: 2px solid var(--K800);
+      border-radius: 50%;
       flex-grow: 0;
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     &:disabled {
@@ -292,11 +283,11 @@ button {
 
     font-size: 14px;
     color: var(--K600);
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1;
 
     &--selected {
-      background: var(--K400);
+      background: var(--K300);
       color: var(--K950);
     }
     &--not-selected:hover {

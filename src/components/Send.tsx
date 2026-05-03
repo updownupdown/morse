@@ -1,15 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Send.scss";
 import { MorseKeys } from "./MorseKeys";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { alphaToMorse, calculateMorseUnitLength } from "../data/alphaToMorse";
 import { Status, Word } from "./Word";
 import { getRandomSource, Sources } from "../data/dataSources";
-import { MorseContext } from "../context/MorseContext";
 
 export const Send = () => {
-  const { settings } = useContext(MorseContext);
-
   const [wordAlpha, setWordAlpha] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [status, setStatus] = useState<Status[]>([]);

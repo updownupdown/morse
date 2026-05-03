@@ -12,7 +12,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import clsx from "clsx";
 
 export const Receive = () => {
-  const { settings, isPlaying: isPlaying } = useContext(MorseContext);
+  const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
   const isPlayingRef = useRef(isPlaying);
   isPlayingRef.current = isPlaying;
 
@@ -110,6 +110,10 @@ export const Receive = () => {
     }
   }
 
+  useEffect(() => {
+    stopMorse();
+  }, [selectedMenu]);
+
   function playPauseLetter() {
     setLastPlayBtnPressed("letter");
 
@@ -169,17 +173,20 @@ export const Receive = () => {
         <Word word={wordAlpha} status={status} index={wordIndex} />
       </div>
       <div className="receive__buttons">
-        <button
-          className={clsx(
-            "btn btn--outlined",
-            wordBtnIsStop() && "btn--outlined-stop",
-          )}
-          onClick={playPauseWord}
-          disabled={letterBtnIsStop()}
-        >
-          {wordBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
-          <span>{wordBtnIsStop() ? "Stop" : "Word"}</span>
-        </button>
+        {wordAlpha.length > 1 && (
+          <button
+            className={clsx(
+              "btn btn--outlined",
+              wordBtnIsStop() && "btn--outlined-stop",
+            )}
+            onClick={playPauseWord}
+            disabled={letterBtnIsStop()}
+          >
+            {wordBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
+            <span>{wordBtnIsStop() ? "Stop" : "Word"}</span>
+          </button>
+        )}
+
         <button
           className={clsx(
             "btn btn--outlined",

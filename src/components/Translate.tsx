@@ -16,12 +16,16 @@ import { useMorseAudio } from "../hooks/useMorseAudio";
 import { MorseContext } from "../context/MorseContext";
 
 export const Translate = () => {
-  const { isPlaying: isPlaying } = useContext(MorseContext);
-  const { playMorse } = useMorseAudio();
+  const { isPlaying, selectedMenu } = useContext(MorseContext);
+  const { playMorse, stopMorse } = useMorseAudio();
 
   const [alpha, setAlpha] = useLocalStorage("convertedAlpha", "");
   const [morse, setMorse] = useLocalStorage("convertedMorse", "");
   const [isAlphaInput, setIsAlphaInput] = useState(true);
+
+  useEffect(() => {
+    stopMorse();
+  }, [selectedMenu]);
 
   function backspaceAlpha() {
     setAlpha(alpha.slice(0, -1));

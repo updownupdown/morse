@@ -21,7 +21,8 @@ interface SymbolProps {
 }
 
 export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
-  const { playMorse } = useMorseAudio();
+  const { selectedMenu } = useContext(MorseContext);
+  const { playMorse, stopMorse } = useMorseAudio();
 
   const [isPlayingThis, setIsPlayingThis] = useState(false);
 
@@ -30,6 +31,10 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
       setIsPlayingThis(false);
     }
   }, [disabled]);
+
+  useEffect(() => {
+    stopMorse();
+  }, [selectedMenu]);
 
   return (
     <button
@@ -80,7 +85,12 @@ type ProsignDictionaryProps = {
 };
 
 const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
-  const { playMorse } = useMorseAudio();
+  const { selectedMenu } = useContext(MorseContext);
+  const { playMorse, stopMorse } = useMorseAudio();
+
+  useEffect(() => {
+    stopMorse();
+  }, [selectedMenu]);
 
   return (
     <div className="prosigns">
@@ -128,7 +138,6 @@ const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
 
 export const Study = () => {
   const { isPlaying } = useContext(MorseContext);
-  const { playMorse } = useMorseAudio();
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
 
   let regex: RegExp;

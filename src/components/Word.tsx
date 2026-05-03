@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import clsx from "clsx";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
@@ -14,8 +14,12 @@ interface Props {
 }
 
 export const Word = ({ word, status, index }: Props) => {
-  const { isPlaying: isPlaying } = useContext(MorseContext);
-  const { playMorse } = useMorseAudio();
+  const { isPlaying, selectedMenu } = useContext(MorseContext);
+  const { playMorse, stopMorse } = useMorseAudio();
+
+  useEffect(() => {
+    stopMorse();
+  }, [selectedMenu]);
 
   let letterSize = "sm";
 

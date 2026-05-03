@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   defaultSettings,
   MorseContext,
@@ -168,6 +168,12 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
 export const SettingsModal = () => {
   const { playMorse, stopMorse } = useMorseAudio();
   const { settings, setSettings, isPlaying } = useContext(MorseContext);
+
+  useEffect(() => {
+    return () => {
+      stopMorse();
+    };
+  }, []);
 
   return (
     <Modal title="Settings">

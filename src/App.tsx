@@ -16,7 +16,7 @@ import { Receive } from "./components/Receive";
 import { Translate } from "./components/Translate";
 import { Practice } from "./components/Practice";
 import { Send } from "./components/Send";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Home } from "./components/Home";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
 

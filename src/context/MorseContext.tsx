@@ -51,7 +51,7 @@ export const defaultSettings: Settings = {
   [Setting.KeyType]: KeyTypes.Straight,
   [Setting.UnitTime]: 100,
   [Setting.Farnsworth]: 2,
-  [Setting.Frequency]: 600,
+  [Setting.Frequency]: 550,
   [Setting.Volume]: 30,
 };
 
@@ -106,8 +106,8 @@ export const settingsSpecs: Record<
   [Setting.Frequency]: {
     title: "Frequency",
     unit: "Hz",
-    min: 50,
-    max: 800,
+    min: 200,
+    max: 700,
     step: 10,
   },
   [Setting.Volume]: {
