@@ -100,14 +100,22 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
 
       {/* Switch keyboard modal */}
       {selectKeyType && (
-        <div className="key-selector-modal">
-          <SettingButtons
-            setting={Setting.KeyType}
-            onClose={() => {
+        <>
+          <div
+            className="key-selector-modal-mask"
+            onClick={() => {
               setSelectKeyType(false);
             }}
           />
-        </div>
+          <div className="key-selector-modal">
+            <SettingButtons
+              setting={Setting.KeyType}
+              onClose={() => {
+                setSelectKeyType(false);
+              }}
+            />
+          </div>
+        </>
       )}
     </div>
   );

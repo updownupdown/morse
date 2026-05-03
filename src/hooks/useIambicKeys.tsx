@@ -10,6 +10,7 @@ import {
 } from "../data/alphaToMorse";
 import clsx from "clsx";
 import { MorseChar } from "../components/MorseChar";
+import { clamp } from "../utils/utils";
 
 type PressedState = {
   dit?: number;
@@ -30,8 +31,6 @@ type IambicKeysProps = {
 export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
   // ========== MAIN =========== //
   const { settings, isPlaying: isPlaying } = useContext(MorseContext);
-  const settingsRef = useRef(settings);
-  settingsRef.current = settings;
   const isPlayingRef = useRef(isPlaying);
   isPlayingRef.current = isPlaying;
 
@@ -48,8 +47,15 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
 
   // Character break
   const charBreakTimeoutRef = useRef<number>(null);
+
+  const multiplier = clamp(
+    settings[Setting.Farnsworth],
+    1.25,
+    settings[Setting.Farnsworth],
+  );
+
   const charBreakDuration =
-    settings[Setting.UnitTime] * unitLengths["charBreak"];
+    settings[Setting.UnitTime] * unitLengths["dit"] * multiplier;
 
   const startCharBreakTimeout = () => {
     stopCharBreakTimeout();
@@ -127,12 +133,11 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
 
     const isValidSqueeze =
       otherKeyTime !== undefined &&
-      Math.abs(otherKeyTime - thisKeyTime) <
-        settingsRef.current[Setting.UnitTime];
+      Math.abs(otherKeyTime - thisKeyTime) < settings[Setting.UnitTime];
 
     // For Ultimatic, if newly squeezed, the current key will be the last squeezed;
     // set it for repeat
-    if (settingsRef.current[Setting.KeyType] === KeyTypes.Ultimatic) {
+    if (settings[Setting.KeyType] === KeyTypes.Ultimatic) {
       const newlySqueezed = isValidSqueeze && !pressStateRef.current.squeezed;
       if (newlySqueezed) {
         setUltimaticRepeatSymbol(keyType);
@@ -154,13 +159,13 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
 
   function onKeyUp(keyType: KeyType) {
     // Imabic Mode B
-    if (settingsRef.current[Setting.KeyType] === KeyTypes.IambicB) {
+    if (settings[Setting.KeyType] === KeyTypes.IambicB) {
       if (pressStateRef.current.squeezed) {
         // If was squeezed until now, set mode B to true
         setModeB(true);
       } else if (modeBRef.current) {
         // If not unpressing quickly enough, set mode B to false
-        const unpressDelayThreshold = settingsRef.current[Setting.UnitTime];
+        const unpressDelayThreshold = settings[Setting.UnitTime];
         const unpressedQuickly =
           lastUnpressRef.current &&
           Date.now() - lastUnpressRef.current < unpressDelayThreshold;
@@ -192,7 +197,7 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
 
       if (
         ![KeyTypes.IambicA, KeyTypes.IambicB, KeyTypes.Ultimatic].includes(
-          settingsRef.current[Setting.KeyType],
+          settings[Setting.KeyType],
         )
       ) {
         return;
@@ -209,7 +214,7 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
     const handleKeyUp = (e: KeyboardEvent) => {
       if (
         ![KeyTypes.IambicA, KeyTypes.IambicB, KeyTypes.Ultimatic].includes(
-          settingsRef.current[Setting.KeyType],
+          settings[Setting.KeyType],
         )
       ) {
         return;
@@ -231,7 +236,7 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [settings]);
 
   // ========== Play logic =========== //
   async function play() {
@@ -240,20 +245,20 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
     stopCharBreakTimeout();
 
     // Reset mode B whenever a sound is played
-    if (settingsRef.current[Setting.KeyType] === KeyTypes.IambicB) {
+    if (settings[Setting.KeyType] === KeyTypes.IambicB) {
       setModeB(false);
     }
 
     setLastPlayed(playNow);
 
-    let timeoutDuration = settingsRef.current[Setting.UnitTime];
+    let timeoutDuration = settings[Setting.UnitTime];
 
     if (playNow === "dit") {
       playMorse(".");
-      timeoutDuration += settingsRef.current[Setting.UnitTime];
+      timeoutDuration += settings[Setting.UnitTime];
     } else if (playNow === "dah") {
       playMorse("-");
-      timeoutDuration += settingsRef.current[Setting.UnitTime] * 3;
+      timeoutDuration += settings[Setting.UnitTime] * 3;
     }
 
     setTimeout(() => {
@@ -272,7 +277,7 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
       if (pressStateRef.current.squeezed) {
         // ========== Squeezed ========== //
         if (
-          settingsRef.current[Setting.KeyType] === KeyTypes.Ultimatic &&
+          settings[Setting.KeyType] === KeyTypes.Ultimatic &&
           ultimaticRepeatSymbolRef.current
         ) {
           // Continue repeating *ultimatic* symbol
@@ -283,7 +288,6 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
         }
       } else {
         // ========== Not Squeezed ========== //
-
         const ditPressed = pressStateRef.current["dit"];
         const dahPressed = pressStateRef.current["dah"];
 
@@ -302,7 +306,7 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
     if (!play) {
       // If nothing to play, check if Mode B should be used
       if (
-        settingsRef.current[Setting.KeyType] === KeyTypes.IambicB &&
+        settings[Setting.KeyType] === KeyTypes.IambicB &&
         modeBRef.current &&
         lastPlayedRef.current
       ) {
@@ -341,7 +345,7 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
           onPointerDown={() => {
             onKeyDown("dit");
           }}
-          onPointerLeave={() => {
+          onPointerMove={() => {
             onKeyUp("dit");
           }}
           onPointerUp={() => {
@@ -359,10 +363,13 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
           onPointerDown={() => {
             onKeyDown("dah");
           }}
-          onPointerLeave={() => {
+          onPointerMove={() => {
             onKeyUp("dah");
           }}
           onPointerUp={() => {
+            onKeyUp("dah");
+          }}
+          onPointerCancel={() => {
             onKeyUp("dah");
           }}
           disabled={queue.length === maxCodeLength}

@@ -45,7 +45,10 @@
   width: 110px;
   padding: 24px 0;
 
-  border-radius: 8px;
+  &,
+  &:after {
+    border-radius: 8px;
+  }
 
   &__text {
     font-size: 32px;
@@ -59,10 +62,6 @@
   &:disabled.symbol--is-playing {
     opacity: 1;
     background: var(--K950);
-  }
-
-  &:not(:disabled):hover {
-    background: var(--K800);
   }
 }
 
@@ -78,10 +77,14 @@
     gap: 20px;
     padding: 20px;
 
-    border-radius: 12px;
     background: transparent;
 
     text-align: left;
+
+    &,
+    &:after {
+      border-radius: 12px;
+    }
 
     &__top {
       display: flex;
@@ -130,11 +133,13 @@
       color: var(--K500);
     }
 
-    &:not(:disabled) {
-      &:hover,
-      &:focus {
-        background: var(--K950);
-      }
+    &:disabled {
+      opacity: 0.5;
+    }
+
+    &:disabled.prosign--is-playing {
+      opacity: 1;
+      background: var(--K950);
     }
   }
 }

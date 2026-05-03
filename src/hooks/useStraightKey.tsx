@@ -10,6 +10,7 @@ import {
 import { useMorseAudio } from "./useMorseAudio";
 import { inProgressChar, MorseChar } from "../components/MorseChar";
 import clsx from "clsx";
+import { clamp } from "../utils/utils";
 
 interface Props {
   submitChar: (char: string) => void;
@@ -28,8 +29,15 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
 
   // Character break
   const charBreakTimeoutRef = useRef<number>(null);
+
+  const multiplier = clamp(
+    settings[Setting.Farnsworth],
+    1.25,
+    settings[Setting.Farnsworth],
+  );
+
   const charBreakDuration =
-    settings[Setting.UnitTime] * unitLengths["charBreak"];
+    settings[Setting.UnitTime] * unitLengths["dit"] * multiplier;
 
   const startCharBreakTimeout = () => {
     stopCharBreakTimeout();

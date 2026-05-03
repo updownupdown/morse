@@ -7,6 +7,18 @@ const maxPressTime = 1200; // ms
 const fadeDurationInSec = 0.02; // 20 ms
 export const initCode = "init";
 
+function beepGlow(on: boolean) {
+  const beeps = document.getElementsByClassName("beep-glow");
+
+  for (let i = 0; i < beeps.length; i++) {
+    if (on) {
+      beeps[i].classList.add("beep-glow--on");
+    } else {
+      beeps[i].classList.remove("beep-glow--on");
+    }
+  }
+}
+
 export function useMorseAudio() {
   const { settings, setIsPlaying, audioInitialized, setAudioInitialized } =
     useContext(MorseContext);
@@ -118,6 +130,8 @@ export function useMorseAudio() {
         setAudioInitialized(true);
       }
 
+      beepGlow(true);
+
       const ctx = ctxRef.current;
       const o = ctx.createOscillator();
       const g = ctx.createGain();
@@ -157,6 +171,7 @@ export function useMorseAudio() {
       o.onended = () => {
         g.disconnect();
         o.disconnect();
+        beepGlow(false);
         resolve();
       };
 
@@ -165,6 +180,7 @@ export function useMorseAudio() {
         if (cancelPlaybackRef.current) {
           try {
             o.stop();
+            beepGlow(false);
           } catch {}
           try {
             g.disconnect();

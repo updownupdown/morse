@@ -166,12 +166,7 @@ export const Receive = () => {
       </div>
 
       <div className="receive__word">
-        <Word
-          word={wordAlpha}
-          status={status}
-          index={wordIndex}
-          setIndex={setWordIndex}
-        />
+        <Word word={wordAlpha} status={status} index={wordIndex} />
       </div>
       <div className="receive__buttons">
         <button

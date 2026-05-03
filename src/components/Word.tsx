@@ -3,18 +3,17 @@ import clsx from "clsx";
 import { useMorseAudio } from "../hooks/useMorseAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import "./Word.scss";
-import { Modes, MorseContext } from "../context/MorseContext";
+import { MorseContext } from "../context/MorseContext";
 
 export type Status = "empty" | "correct" | "incorrect" | "neutral" | "space";
 
 interface Props {
   word: string;
   index?: number;
-  setIndex?: (i: number) => void;
   status?: Status[];
 }
 
-export const Word = ({ word, status, index, setIndex }: Props) => {
+export const Word = ({ word, status, index }: Props) => {
   const { isPlaying: isPlaying } = useContext(MorseContext);
   const { playMorse } = useMorseAudio();
 
@@ -46,14 +45,12 @@ export const Word = ({ word, status, index, setIndex }: Props) => {
               className={clsx(
                 "letter",
                 `letter--${thisStatus ?? "none"}`,
-                status && i === index && "letter--current",
+                status && i === index && "letter--current beep-glow",
               )}
               onClick={() => {
-                playMorse(alphaToMorse(letter));
+                if (status && i !== index) return;
 
-                if (setIndex && thisStatus !== "correct") {
-                  setIndex(i);
-                }
+                playMorse(alphaToMorse(letter));
               }}
               disabled={isPlaying !== undefined}
             >

@@ -13,8 +13,8 @@ export enum Difficulty {
 
 export enum KeyTypes {
   Straight = "Straight",
-  IambicA = "IambicA",
-  IambicB = "IambicB",
+  IambicA = "Iambic A",
+  IambicB = "Iambic B",
   Ultimatic = "Ultimatic",
 }
 
@@ -48,7 +48,7 @@ export type Settings = {
 export const defaultSettings: Settings = {
   [Setting.Difficulty]: Difficulty.Easy,
   [Setting.KeyType]: KeyTypes.Straight,
-  [Setting.UnitTime]: 80,
+  [Setting.UnitTime]: 100,
   [Setting.Farnsworth]: 2,
   [Setting.Frequency]: 600,
   [Setting.Volume]: 30,
@@ -91,7 +91,7 @@ export const settingsSpecs: Record<
   [Setting.UnitTime]: {
     title: "Unit Time",
     unit: "ms",
-    min: 30,
+    min: 20,
     max: 200,
     step: 2,
   },
