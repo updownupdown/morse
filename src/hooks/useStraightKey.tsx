@@ -150,23 +150,6 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
     };
   }, [queue, settings, isPressed, pressStart]);
 
-  const KeyButton = () => {
-    return (
-      <button
-        className={clsx(
-          "morse-key morse-key--straight",
-          isPressed && "morse-key--pressed",
-        )}
-        onPointerDown={onPressDown}
-        onPointerUp={onPressUp}
-        onPointerLeave={onPressUp}
-        disabled={queue.length === maxCodeLength}
-      >
-        Tap/hold
-      </button>
-    );
-  };
-
   const MorseQueue = () => {
     return queue.length !== 0 ? <MorseChar morse={queue} size="xl" /> : null;
   };
@@ -177,5 +160,13 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
     ) : null;
   };
 
-  return { KeyButton, MorseQueue, MorseProgress, match };
+  return {
+    onPressDown,
+    onPressUp,
+    MorseQueue,
+    MorseProgress,
+    queue,
+    match,
+    isPressed,
+  };
 };

@@ -86,7 +86,9 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
   }, [queue]);
 
   const MorseQueue = () => {
-    return queue.length !== 0 ? <MorseChar morse={queue} size="xl" /> : null;
+    return queueRef.current.length !== 0 ? (
+      <MorseChar morse={queueRef.current} size="xl" />
+    ) : null;
   };
 
   // ========== PRESS LOGIC =========== //
@@ -121,6 +123,8 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
 
   // ========== On key down/up =========== //
   function onKeyDown(keyType: KeyType) {
+    if (queueRef.current.length === maxCodeLength) return;
+
     const otherKeyTime = pressStateRef?.current[getOtherKeyType(keyType)];
     const thisKeyTime = Date.now();
 
@@ -329,48 +333,12 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
   }, [playNow, hasPlayQueue]);
 
   // ========== Actual keys =========== //
-  const IambicKeys = () => {
-    return (
-      <>
-        <button
-          className={clsx(
-            "morse-key morse-key--dit",
-            pressStateRef.current.dit && "morse-key--pressed",
-          )}
-          onPointerDown={() => {
-            onKeyDown("dit");
-          }}
-          onPointerUp={() => {
-            onKeyUp("dit");
-          }}
-          onPointerLeave={() => {
-            onKeyUp("dit");
-          }}
-          disabled={queue.length === maxCodeLength}
-        >
-          <div />
-        </button>
-        <button
-          className={clsx(
-            "morse-key morse-key--dah",
-            pressStateRef.current.dah && "morse-key--pressed",
-          )}
-          onPointerDown={() => {
-            onKeyDown("dah");
-          }}
-          onPointerUp={() => {
-            onKeyUp("dah");
-          }}
-          onPointerLeave={() => {
-            onKeyUp("dah");
-          }}
-          disabled={queue.length === maxCodeLength}
-        >
-          <div />
-        </button>
-      </>
-    );
+  return {
+    MorseQueue,
+    match,
+    onKeyDown,
+    onKeyUp,
+    queue,
+    pressState,
   };
-
-  return { IambicKeys, MorseQueue, match };
 };

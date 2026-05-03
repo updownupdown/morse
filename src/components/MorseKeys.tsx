@@ -6,8 +6,7 @@ import {
   MorseContext,
   Setting,
 } from "../context/MorseContext";
-import { invalidCharText } from "../data/alphaToMorse";
-import { SettingsIcon } from "../icons/SettingsIcon";
+import { invalidCharText, maxCodeLength } from "../data/alphaToMorse";
 import { MorseChar } from "./MorseChar";
 import { useStraightKey } from "../hooks/useStraightKey";
 import { useIambicKeys } from "../hooks/useIambicKeys";
@@ -27,10 +26,13 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
 
   // Straight key
   const {
-    KeyButton: StraightKeyButton,
+    onPressDown: straightOnKeyDown,
+    onPressUp: straightOnKeyUp,
     MorseQueue: StraightMorseQueue,
     MorseProgress: StraightMorseProgress,
+    queue: straightQueue,
     match: StraightMatch,
+    isPressed: straightIsPressed,
   } = useStraightKey({
     submitChar,
     startTimer,
@@ -38,9 +40,12 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
 
   // Iambic keys
   const {
-    IambicKeys,
     MorseQueue: IambicMorseQueue,
     match: IambicMatch,
+    onKeyDown: iambicOnKeyDown,
+    onKeyUp: iambicOnKeyUp,
+    queue: iambicQueue,
+    pressState: iambicPressState,
   } = useIambicKeys({
     submitChar,
   });
@@ -101,9 +106,72 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
 
       <div className="morse-keys__keys">
         {settings[Setting.KeyType] === KeyTypes.Straight ? (
-          <StraightKeyButton />
+          <button
+            className={clsx(
+              "morse-key morse-key--straight",
+              straightIsPressed && "morse-key--pressed",
+            )}
+            onPointerDown={straightOnKeyDown}
+            onPointerUp={straightOnKeyUp}
+            onPointerOut={straightOnKeyUp}
+            onPointerLeave={straightOnKeyUp}
+            disabled={straightQueue?.length === maxCodeLength}
+          >
+            Tap/hold
+          </button>
         ) : (
-          <IambicKeys />
+          <>
+            <button
+              className={clsx(
+                "morse-key morse-key--dit",
+                iambicPressState.dit !== undefined && "morse-key--pressed",
+              )}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                iambicOnKeyDown("dit");
+              }}
+              onPointerUp={(e) => {
+                e.preventDefault();
+                iambicOnKeyUp("dit");
+              }}
+              onPointerOut={(e) => {
+                e.preventDefault();
+                iambicOnKeyUp("dit");
+              }}
+              onPointerCancel={(e) => {
+                e.preventDefault();
+                iambicOnKeyUp("dit");
+              }}
+              disabled={iambicQueue.length === maxCodeLength}
+            >
+              <div />
+            </button>
+            <button
+              className={clsx(
+                "morse-key morse-key--dah",
+                iambicPressState.dah !== undefined && "morse-key--pressed",
+              )}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                iambicOnKeyDown("dah");
+              }}
+              onPointerUp={(e) => {
+                e.preventDefault();
+                iambicOnKeyUp("dah");
+              }}
+              onPointerOut={(e) => {
+                e.preventDefault();
+                iambicOnKeyUp("dah");
+              }}
+              onPointerCancel={(e) => {
+                e.preventDefault();
+                iambicOnKeyUp("dah");
+              }}
+              disabled={iambicQueue.length === maxCodeLength}
+            >
+              <div />
+            </button>
+          </>
         )}
       </div>
 
