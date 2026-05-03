@@ -179,7 +179,6 @@ button {
     }
 
     &:not(:disabled) {
-      &:hover,
       &:active {
         span {
           color: var(--K100);
@@ -194,7 +193,6 @@ button {
       border: 2px solid var(--K800);
 
       &:not(:disabled) {
-        &:hover,
         &:active {
           background: var(--K700);
           border-color: var(--K400);
@@ -208,24 +206,24 @@ button {
 
     &--outlined-stop {
       &:not(:disabled) {
-        background: rgba(var(--status-red-rgb), 0.2);
+        background: rgba(var(--status-green-rgb), 0.2);
 
         &,
         &:hover,
         &:active {
-          border: 2px solid var(--status-red);
+          border: 2px solid var(--status-green);
 
           span {
-            color: var(--status-red);
+            color: var(--status-green);
           }
           svg {
-            fill: var(--status-red);
+            fill: var(--status-green);
           }
         }
 
         &:hover,
         &:active {
-          background: rgba(var(--status-red-rgb), 0.4);
+          background: rgba(var(--status-green-rgb), 0.4);
         }
       }
     }

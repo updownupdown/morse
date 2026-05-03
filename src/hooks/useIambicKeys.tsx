@@ -8,9 +8,7 @@ import {
   maxCodeLength,
   unitLengths,
 } from "../data/alphaToMorse";
-import clsx from "clsx";
 import { MorseChar } from "../components/MorseChar";
-import { clamp } from "../utils/utils";
 
 type PressedState = {
   dit?: number;
@@ -30,7 +28,7 @@ type IambicKeysProps = {
 
 export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
   // ========== MAIN =========== //
-  const { settings, isPlaying: isPlaying } = useContext(MorseContext);
+  const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
   const isPlayingRef = useRef(isPlaying);
   isPlayingRef.current = isPlaying;
 
@@ -235,7 +233,7 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
       window.removeEventListener("keyup", handleKeyUp);
       document.removeEventListener("contextmenu", (e) => e.preventDefault());
     };
-  }, [settings]);
+  }, [settings, selectedMenu]);
 
   // ========== Play logic =========== //
   async function play() {

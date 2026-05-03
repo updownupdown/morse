@@ -3,6 +3,7 @@ import "./MorseKeys.scss";
 import {
   KeyTypes,
   KeyTypesNames,
+  Menus,
   MorseContext,
   Setting,
 } from "../context/MorseContext";
@@ -20,7 +21,7 @@ interface Props {
 }
 
 export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
-  const { settings } = useContext(MorseContext);
+  const { settings, selectedMenu } = useContext(MorseContext);
 
   const [selectKeyType, setSelectKeyType] = useState(false);
 
@@ -109,7 +110,10 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
             onPointerUp={straightOnKeyUp}
             onPointerOut={straightOnKeyUp}
             onPointerLeave={straightOnKeyUp}
-            disabled={straightQueue?.length === maxCodeLength}
+            disabled={
+              straightQueue?.length === maxCodeLength ||
+              selectedMenu !== Menus.None
+            }
           >
             Tap/hold
           </button>
@@ -136,7 +140,10 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
                 e.preventDefault();
                 iambicOnKeyUp("dit");
               }}
-              disabled={iambicQueue.length === maxCodeLength}
+              disabled={
+                iambicQueue.length === maxCodeLength ||
+                selectedMenu !== Menus.None
+              }
             >
               <div />
             </button>
@@ -161,7 +168,10 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
                 e.preventDefault();
                 iambicOnKeyUp("dah");
               }}
-              disabled={iambicQueue.length === maxCodeLength}
+              disabled={
+                iambicQueue.length === maxCodeLength ||
+                selectedMenu !== Menus.None
+              }
             >
               <div />
             </button>

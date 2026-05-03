@@ -2,7 +2,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { MorseContext, Setting } from "../context/MorseContext";
 import { unitLengths } from "../data/alphaToMorse";
 
-const maxFadeDuration = 200; // ms
 const maxPressTime = 1200; // ms
 const fadeDurationInSec = 0.02; // 20 ms
 export const initCode = "init";
@@ -54,13 +53,12 @@ export function useMorseAudio() {
     g.connect(ctx.destination);
 
     const now = ctx.currentTime;
-    const fadeDuration = 0.02; // 20ms
 
     // Fade in
     g.gain.setValueAtTime(0.0001, now);
     g.gain.exponentialRampToValueAtTime(
       settings[Setting.Volume] / 100,
-      now + fadeDuration,
+      now + fadeDurationInSec,
     );
 
     o.start();
@@ -114,7 +112,7 @@ export function useMorseAudio() {
     }
   }, [isPressed]);
 
-  function playBeep(duration: number, frequency: number) {
+  function playBeep(durationInMs: number, frequency: number) {
     return new Promise<void>((resolve) => {
       if (cancelPlaybackRef.current) {
         resolve();
@@ -142,31 +140,28 @@ export function useMorseAudio() {
 
       const now = ctx.currentTime;
 
-      let fadeDuration = duration / 8; // ms
-      if (fadeDuration > maxFadeDuration) {
-        fadeDuration = maxFadeDuration;
-      }
-      let beepDuration = duration - fadeDuration * 2; // ms
-      beepDuration = beepDuration / 1000; // sec
-      fadeDuration = fadeDuration / 1000; // sec
+      let beepDurationInSec = (durationInMs - fadeDurationInSec * 2) / 1000; // in sec
 
       // Start
-      g.gain.setValueAtTime(settings[Setting.Volume] / 100, now);
+      g.gain.setValueAtTime(0.001, now);
       // Fade in
       g.gain.exponentialRampToValueAtTime(
         settings[Setting.Volume] / 100,
-        now + fadeDuration,
+        now + fadeDurationInSec,
       );
       // Sustain
-      g.gain.setValueAtTime(settings[Setting.Volume] / 100, now + beepDuration);
+      g.gain.setValueAtTime(
+        settings[Setting.Volume] / 100,
+        now + beepDurationInSec,
+      );
       // Fade out
       g.gain.exponentialRampToValueAtTime(
         0.0001,
-        now + beepDuration + fadeDuration,
+        now + beepDurationInSec + fadeDurationInSec * 2,
       );
 
       o.start();
-      o.stop(now + beepDuration + fadeDuration * 2);
+      o.stop(now + beepDurationInSec + fadeDurationInSec * 2);
       o.onended = () => {
         g.disconnect();
         o.disconnect();

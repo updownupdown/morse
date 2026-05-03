@@ -9,8 +9,6 @@ import {
 } from "../data/alphaToMorse";
 import { useMorseAudio } from "./useMorseAudio";
 import { inProgressChar, MorseChar } from "../components/MorseChar";
-import clsx from "clsx";
-import { clamp } from "../utils/utils";
 
 interface Props {
   submitChar: (char: string) => void;
@@ -57,7 +55,12 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
   // ========== PRESS LOGIC =========== //
   const { setIsPressed, isPressed } = useMorseAudio();
   const [pressStart, setPressStart] = useState<number | null>(null);
-  const [pressDuration, setPressDuration] = useState<number>(0);
+  const pressStartRef = useRef(pressStart);
+  pressStartRef.current = pressStart;
+
+  const [pressDuration, setPressDuration] = useState<number | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     if (pressStart === null) {
@@ -78,7 +81,7 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
 
   // Presses
   useEffect(() => {
-    if (pressDuration === 0) return;
+    if (pressDuration === undefined) return;
 
     if (pressDuration < settings[Setting.UnitTime] * 2) {
       setQueue((prev) => prev + ".");
@@ -111,11 +114,14 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
   function onPressUp() {
     setIsPressed(false);
 
-    if (pressStart !== null) {
-      const duration = Date.now() - pressStart;
+    if (pressStartRef.current !== null) {
+      const duration = Date.now() - pressStartRef.current;
       setPressDuration(duration);
-      setPressStart(null);
+    } else {
+      setPressDuration(undefined);
     }
+
+    setPressStart(null);
   }
 
   // Keyboard support

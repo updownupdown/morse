@@ -169,7 +169,7 @@ export const Study = () => {
       </div>
 
       <div className="study__content">
-        <span className="study__content__instructions">Tap symbol to hear</span>
+        <span className="study__content__instructions">Tap symbol to play</span>
 
         {selectedCategory !== Categories.Misc && (
           <div className="study__content__symbols">
