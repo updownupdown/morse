@@ -49,6 +49,7 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
     pressState: iambicPressState,
   } = useIambicKeys({
     submitChar,
+    startTimer,
   });
 
   return (

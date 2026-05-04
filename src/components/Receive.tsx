@@ -7,7 +7,7 @@ import { useMorseAudio } from "../hooks/useMorseAudio";
 import { Status, Word } from "./Word";
 import { Difficulty, MorseContext, Setting } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
-import { getRandomSource, Sources } from "../data/dataSources";
+import { Sources, useRandomWord } from "../data/DataSources";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import clsx from "clsx";
 
@@ -18,6 +18,7 @@ export const Receive = () => {
 
   const { playMorse, stopMorse } = useMorseAudio();
 
+  const { getUniqueRandomWord } = useRandomWord();
   const [source, setSource] = useLocalStorage<Sources>(
     "receiveSource",
     Sources.Words,
@@ -38,7 +39,7 @@ export const Receive = () => {
   useEffect(() => {
     if (wordAlpha.length !== 0) return;
 
-    let newWord = getRandomSource(source);
+    let newWord = getUniqueRandomWord(source);
     let newStatus: Status[] = [];
     let newMorseWord: string[] = [];
 

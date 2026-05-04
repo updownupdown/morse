@@ -2,6 +2,15 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { MorseContext, Setting } from "../context/MorseContext";
 import { unitLengths } from "../data/alphaToMorse";
 
+// Singleton AudioContext instance
+let singletonAudioContext: AudioContext | null = null;
+function getAudioContext() {
+  if (!singletonAudioContext) {
+    singletonAudioContext = new AudioContext();
+  }
+  return singletonAudioContext;
+}
+
 const maxPressTime = 1200; // ms
 const fadeDurationInSec = 0.02; // 20 ms
 export const initCode = "init";
@@ -22,6 +31,7 @@ export function useMorseAudio() {
     useContext(MorseContext);
 
   const cancelPlaybackRef = useRef(false);
+  // ctxRef used for type compatibility, but always points to singleton
   const ctxRef = useRef<AudioContext | null>(null);
 
   const [isPressed, setIsPressed] = useState(false);
@@ -32,9 +42,8 @@ export function useMorseAudio() {
   const pressGainRef = useRef<GainNode | null>(null);
 
   function startPress() {
-    if (!ctxRef.current) {
-      ctxRef.current = new AudioContext();
-    }
+    const ctx = getAudioContext();
+    ctxRef.current = ctx;
 
     if (pressOscRef.current) {
       // Already running
@@ -43,7 +52,6 @@ export function useMorseAudio() {
 
     setIsPlaying("symbol");
 
-    const ctx = ctxRef.current;
     const o = ctx.createOscillator();
     const g = ctx.createGain();
 
@@ -119,9 +127,8 @@ export function useMorseAudio() {
         return;
       }
 
-      if (!ctxRef.current) {
-        ctxRef.current = new AudioContext();
-      }
+      const ctx = getAudioContext();
+      ctxRef.current = ctx;
 
       if (!audioInitialized) {
         setAudioInitialized(true);
@@ -129,7 +136,6 @@ export function useMorseAudio() {
 
       beepGlow(true);
 
-      const ctx = ctxRef.current;
       const o = ctx.createOscillator();
       const g = ctx.createGain();
 
@@ -202,10 +208,8 @@ export function useMorseAudio() {
 
       cancelPlaybackRef.current = true;
 
-      if (ctxRef.current) {
-        ctxRef.current.close();
-        ctxRef.current = null;
-      }
+      // Do not close the singleton AudioContext; just stop playback
+      // ctxRef.current = null; // Not needed anymore
 
       setIsPlaying(undefined);
 

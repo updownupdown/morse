@@ -267,5 +267,13 @@
     z-index: 2;
     gap: var(--modal-padding);
     padding: var(--modal-padding);
+
+    &__left {
+      gap: 16px;
+
+      &__top {
+        padding: 0 6px;
+      }
+    }
   }
 }

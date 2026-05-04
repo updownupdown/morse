@@ -24,9 +24,10 @@ function getOtherKeyType(keyType: KeyType) {
 
 type IambicKeysProps = {
   submitChar: (char: string) => void;
+    startTimer?: (now: number) => void;
 };
 
-export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
+export const useIambicKeys = ({ submitChar, startTimer }: IambicKeysProps) => {
   // ========== MAIN =========== //
   const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
   const isPlayingRef = useRef(isPlaying);
@@ -122,6 +123,8 @@ export const useIambicKeys = ({ submitChar }: IambicKeysProps) => {
   // ========== On key down/up =========== //
   function onKeyDown(keyType: KeyType) {
     if (queueRef.current.length === maxCodeLength) return;
+
+    startTimer && startTimer(Date.now());
 
     const otherKeyTime = pressStateRef?.current[getOtherKeyType(keyType)];
     const thisKeyTime = Date.now();
