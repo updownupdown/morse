@@ -99,7 +99,8 @@
           }
 
           &:not(:disabled) {
-            &:active {
+            &:active,
+            &:hover {
               background: var(--K700);
 
               &:not(.btn--outlined-stop) {
