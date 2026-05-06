@@ -11,6 +11,7 @@ import { ReceiveSources } from "../data/DataSources";
 import { clamp } from "../utils/utils";
 import { ProgressBar, useQuiz } from "../hooks/useQuiz";
 import { Word } from "./Word";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export const Receive = () => {
   const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
@@ -22,11 +23,19 @@ export const Receive = () => {
     setGuess,
     word,
     letterIndex,
-    source,
-    setSource,
+    setQuizSource,
     phase,
     guess,
-  } = useQuiz(true);
+  } = useQuiz();
+
+  const [receiveSource, setReceiveSource] = useLocalStorage<ReceiveSources>(
+    "receiveSource",
+    ReceiveSources.Words,
+  );
+
+  useEffect(() => {
+    setQuizSource(receiveSource);
+  }, [receiveSource]);
 
   const [lastPlayBtnPressed, setLastPlayBtnPressed] = useState<
     "word" | "letter"
@@ -90,17 +99,18 @@ export const Receive = () => {
   }, [stats]);
 
   return (
-    <div className="receive">
-      <div className="receive__menu">
+    <div className="quiz quiz--receive">
+      <div className="quiz__menu">
         <div className="button-menu">
           {Object.entries(ReceiveSources).map(([key, val]) => {
             return (
               <button
                 key={key}
-                className={`btn-menu-item btn-menu-item--${source === val ? "selected" : "not-selected"}`}
+                className={`btn-menu-item btn-menu-item--${receiveSource === val ? "selected" : "not-selected"}`}
                 onClick={() => {
                   stopMorse();
-                  setSource(val as ReceiveSources);
+                  setPhase("standby");
+                  setReceiveSource(val as ReceiveSources);
                 }}
               >
                 {val}
@@ -110,11 +120,11 @@ export const Receive = () => {
         </div>
       </div>
 
-      <div className="receive__content">
+      <div className="quiz__content">
         {phase === "guess" && (
           <>
             {settings[Setting.ShowStats] && (
-              <div className="quiz-progress-stats">
+              <div className="quiz__content__progress-stats">
                 <ProgressBar
                   title="Progress"
                   progress={(stats.charsDone / stats.charsTotal) * 100}
@@ -132,12 +142,12 @@ export const Receive = () => {
             )}
 
             {phase === "guess" && (
-              <div className="receive__content__word">
+              <div className="quiz__content__word">
                 <Word guess={guess} word={word} letterIndex={letterIndex} />
               </div>
             )}
 
-            <div className="receive__content__buttons">
+            <div className="quiz__content__action-buttons">
               <button
                 className={clsx(
                   "btn btn--outlined",
@@ -191,7 +201,9 @@ export const Receive = () => {
             </div>
           </>
         )}
+      </div>
 
+      <div className="quiz__bottom">
         {["standby", "stats"].includes(phase) && (
           <button
             className="btn btn--large-orange"
@@ -203,14 +215,14 @@ export const Receive = () => {
             <span>Start</span>
           </button>
         )}
-      </div>
 
-      {phase === "guess" && (
-        <Keyboard
-          setGuess={setGuess}
-          isSpecialChars={source === ReceiveSources.SpecialChars}
-        />
-      )}
+        {phase === "guess" && (
+          <Keyboard
+            setGuess={setGuess}
+            isSpecialChars={receiveSource === ReceiveSources.SpecialChars}
+          />
+        )}
+      </div>
     </div>
   );
 };

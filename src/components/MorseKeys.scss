@@ -3,7 +3,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--quiz-bottom-gap);
 
   &__top {
     position: relative;
@@ -73,7 +73,7 @@
 
         // ========== Send ========== //
         // Easy
-        .app--hints-generous.app--mode-send & {
+        .app--hints-on.app--mode-send & {
           animation: 4s fade-in linear forwards;
         }
 

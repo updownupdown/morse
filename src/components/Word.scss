@@ -111,7 +111,7 @@
 
   // ========== Receive ========== //
   // Receive + Easy
-  .app--hints-generous.app--mode-receive & {
+  .app--hints-on.app--mode-receive & {
     .letter {
       // &--none,
       &--empty {

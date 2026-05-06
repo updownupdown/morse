@@ -7,7 +7,7 @@ import {
   useWordSets,
 } from "../data/DataSources";
 import { useLocalStorage } from "./useLocalStorage";
-import { MorseContext, Setting } from "../context/MorseContext";
+import { Modes, MorseContext, Setting } from "../context/MorseContext";
 import { useAudio } from "./useAudio";
 import { calculateWPM, getStatusColor } from "../utils/utils";
 import {
@@ -45,14 +45,14 @@ export const ProgressBar = ({
   );
 };
 
-export const useQuiz = (playNewLetter?: boolean) => {
-  const { settings, audioInitialized } = useContext(MorseContext);
+export const useQuiz = () => {
+  const { settings, audioInitialized, selectedMode } = useContext(MorseContext);
   const { playMorse } = useAudio();
   const { getWordSet } = useWordSets();
 
-  const [source, setSource] = useLocalStorage<
+  const [quizSource, setQuizSource] = useState<
     SendSources | ReceiveSources | undefined
-  >("sendSource", undefined);
+  >(undefined);
   const [wordSet, setWordSet] = useState<string[]>([]);
   const [phase, setPhase] = useState<"standby" | "prepare" | "guess" | "stats">(
     "standby",
@@ -67,14 +67,14 @@ export const useQuiz = (playNewLetter?: boolean) => {
   // Source change
   useEffect(() => {
     setPhase("standby");
-  }, [source]);
+  }, [quizSource]);
 
   // Set up new set
   useEffect(() => {
-    if (phase !== "prepare" || source === undefined || !audioInitialized)
+    if (phase !== "prepare" || quizSource === undefined || !audioInitialized)
       return;
 
-    const newWordSet = getWordSet(source);
+    const newWordSet = getWordSet(quizSource);
 
     let charsTotal = 0;
     newWordSet.forEach((word) => {
@@ -164,7 +164,7 @@ export const useQuiz = (playNewLetter?: boolean) => {
       //  Play letter on index change
       // (will trigger on auto index change, but not on manual)
       if (
-        playNewLetter &&
+        selectedMode === Modes.Receive &&
         wordIndex !== undefined &&
         settings[Setting.AutoPlayLetter]
       ) {
@@ -177,8 +177,8 @@ export const useQuiz = (playNewLetter?: boolean) => {
     setPhase,
     stats,
     guess,
-    setSource,
-    source,
+    setQuizSource,
+    source: quizSource,
     phase,
     word,
     letterIndex,

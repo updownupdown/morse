@@ -2,7 +2,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 8px 12px;
+
+  width: calc(100% + var(--side-padding) * 2 - 8px * 2);
+  margin-bottom: calc(var(--side-padding) * -1 + 12px);
+  max-width: 500px;
 }
 
 .keyboard {
@@ -51,7 +54,7 @@
     .keyboard--regular & {
       .key {
         width: $key-width;
-        aspect-ratio: 0.6;
+        aspect-ratio: 0.7;
       }
 
       &:nth-child(2) {

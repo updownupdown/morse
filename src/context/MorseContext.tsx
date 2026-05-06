@@ -7,9 +7,9 @@ import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { TouchIcon } from "../icons/TouchIcon";
 
 export enum Hints {
-  Generous = "Generous",
+  On = "On",
   Delayed = "Delayed",
-  None = "None",
+  Off = "Off",
 }
 
 export enum KeyTypes {
@@ -62,7 +62,7 @@ export const defaultSettings: Settings = {
   [Setting.Volume]: 30,
   // Other
   [Setting.KeyType]: KeyTypes.Straight,
-  [Setting.Hints]: Hints.Generous,
+  [Setting.Hints]: Hints.On,
   [Setting.AutoPlayLetter]: true,
   [Setting.AutoWordBreak]: false,
   [Setting.ShowStats]: true,

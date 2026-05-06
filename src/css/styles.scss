@@ -59,6 +59,7 @@ $theme-colors: (
   --dit-xl: 10px;
 
   --side-padding: 24px;
+  --quiz-bottom-gap: 12px;
 
   --morse-key-height: 80px;
 }
@@ -262,8 +263,6 @@ button {
 
     &--large-orange {
       height: var(--morse-key-height);
-      gap: 10px;
-      flex-grow: 0;
 
       border-radius: calc(var(--morse-key-height) / 2);
       background: rgba(var(--accent-rgb), 0.9);
@@ -449,5 +448,14 @@ table {
 
   &.beep-glow--on:after {
     box-shadow: 0 0 14px rgba(var(--K200-rgb), 0.15);
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
