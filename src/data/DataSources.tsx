@@ -58,7 +58,7 @@ export const useWordSets = () => {
       case SendSources.Pangrams:
       case ReceiveSources.Pangrams:
         data = pangrams;
-        num = 3;
+        num = 2;
         break;
       case SendSources.AllChars:
         data = [...letters, ...specialChars];

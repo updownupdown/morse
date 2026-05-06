@@ -145,6 +145,9 @@ export const useQuiz = (playNewLetter?: boolean) => {
   useEffect(() => {
     if (word === undefined || letterIndex === undefined) {
       return;
+    } else if (word[letterIndex] === " ") {
+      // Auto-advance spaces
+      setLetterIndex(letterIndex + 1);
     } else if (letterIndex === word.length) {
       if (wordIndex === wordSet.length - 1) {
         // Finished all words!
