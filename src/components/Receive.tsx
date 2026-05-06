@@ -1,127 +1,67 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Receive.scss";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { alphaToMorse } from "../data/alphaToMorse";
-import { useMorseAudio } from "../hooks/useMorseAudio";
-import { Status, Word } from "./Word";
-import { Difficulty, MorseContext, Setting } from "../context/MorseContext";
+import { initCode, useAudio } from "../hooks/useAudio";
+import { MorseContext, Setting } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
-import { Sources, useRandomWord } from "../data/DataSources";
-import { useLocalStorage } from "../hooks/useLocalStorage";
 import clsx from "clsx";
+import { ReceiveSources } from "../data/DataSources";
+import { clamp } from "../utils/utils";
+import { ProgressBar, useQuiz } from "../hooks/useQuiz";
+import { Word } from "./Word";
 
 export const Receive = () => {
   const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
-  const isPlayingRef = useRef(isPlaying);
-  isPlayingRef.current = isPlaying;
+  const { playMorse, stopMorse } = useAudio();
 
-  const { playMorse, stopMorse } = useMorseAudio();
-
-  const { getUniqueRandomWord } = useRandomWord();
-  const [source, setSource] = useLocalStorage<Sources>(
-    "receiveSource",
-    Sources.Words,
-  );
-  const [wordAlpha, setWordAlpha] = useState("");
-  const [wordMorse, setWordMorse] = useState("");
-
-  const [wordIndex, setWordIndex] = useState(0);
-  const [status, setStatus] = useState<Status[]>([]);
+  const {
+    setPhase,
+    stats,
+    setGuess,
+    word,
+    letterIndex,
+    source,
+    setSource,
+    phase,
+    guess,
+  } = useQuiz(true);
 
   const [lastPlayBtnPressed, setLastPlayBtnPressed] = useState<
     "word" | "letter"
   >("letter");
-  const lastPlayBtnPressedRef = useRef(lastPlayBtnPressed);
-  lastPlayBtnPressedRef.current = lastPlayBtnPressed;
 
-  // Set/reset word
-  useEffect(() => {
-    if (wordAlpha.length !== 0) return;
-
-    let newWord = getUniqueRandomWord(source);
-    let newStatus: Status[] = [];
-    let newMorseWord: string[] = [];
-
-    for (let i = 0; i < newWord.length; i++) {
-      newStatus.push(newWord[i] === " " ? "space" : "empty");
-      newMorseWord.push(alphaToMorse(newWord[i]));
-    }
-
-    setWordIndex(0);
-    setWordAlpha(newWord);
-    setWordMorse(newMorseWord.join(" "));
-    setStatus(newStatus);
-  }, [wordAlpha]);
-
-  // Update on status change (key press)
-  useEffect(() => {
-    if (status.length === 0) {
-      return;
-    } else if (
-      status.find((val) => !["correct", "space"].includes(val)) === undefined
-    ) {
-      // Word done! Reset it.
-      setWordAlpha("");
-      return;
-    }
-
-    const newIndex = status.findIndex((s) =>
-      ["empty", "incorrect"].includes(s),
-    );
-
-    // Play letter on index change (will trigger on auto index change, but not on manual)
-    if (
-      newIndex !== -1 &&
-      settings[Setting.Difficulty] !== Difficulty.Hard &&
-      wordAlpha[newIndex] !== undefined
-    ) {
-      playMorse(alphaToMorse(wordAlpha[newIndex]));
-    }
-
-    setWordIndex(newIndex);
-  }, [status]);
-
-  function pressKey(key: string) {
-    // Update status
-    let newStatus = [...status];
-
-    if (key === wordAlpha[wordIndex]) {
-      newStatus[wordIndex] = "correct";
-    } else {
-      newStatus[wordIndex] = "incorrect";
-    }
-
-    setStatus(newStatus);
-  }
-
-  const wordBtnIsStop = () =>
-    isPlayingRef.current && lastPlayBtnPressedRef.current === "word";
-
-  const letterBtnIsStop = () =>
-    isPlayingRef.current && lastPlayBtnPressedRef.current === "letter";
+  const wordBtnIsStop = () => isPlaying && lastPlayBtnPressed === "word";
+  const letterBtnIsStop = () => isPlaying && lastPlayBtnPressed === "letter";
 
   function playPauseWord() {
+    if (word === undefined) return;
+
     setLastPlayBtnPressed("word");
 
     if (wordBtnIsStop()) {
       stopMorse();
     } else {
-      playMorse(wordMorse);
+      playMorse(alphaToMorse(word));
     }
   }
 
   useEffect(() => {
-    stopMorse();
+    if (isPlaying) {
+      stopMorse();
+    }
   }, [selectedMenu]);
 
   function playPauseLetter() {
+    if (word === undefined || letterIndex === undefined) return;
+
     setLastPlayBtnPressed("letter");
 
     if (letterBtnIsStop()) {
       stopMorse();
     } else {
-      playMorse(alphaToMorse(wordAlpha[wordIndex]));
+      playMorse(alphaToMorse(word[letterIndex]));
     }
   }
 
@@ -137,7 +77,7 @@ export const Receive = () => {
         playPauseLetter();
         e.preventDefault();
       } else if (/^[a-z]$/i.test(e.key)) {
-        pressKey(e.key.toUpperCase());
+        setGuess(e.key.toUpperCase());
         e.preventDefault();
       }
     };
@@ -147,20 +87,20 @@ export const Receive = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [wordAlpha, wordIndex, wordMorse]);
+  }, [stats]);
 
   return (
     <div className="receive">
-      <div className="receive__buttons">
+      <div className="receive__menu">
         <div className="button-menu">
-          {Object.entries(Sources).map(([key, val]) => {
+          {Object.entries(ReceiveSources).map(([key, val]) => {
             return (
               <button
                 key={key}
                 className={`btn-menu-item btn-menu-item--${source === val ? "selected" : "not-selected"}`}
                 onClick={() => {
-                  setWordAlpha("");
-                  setSource(val as Sources);
+                  stopMorse();
+                  setSource(val as ReceiveSources);
                 }}
               >
                 {val}
@@ -170,41 +110,107 @@ export const Receive = () => {
         </div>
       </div>
 
-      <div className="receive__word">
-        <Word word={wordAlpha} status={status} index={wordIndex} />
-      </div>
-      <div className="receive__buttons">
-        {wordAlpha.length > 1 && (
-          <button
-            className={clsx(
-              "btn btn--outlined",
-              wordBtnIsStop() && "btn--outlined-stop",
+      <div className="receive__content">
+        {phase === "guess" && (
+          <>
+            {settings[Setting.ShowStats] && (
+              <div className="quiz-progress-stats">
+                <ProgressBar
+                  title="Progress"
+                  progress={(stats.charsDone / stats.charsTotal) * 100}
+                />
+                <ProgressBar
+                  title={`Acc.${Math.round(stats.accuracy)}%`}
+                  progress={stats.accuracy}
+                  useStatusColor
+                />
+                <ProgressBar
+                  title={`${Math.round(stats.wpm)} WPM`}
+                  progress={clamp((stats.wpm / 30) * 100, 0, 30)}
+                />
+              </div>
             )}
-            onClick={playPauseWord}
-            disabled={letterBtnIsStop()}
-          >
-            {wordBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
-            <span>{wordBtnIsStop() ? "Stop" : "Word"}</span>
-          </button>
+
+            {phase === "guess" && (
+              <div className="receive__content__word">
+                <Word guess={guess} word={word} letterIndex={letterIndex} />
+              </div>
+            )}
+
+            <div className="receive__content__buttons">
+              <button
+                className={clsx(
+                  "btn btn--outlined",
+                  wordBtnIsStop() && "btn--outlined-stop",
+                )}
+                onClick={playPauseWord}
+                disabled={letterBtnIsStop()}
+              >
+                {wordBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
+                <span>{wordBtnIsStop() ? "Stop" : "Word"}</span>
+              </button>
+
+              <button
+                className={clsx(
+                  "btn btn--outlined",
+                  letterBtnIsStop() && "btn--outlined-stop",
+                )}
+                onClick={playPauseLetter}
+                disabled={wordBtnIsStop()}
+              >
+                {letterBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
+                <span>Letter</span>
+              </button>
+            </div>
+          </>
         )}
 
-        <button
-          className={clsx(
-            "btn btn--outlined",
-            letterBtnIsStop() && "btn--outlined-stop",
-          )}
-          onClick={playPauseLetter}
-          disabled={wordBtnIsStop()}
-        >
-          {letterBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
-          <span>Letter</span>
-        </button>
+        {phase === "standby" && (
+          <span className="quiz-instructions">
+            Send each character in morse code.
+          </span>
+        )}
+
+        {phase === "stats" && (
+          <>
+            <div className="quiz-done-stats">
+              <div>
+                <span>{Math.round(stats.accuracy)}%</span>
+                <span>Accuracy</span>
+              </div>
+
+              <div>
+                <span>{stats.incorrect}</span>
+                <span>Mistake{stats.incorrect === 1 ? "" : "s"}</span>
+              </div>
+
+              <div>
+                <span>{Math.round(stats.wpm)}</span>
+                <span>WPM</span>
+              </div>
+            </div>
+          </>
+        )}
+
+        {["standby", "stats"].includes(phase) && (
+          <button
+            className="btn btn--large-orange"
+            onClick={() => {
+              playMorse(initCode);
+              setPhase("prepare");
+            }}
+          >
+            <span>Start</span>
+          </button>
+        )}
       </div>
 
-      <Keyboard
-        onPress={pressKey}
-        isSpecialChars={source === Sources.SpecialChars}
-      />
+      {phase === "guess" && (
+        <Keyboard
+          setGuess={setGuess}
+          isSpecialChars={source === ReceiveSources.SpecialChars}
+        />
+      )}
     </div>
   );
 };

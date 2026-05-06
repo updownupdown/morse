@@ -1,27 +1,29 @@
 import React, { useContext, useEffect } from "react";
 import clsx from "clsx";
-import { useMorseAudio } from "../hooks/useMorseAudio";
+import { useAudio } from "../hooks/useAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import "./Word.scss";
 import { MorseContext } from "../context/MorseContext";
 
-export type Status = "empty" | "correct" | "incorrect" | "neutral" | "space";
+export type Status = "empty" | "correct" | "incorrect" | "space";
 
 interface Props {
-  word: string;
-  index?: number;
-  status?: Status[];
+  word: string | undefined;
+  guess?: string | undefined;
+  letterIndex?: number | undefined;
 }
 
-export const Word = ({ word, status, index }: Props) => {
+export const Word = ({ word, guess, letterIndex }: Props) => {
   const { isPlaying, selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useAudio();
 
   useEffect(() => {
     stopMorse();
   }, [selectedMenu]);
 
   let letterSize = "sm";
+
+  if (word === undefined || letterIndex === undefined) return null;
 
   if (word.length < 2) {
     letterSize = "lg";
@@ -33,7 +35,17 @@ export const Word = ({ word, status, index }: Props) => {
     <div className={`word word--size-${letterSize}`}>
       {word.length > 0 &&
         word.split("").map((letter, i) => {
-          const thisStatus = status ? status[i] : "neutral";
+          let statusClass = "";
+
+          if (letter === " ") {
+            statusClass = "space";
+          } else if (i > letterIndex) {
+            statusClass = "empty";
+          } else if (i < letterIndex) {
+            statusClass = "correct";
+          } else if (guess !== undefined && guess !== letter) {
+            statusClass = "incorrect";
+          }
 
           if (letter === " ") {
             return (
@@ -48,11 +60,11 @@ export const Word = ({ word, status, index }: Props) => {
               key={i}
               className={clsx(
                 "letter",
-                `letter--${thisStatus ?? "none"}`,
-                status && i === index && "letter--current beep-glow",
+                `letter--${statusClass}`,
+                i === letterIndex && "letter--current beep-glow",
               )}
               onClick={() => {
-                if (status && i !== index) return;
+                if (i !== letterIndex) return;
 
                 playMorse(alphaToMorse(letter));
               }}

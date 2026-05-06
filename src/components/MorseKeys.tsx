@@ -7,7 +7,7 @@ import {
   MorseContext,
   Setting,
 } from "../context/MorseContext";
-import { invalidCharText, maxCodeLength } from "../data/alphaToMorse";
+import { maxCodeLength } from "../data/alphaToMorse";
 import { MorseChar } from "./MorseChar";
 import { useStraightKey } from "../hooks/useStraightKey";
 import { useIambicKeys } from "../hooks/useIambicKeys";
@@ -16,11 +16,10 @@ import clsx from "clsx";
 
 interface Props {
   hint?: string;
-  submitChar: (char: string) => void;
-  startTimer?: (now: number) => void;
+  setGuess: (char: string) => void;
 }
 
-export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
+export const MorseKeys = ({ hint, setGuess }: Props) => {
   const { settings, selectedMenu } = useContext(MorseContext);
 
   const [selectKeyType, setSelectKeyType] = useState(false);
@@ -32,72 +31,58 @@ export const MorseKeys = ({ hint, submitChar, startTimer }: Props) => {
     MorseQueue: StraightMorseQueue,
     MorseProgress: StraightMorseProgress,
     queue: straightQueue,
-    match: StraightMatch,
     isPressed: straightIsPressed,
   } = useStraightKey({
-    submitChar,
-    startTimer,
+    setGuess,
   });
 
   // Iambic keys
   const {
     MorseQueue: IambicMorseQueue,
-    match: IambicMatch,
     onKeyDown: iambicOnKeyDown,
     onKeyUp: iambicOnKeyUp,
     queue: iambicQueue,
     pressState: iambicPressState,
   } = useIambicKeys({
-    submitChar,
-    startTimer,
+    setGuess,
   });
 
   return (
-    <div className="morse-keys">
+    <div
+      className={clsx(
+        "morse-keys",
+        hint === undefined && "morse-keys--no-hint",
+      )}
+    >
       <div className="morse-keys__top">
+        <div className="morse-keys__top__morse-queue">
+          {settings[Setting.KeyType] === KeyTypes.Straight ? (
+            <>
+              <StraightMorseQueue />
+              <StraightMorseProgress />
+            </>
+          ) : (
+            <>
+              <IambicMorseQueue />
+            </>
+          )}
+
+          {hint && (
+            <div key={hint} className="morse-hint">
+              <MorseChar morse={hint} size="xl" />
+            </div>
+          )}
+        </div>
+
         <button
-          className="key-select-btn"
+          className="morse-keys__top__change"
           onClick={() => {
             setSelectKeyType(true);
           }}
         >
-          {KeyTypesNames[settings[Setting.KeyType]]} / <span>Change</span>
+          <span>{KeyTypesNames[settings[Setting.KeyType]]}</span>
+          <span>[Change]</span>
         </button>
-
-        <div className="morse-keys__top__queue">
-          <div className="morse-keys__top__queue__morse">
-            {settings[Setting.KeyType] === KeyTypes.Straight ? (
-              <>
-                <StraightMorseQueue />
-                <StraightMorseProgress />
-              </>
-            ) : (
-              <>
-                <IambicMorseQueue />
-              </>
-            )}
-
-            {hint && (
-              <div key={hint} className="morse-hint">
-                <MorseChar morse={hint} size="xl" />
-              </div>
-            )}
-          </div>
-          <div
-            className={clsx(
-              "morse-keys__top__queue__match",
-              ((settings[Setting.KeyType] === KeyTypes.Straight &&
-                StraightMatch === invalidCharText) ||
-                (settings[Setting.KeyType] !== KeyTypes.Straight &&
-                  IambicMatch === invalidCharText)) &&
-                "morse-keys__top__queue__match--invalid",
-            )}
-          >
-            {settings[Setting.KeyType] === KeyTypes.Straight
-              ? StraightMatch
-              : IambicMatch}
-          </div>
-        </div>
       </div>
 
       <div className="morse-keys__keys">

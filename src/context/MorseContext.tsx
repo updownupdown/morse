@@ -6,10 +6,10 @@ import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { TouchIcon } from "../icons/TouchIcon";
 
-export enum Difficulty {
-  Easy = "Easy",
-  Moderate = "Moderate",
-  Hard = "Hard",
+export enum Hints {
+  Generous = "Generous",
+  Delayed = "Delayed",
+  None = "None",
 }
 
 export enum KeyTypes {
@@ -19,7 +19,7 @@ export enum KeyTypes {
   Ultimatic = "Ultimatic",
 }
 
-type SettingsValues = typeof Difficulty | typeof KeyTypes;
+type SettingsValues = typeof Hints | typeof KeyTypes;
 
 export const KeyTypesNames: Record<KeyTypes, string> = {
   [KeyTypes.Straight]: "Straight Key",
@@ -29,30 +29,43 @@ export const KeyTypesNames: Record<KeyTypes, string> = {
 };
 
 export enum Setting {
-  Difficulty = "Difficulty",
+  Hints = "Hints",
   KeyType = "KeyType",
   UnitTime = "UnitTime",
   Farnsworth = "Farnsworth",
   Frequency = "Frequency",
   Volume = "Volume",
+  AutoPlayLetter = "AutoPlayLetter", // on receive
+  AutoWordBreak = "AutoWordBreak", // off by default, for free play only?
+  ShowStats = "ShowStats", // on by default
 }
 
 export type Settings = {
-  [Setting.Difficulty]: Difficulty;
-  [Setting.KeyType]: KeyTypes;
+  // Audio
   [Setting.UnitTime]: number;
   [Setting.Farnsworth]: number;
   [Setting.Frequency]: number;
   [Setting.Volume]: number;
+  // Other
+  [Setting.KeyType]: KeyTypes;
+  [Setting.Hints]: Hints;
+  [Setting.AutoPlayLetter]: boolean;
+  [Setting.AutoWordBreak]: boolean;
+  [Setting.ShowStats]: boolean;
 };
 
 export const defaultSettings: Settings = {
-  [Setting.Difficulty]: Difficulty.Easy,
-  [Setting.KeyType]: KeyTypes.Straight,
+  // Audio
   [Setting.UnitTime]: 100,
   [Setting.Farnsworth]: 2,
   [Setting.Frequency]: 550,
   [Setting.Volume]: 30,
+  // Other
+  [Setting.KeyType]: KeyTypes.Straight,
+  [Setting.Hints]: Hints.Generous,
+  [Setting.AutoPlayLetter]: true,
+  [Setting.AutoWordBreak]: false,
+  [Setting.ShowStats]: true,
 };
 
 export const settingsSpecs: Record<
@@ -65,17 +78,26 @@ export const settingsSpecs: Record<
     step?: number;
     values?: SettingsValues;
     hints?: Record<string, string>;
+    hint?: string;
   }
 > = {
+  // Toggles
+  [Setting.AutoPlayLetter]: {
+    title: "Auto-play next letter",
+    // hint: 'Used in "Receive" mode',
+  },
+  [Setting.AutoWordBreak]: {
+    title: "Auto-add wordbreak",
+    // hint: 'Used in "Send" mode, free play',
+  },
+  [Setting.ShowStats]: {
+    title: "Show WPM and accuracy",
+    // hint: 'Used in "Send" mode',
+  },
   // Buttons
-  [Setting.Difficulty]: {
-    title: "Difficulty",
-    values: Difficulty,
-    hints: {
-      [Difficulty.Easy]: "Shows hints quickly",
-      [Difficulty.Moderate]: "Shows hints slowly",
-      [Difficulty.Hard]: "No hints shown",
-    },
+  [Setting.Hints]: {
+    title: "Hints",
+    values: Hints,
   },
   [Setting.KeyType]: {
     title: "Key",
@@ -124,13 +146,14 @@ export enum Menus {
   Menu = "Menu",
   Settings = "Settings",
   Shortcuts = "Shortcuts",
+  Info = "Info",
 }
 
 export enum Modes {
   Home = "Home",
   Send = "Send",
   Receive = "Receive",
-  Study = "Study",
+  Learn = "Learn",
   Translate = "Translate",
   Practice = "Practice",
 }
@@ -139,7 +162,7 @@ export const ModeIcons: Record<Modes, React.ReactNode> = {
   [Modes.Home]: <SendIcon />,
   [Modes.Send]: <MorseMachineIcon />,
   [Modes.Receive]: <ReceiveIcon />,
-  [Modes.Study]: <DictionaryIcon />,
+  [Modes.Learn]: <DictionaryIcon />,
   [Modes.Translate]: <TranslateIcon />,
   [Modes.Practice]: <TouchIcon />,
 };

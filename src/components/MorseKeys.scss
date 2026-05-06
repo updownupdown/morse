@@ -1,36 +1,39 @@
-@use "../css/mixins.scss" as *;
-
 .morse-keys {
   $bar-height: 14px;
 
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 
   &__top {
     position: relative;
+    z-index: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 0 32px;
+    height: 50px;
 
-    @include inset-black-box;
-
-    .key-select-btn {
-      position: absolute;
-      z-index: 2;
-      top: 0;
-      right: 0;
-
+    &__change {
       display: flex;
-      padding: 12px 14px;
-
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--K700);
+      align-items: flex-end;
+      flex-direction: column;
 
       span {
+        padding: 0 6px;
+
+        font-size: 13px;
         padding-left: 7px;
-        color: var(--K400);
+        font-weight: 600;
+
+        &:first-child {
+          color: var(--K700);
+        }
+        &:last-child {
+          padding-top: 2%;
+          padding-bottom: 2px;
+          color: var(--K500);
+        }
       }
 
       &:not(:disabled) {
@@ -43,78 +46,50 @@
       }
     }
 
-    &__queue {
+    &__morse-queue {
       position: relative;
-      z-index: 1;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
-      height: 80px;
+      flex: 1;
+      gap: var(--dit-xl);
+      min-height: var(--dit-xl);
 
-      &__morse {
+      > .morse-char {
         position: relative;
-        display: flex;
-        flex: 1;
-        gap: var(--dit-xl);
-        min-height: var(--dit-xl);
-
-        > .morse-char {
-          position: relative;
-          z-index: 2;
-        }
-
-        .morse-hint {
-          opacity: 0;
-          position: absolute;
-          z-index: 1;
-          top: 0;
-          left: 0;
-
-          .morse-char {
-            .dit-dah {
-              background: var(--K800);
-            }
-          }
-
-          // ========== Send ========== //
-          // Easy
-          .app--diff-easy.app--mode-send & {
-            animation: 4s fade-in linear forwards;
-            animation-delay: 2s;
-          }
-
-          // Moderate
-          .app--diff-moderate.app--mode-send & {
-            animation: 6s fade-in linear forwards;
-            animation-delay: 6s;
-          }
-
-          @keyframes fade-in {
-            from {
-              opacity: 0;
-            }
-            to {
-              opacity: 1;
-            }
-          }
-        }
+        z-index: 2;
       }
-      &__match {
-        display: flex;
-        align-items: center;
-        margin-top: 16px;
 
-        font-size: 28px;
-        font-weight: 600;
-        color: var(--K600);
-        line-height: 1;
-        text-align: right;
+      .morse-hint {
+        opacity: 0;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
 
-        // Hide "Invalid" message
-        // There may be a valid character after more dits/dahs.
-        &--invalid {
-          font-size: 0;
+        .morse-char {
+          .dit-dah {
+            background: var(--K700);
+          }
+        }
+
+        // ========== Send ========== //
+        // Easy
+        .app--hints-generous.app--mode-send & {
+          animation: 4s fade-in linear forwards;
+        }
+
+        // Moderate
+        .app--hints-delayed.app--mode-send & {
+          animation: 4s fade-in linear forwards;
+          animation-delay: 5s;
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
       }
     }
@@ -123,6 +98,10 @@
   &__keys {
     display: flex;
     gap: 12px;
+
+    .morse-keys--no-hint & {
+      display: none;
+    }
   }
 
   .morse-key {
@@ -162,7 +141,7 @@
         0 0 8px rgba(var(--K200-rgb), 0.2);
 
       font-size: 18px;
-      color: var(--K800);
+      color: var(--K850);
 
       &:not(:disabled) {
         &.morse-key--pressed,
@@ -265,8 +244,8 @@
   .setting {
     position: relative;
     z-index: 2;
-    gap: var(--modal-padding);
-    padding: var(--modal-padding);
+    gap: var(--side-padding);
+    padding: var(--side-padding);
 
     &__left {
       gap: 16px;

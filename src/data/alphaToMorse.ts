@@ -1,7 +1,7 @@
 export const maxCodeLength = 6;
 export const invalidCharText = "Invalid";
 
-interface Study {
+interface DictionaryListing {
   [letter: string]: string;
 }
 
@@ -66,22 +66,30 @@ export const unitLengths: Record<Unit, number> = {
 };
 
 export function calculateMorseUnitLength(morse: string) {
-  let splitMorse = sanitizeMorse(morse);
+  let processedMorsed = sanitizeMorse(morse);
 
   // Don't overcount spaces around slashes
-  splitMorse.replaceAll(" / ", "");
-  splitMorse.split("");
+  processedMorsed = processedMorsed.replace(" / ", "/");
+  processedMorsed.split("");
 
   let totalLength = 0;
 
-  for (let i = 0; i < splitMorse.length; i++) {
-    totalLength += unitLengths[splitMorse[i] as Unit];
+  for (let i = 0; i < processedMorsed.length; i++) {
+    totalLength += unitLengths[processedMorsed[i] as Unit];
+
+    // Add unit length if this and the next character are a dot or dash
+    if (
+      [".", "-"].includes(processedMorsed[i]) &&
+      [".", "-"].includes(processedMorsed[i + 1])
+    ) {
+      totalLength += 1;
+    }
   }
 
   return totalLength;
 }
 
-export const alphaToMorseDict: Study = {
+export const alphaToMorseDict: DictionaryListing = {
   A: ".-",
   B: "-...",
   C: "-.-.",

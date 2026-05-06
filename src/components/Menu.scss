@@ -5,7 +5,46 @@
 
   .modal & {
     flex: 1;
-    margin: auto var(--modal-padding);
+    gap: var(--side-padding);
+    margin: 0 var(--side-padding) var(--side-padding);
+  }
+}
+
+.menu-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  h3 {
+    color: var(--K400);
+
+    &,
+    span {
+      font-size: 36px;
+      font-weight: 100;
+      text-transform: uppercase;
+    }
+    span {
+      color: var(--accent);
+    }
+  }
+
+  span,
+  a {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  span {
+    color: var(--K600);
+  }
+  a {
+    color: var(--K300);
+
+    &:hover {
+      color: var(--link-hover);
+    }
   }
 }
 
@@ -30,6 +69,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: calc((100% - $gap) / 2);
+    gap: 12px;
 
     border-radius: 8px;
     background: var(--K875);
@@ -39,6 +80,8 @@
       1px 2px 12px rgba(var(--K950-rgb), 0.6);
 
     svg {
+      width: 48px;
+      height: 48px;
       fill: var(--accent);
       filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.5));
     }
@@ -46,9 +89,24 @@
       display: flex;
       gap: 6px;
 
+      font-size: 18px;
       font-weight: 700;
       color: var(--K100);
       text-transform: uppercase;
+    }
+
+    .home & {
+      @media (max-height: 600px) {
+        gap: 8px;
+
+        svg {
+          width: 38px;
+          height: 38px;
+        }
+        span {
+          font-size: 16px;
+        }
+      }
     }
 
     &:hover {
@@ -58,42 +116,18 @@
         fill: var(--accent);
       }
     }
+  }
+}
 
-    &:nth-child(1),
-    &:nth-child(2) {
-      width: calc((100% - $gap) / 2);
-      height: calc(55% - $gap / 2);
-      gap: 12px;
+.secondary-menu-links {
+  display: flex;
+  gap: 12px;
 
-      svg {
-        width: 54px;
-        height: 54px;
-      }
-      span {
-        font-size: 20px;
-      }
-    }
-    &:nth-child(3),
-    &:nth-child(4),
-    &:nth-child(5) {
-      width: calc((100% - $gap * 2) / 3);
-      height: calc(45% - $gap / 2);
-      gap: 10px;
-
-      svg {
-        width: 40px;
-        height: 40px;
-      }
-      span {
-        font-size: 16px;
-
-        @media (max-width: 420px) {
-          font-size: 15px;
-        }
-        @media (max-width: 400px) {
-          font-size: 14px;
-        }
-      }
-    }
+  .btn {
+    flex-direction: column;
+    border-radius: 8px;
+    padding: 10px 0;
+    height: auto;
+    gap: 2px;
   }
 }

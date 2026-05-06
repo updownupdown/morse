@@ -1,10 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useMorseAudio } from "./useMorseAudio";
+import { useAudio } from "./useAudio";
 import { KeyTypes, MorseContext, Setting } from "../context/MorseContext";
 import {
   alphaToMorse,
   alphaToMorseDict,
-  invalidCharText,
   maxCodeLength,
   unitLengths,
 } from "../data/alphaToMorse";
@@ -23,26 +22,21 @@ function getOtherKeyType(keyType: KeyType) {
 }
 
 type IambicKeysProps = {
-  submitChar: (char: string) => void;
-    startTimer?: (now: number) => void;
+  setGuess: (char: string) => void;
 };
 
-export const useIambicKeys = ({ submitChar, startTimer }: IambicKeysProps) => {
+export const useIambicKeys = ({ setGuess }: IambicKeysProps) => {
   // ========== MAIN =========== //
   const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
   const isPlayingRef = useRef(isPlaying);
   isPlayingRef.current = isPlaying;
 
-  const { playMorse } = useMorseAudio();
+  const { playMorse } = useAudio();
 
   // ========== QUEUE LOGIC =========== //
   const [queue, setQueue] = useState("");
   const queueRef = useRef(queue);
   queueRef.current = queue;
-
-  const [match, setMatch] = useState("");
-  const matchRef = useRef(match);
-  matchRef.current = match;
 
   // Character break
   const charBreakTimeoutRef = useRef<number>(null);
@@ -54,12 +48,13 @@ export const useIambicKeys = ({ submitChar, startTimer }: IambicKeysProps) => {
 
     charBreakTimeoutRef.current = setTimeout(() => {
       // Character over! Send character.
-      if (
-        matchRef.current.length !== 0 &&
-        matchRef.current !== invalidCharText
-      ) {
-        submitChar(matchRef.current);
-      }
+      const match =
+        queueRef.current.length !== 0 &&
+        Object.keys(alphaToMorseDict).find(
+          (key) => alphaToMorse(key) === queueRef.current,
+        );
+
+      match && setGuess(match);
 
       setQueue("");
     }, charBreakDuration);
@@ -70,19 +65,6 @@ export const useIambicKeys = ({ submitChar, startTimer }: IambicKeysProps) => {
       clearTimeout(charBreakTimeoutRef.current);
     }
   };
-
-  useEffect(() => {
-    if (queue.length === 0) {
-      setMatch("");
-      return;
-    }
-
-    const match =
-      queue.length !== 0 &&
-      Object.keys(alphaToMorseDict).find((key) => alphaToMorse(key) === queue);
-
-    setMatch(match ? match : invalidCharText);
-  }, [queue]);
 
   const MorseQueue = () => {
     return queueRef.current.length !== 0 ? (
@@ -123,8 +105,6 @@ export const useIambicKeys = ({ submitChar, startTimer }: IambicKeysProps) => {
   // ========== On key down/up =========== //
   function onKeyDown(keyType: KeyType) {
     if (queueRef.current.length === maxCodeLength) return;
-
-    startTimer && startTimer(Date.now());
 
     const otherKeyTime = pressStateRef?.current[getOtherKeyType(keyType)];
     const thisKeyTime = Date.now();
@@ -336,7 +316,6 @@ export const useIambicKeys = ({ submitChar, startTimer }: IambicKeysProps) => {
   // ========== Actual keys =========== //
   return {
     MorseQueue,
-    match,
     onKeyDown,
     onKeyUp,
     queue,

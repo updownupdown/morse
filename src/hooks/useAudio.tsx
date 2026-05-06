@@ -26,7 +26,7 @@ function beepGlow(on: boolean) {
   }
 }
 
-export function useMorseAudio() {
+export function useAudio() {
   const { settings, setIsPlaying, audioInitialized, setAudioInitialized } =
     useContext(MorseContext);
 
@@ -205,12 +205,7 @@ export function useMorseAudio() {
   function stopMorse() {
     return new Promise((resolve) => {
       stopPress();
-
       cancelPlaybackRef.current = true;
-
-      // Do not close the singleton AudioContext; just stop playback
-      // ctxRef.current = null; // Not needed anymore
-
       setIsPlaying(undefined);
 
       setTimeout(resolve, 10);

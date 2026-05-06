@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  padding: 20px 8px 12px;
+  padding: 0 8px 12px;
 }
+
 .keyboard {
   $gap-width: 4px;
   $key-width: calc((100% - $gap-width * 9) / 10);
@@ -66,8 +66,8 @@
     }
   }
 
-  .app--mode-receive.app--diff-moderate &,
-  .app--mode-receive.app--diff-hard & {
+  .app--mode-receive.app--hints-delayed &,
+  .app--mode-receive.app--hints-none & {
     .keyboard__row .key .morse-char {
       display: none;
     }

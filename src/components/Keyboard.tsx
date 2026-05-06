@@ -1,4 +1,3 @@
-import React from "react";
 import { alphaToMorse } from "../data/alphaToMorse";
 import "./Keyboard.scss";
 import clsx from "clsx";
@@ -9,18 +8,18 @@ interface KeyProps {
 }
 
 interface KeyboardProps {
-  onPress: (key: string) => void;
+  setGuess: (key: string) => void;
   isSpecialChars?: boolean;
 }
 
-export const Keyboard = ({ onPress, isSpecialChars }: KeyboardProps) => {
+export const Keyboard = ({ setGuess, isSpecialChars }: KeyboardProps) => {
   const Key = ({ letter }: KeyProps) => {
     return (
       <button
         key={letter}
         className="key"
         onClick={() => {
-          onPress(letter);
+          setGuess(letter);
         }}
       >
         <span className="key__letter">{letter}</span>

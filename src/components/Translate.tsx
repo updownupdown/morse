@@ -7,11 +7,9 @@ import {
 } from "../data/alphaToMorse";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import "./Translate.scss";
-import { SwapIcon } from "../icons/SwapIcon";
 import clsx from "clsx";
-import { BackspaceIcon } from "../icons/BackspaceIcon";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
-import { useMorseAudio } from "../hooks/useMorseAudio";
+import { useAudio } from "../hooks/useAudio";
 import { MorseContext } from "../context/MorseContext";
 import { DeleteIcon } from "../icons/DeleteIcon";
 import { StopIcon } from "../icons/StopIcon";
@@ -20,7 +18,7 @@ import { CopyIcon } from "../icons/CopyIcon";
 
 export const Translate = () => {
   const { isPlaying, selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useAudio();
 
   const [alpha, setAlpha] = useLocalStorage("convertedAlpha", "");
   const [morse, setMorse] = useLocalStorage("convertedMorse", "");
@@ -32,13 +30,6 @@ export const Translate = () => {
   useEffect(() => {
     stopMorse();
   }, [selectedMenu]);
-
-  function backspaceAlpha() {
-    setAlpha(alpha.slice(0, -1));
-  }
-  function backspaceMorse() {
-    setMorse(morse.slice(0, -1));
-  }
 
   const clearAlpha = () => {
     setAlpha("");
@@ -107,31 +98,32 @@ export const Translate = () => {
 
   return (
     <div className="translate">
+      <div className="button-menu">
+        <button
+          className={`btn-menu-item btn-menu-item--${isAlphaInput ? "selected" : "not-selected"}`}
+          onClick={() => {
+            setIsAlphaInput(true);
+          }}
+        >
+          Text to Morse
+        </button>
+        <button
+          className={`btn-menu-item btn-menu-item--${!isAlphaInput ? "selected" : "not-selected"}`}
+          onClick={() => {
+            setIsAlphaInput(false);
+          }}
+        >
+          Morse to Text
+        </button>
+      </div>
+
       <div
         className={clsx(
-          "translate-copied-toast ",
+          "translate-copied-toast",
           showCopiedTextToast && "translate-copied-toast--visible",
         )}
       >
         Copied to clipboard!
-      </div>
-
-      <div className="translate__top">
-        <span>
-          Convert <span>{isAlphaInput ? "Text" : "Morse"}</span> to{" "}
-          <span>{isAlphaInput ? "Morse" : "Text"}</span>
-        </span>
-
-        {/* Swap */}
-        <button
-          className="btn btn--outlined"
-          onClick={() => {
-            setIsAlphaInput(!isAlphaInput);
-          }}
-        >
-          <SwapIcon />
-          <span>Swap</span>
-        </button>
       </div>
 
       <div
@@ -152,6 +144,7 @@ export const Translate = () => {
                 disabled={!alpha.length}
               >
                 <CopyIcon />
+                <span>Copy</span>
               </button>
             )}
 
@@ -159,6 +152,7 @@ export const Translate = () => {
               <>
                 <button className="btn" onClick={pasteTextAlpha}>
                   <PasteIcon />
+                  <span>Paste</span>
                 </button>
                 <button
                   className="btn"
@@ -166,13 +160,7 @@ export const Translate = () => {
                   disabled={!alpha.length}
                 >
                   <DeleteIcon />
-                </button>
-                <button
-                  className="btn"
-                  onClick={backspaceAlpha}
-                  disabled={!alpha.length}
-                >
-                  <BackspaceIcon />
+                  <span>Clear</span>
                 </button>
               </>
             )}
@@ -207,6 +195,7 @@ export const Translate = () => {
               disabled={!morse.length}
             >
               {isPlaying ? <StopIcon /> : <SpeakerIcon />}
+              <span>Play</span>
             </button>
 
             {isAlphaInput && (
@@ -218,6 +207,7 @@ export const Translate = () => {
                 disabled={!morse.length}
               >
                 <CopyIcon />
+                <span>Copy</span>
               </button>
             )}
 
@@ -225,6 +215,7 @@ export const Translate = () => {
               <>
                 <button className="btn" onClick={pasteTextMorse}>
                   <PasteIcon />
+                  <span>Paste</span>
                 </button>
                 <button
                   className="btn btn--delete"
@@ -232,13 +223,7 @@ export const Translate = () => {
                   disabled={!morse.length}
                 >
                   <DeleteIcon />
-                </button>
-                <button
-                  className="btn"
-                  onClick={backspaceMorse}
-                  disabled={!morse.length}
-                >
-                  <BackspaceIcon />
+                  <span>Clear</span>
                 </button>
               </>
             )}

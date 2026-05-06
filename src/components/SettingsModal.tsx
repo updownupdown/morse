@@ -9,7 +9,7 @@ import "./SettingsModal.scss";
 import { Modal } from "./Modal";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { ResetIcon } from "../icons/ResetIcon";
-import { useMorseAudio } from "../hooks/useMorseAudio";
+import { useAudio } from "../hooks/useAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { CloseIcon } from "../icons/CloseIcon";
 import { PlusIcon } from "../icons/PlusIcon";
@@ -43,7 +43,9 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
     <div className="setting setting--slider">
       <div className="setting__left">
         <div className="setting__left__top">
-          <span className="setting__left__top__title">{specs.title}</span>
+          <div className="setting-title">
+            <span>{specs.title}</span>
+          </div>
 
           <button
             className="reset-btn"
@@ -108,7 +110,7 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
   const currentValue = settings[setting];
   const isKeySelector = setting === Setting.KeyType;
 
-  if (!specs.values) return null;
+  if (!specs.values || typeof currentValue === "boolean") return null;
 
   function setThisSetting(newValue: string) {
     setSettings({ ...settings, [setting]: newValue });
@@ -118,7 +120,9 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
     <div className="setting setting--buttons">
       <div className="setting__left">
         <div className="setting__left__top">
-          <span className="setting__left__top__title">{specs.title}</span>
+          <div className="setting-title">
+            <span>{specs.title}</span>
+          </div>
 
           {onClose && (
             <button
@@ -165,8 +169,45 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
   );
 };
 
+export const SettingToggle = ({ setting }: SettingButtonsProps) => {
+  const { settings, setSettings } = useContext(MorseContext);
+
+  const specs = settingsSpecs[setting];
+  const currentValue = settings[setting];
+
+  if (typeof currentValue !== "boolean") return null;
+
+  function setThisSetting(newValue: boolean) {
+    setSettings({ ...settings, [setting]: newValue });
+  }
+
+  return (
+    <button
+      className="setting setting--toggle"
+      onClick={() => {
+        setThisSetting(!currentValue);
+      }}
+    >
+      <div className="setting__left">
+        <div className="setting-title">
+          <span>{specs.title}</span>
+          {specs.hint && <span>{specs.hint}</span>}
+        </div>
+      </div>
+
+      <div className="setting__right">
+        <div
+          className={`setting-toggle setting-toggle--${currentValue ? "on" : "off"}`}
+        >
+          <div className="setting-toggle__plate" />
+        </div>
+      </div>
+    </button>
+  );
+};
+
 export const SettingsModal = () => {
-  const { playMorse, stopMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useAudio();
   const { settings, setSettings, isPlaying } = useContext(MorseContext);
 
   useEffect(() => {
@@ -178,64 +219,46 @@ export const SettingsModal = () => {
   return (
     <Modal title="Settings">
       <div className="settings">
-        <div className="settings__buttons">
-          <button
-            className="btn btn--outlined"
-            onClick={() => {
-              setSettings(defaultSettings);
-            }}
-          >
-            <ResetIcon />
-            <span>Reset all</span>
-          </button>
-          <button
-            className={clsx(
-              "btn btn--outlined",
-              isPlaying && "btn--outlined-stop",
-            )}
-            onClick={() => {
-              if (isPlaying) {
-                stopMorse();
-              } else {
-                playMorse(alphaToMorse("ABC"));
-              }
-            }}
-          >
-            {isPlaying ? <StopIcon /> : <SpeakerIcon />}
-            <span>{isPlaying ? "Stop" : "Play sample"}</span>
-          </button>
-        </div>
-
         <div className="settings__content">
-          <SettingButtons setting={Setting.Difficulty} />
+          <SettingButtons setting={Setting.Hints} />
+
+          <div className="settings__content__toggles">
+            <SettingToggle setting={Setting.AutoPlayLetter} />
+            {/* <SettingToggle setting={Setting.AutoWordBreak} /> */}
+            <SettingToggle setting={Setting.ShowStats} />
+          </div>
 
           <SettingSlider setting={Setting.UnitTime} />
           <SettingSlider setting={Setting.Farnsworth} />
           <SettingSlider setting={Setting.Frequency} />
           <SettingSlider setting={Setting.Volume} />
 
-          <SettingButtons setting={Setting.KeyType} />
-
-          {/* Details */}
-          <div className="settings__details">
-            <div className="flex">
-              <div className="setting-example setting-example--dit" />
-              <span>{settings[Setting.UnitTime]}ms</span>
-            </div>
-            <div className="flex">
-              <div className="setting-example setting-example--dah" />
-              <span>{settings[Setting.UnitTime] * 3}ms</span>
-            </div>
-            <div className="flex">
-              <span>/</span>
-              <span>{settings[Setting.UnitTime] * 7}ms</span>
-            </div>
-            <div className="flex">
-              <span>"PARIS"</span>
-              <span>
-                {Math.round((1.2 / settings[Setting.UnitTime]) * 1000)}wpm
-              </span>
-            </div>
+          <div className="settings__content__buttons">
+            <button
+              className="btn btn--outlined"
+              onClick={() => {
+                setSettings(defaultSettings);
+              }}
+            >
+              <ResetIcon />
+              <span>Reset all</span>
+            </button>
+            <button
+              className={clsx(
+                "btn btn--outlined",
+                isPlaying && "btn--outlined-stop",
+              )}
+              onClick={() => {
+                if (isPlaying) {
+                  stopMorse();
+                } else {
+                  playMorse(alphaToMorse("ABC"));
+                }
+              }}
+            >
+              {isPlaying ? <StopIcon /> : <SpeakerIcon />}
+              <span>{isPlaying ? "Stop" : "Play sample"}</span>
+            </button>
           </div>
         </div>
       </div>

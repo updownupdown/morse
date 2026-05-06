@@ -3,25 +3,37 @@
 .receive {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  justify-content: center;
+  width: 100%;
   height: 100%;
 
-  &__buttons {
-    display: flex;
-    gap: 12px;
-    padding: 0 20px;
+  &__menu {
+    padding: 0 var(--side-padding);
   }
 
-  &__word {
-    @include scrollbar-mixin;
-    overflow-y: auto;
-
+  &__content {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     flex: 1;
-    gap: 4px;
+    height: 100%;
+    padding: 20px var(--side-padding);
+    gap: var(--side-padding);
+    min-height: 0; // prevents overflow!
 
-    padding: 20px;
+    &__buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    &__word {
+      @include scrollbar-mixin;
+      overflow-y: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 4px;
+    }
   }
 }

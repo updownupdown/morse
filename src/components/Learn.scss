@@ -1,6 +1,6 @@
 @use "../css/mixins.scss" as *;
 
-.study {
+.learn {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -12,8 +12,6 @@
     display: flex;
     width: 100%;
     padding: 0 20px 20px;
-
-    box-shadow: 0 0 20px 8px rgba(var(--K900-rgb), 0.9);
   }
 
   &__content {

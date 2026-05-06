@@ -3,7 +3,7 @@ import "./Practice.scss";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Word } from "./Word";
 import { MorseKeys } from "./MorseKeys";
-import { useMorseAudio } from "../hooks/useMorseAudio";
+import { useAudio } from "../hooks/useAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { StopIcon } from "../icons/StopIcon";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
@@ -16,7 +16,7 @@ import clsx from "clsx";
 export const Practice = () => {
   const { isPlaying, selectedMenu } = useContext(MorseContext);
 
-  const { playMorse, stopMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useAudio();
 
   const [word, setWord] = useLocalStorage("practiceWord", "");
   const [isPlayingWord, setIsPlayingWord] = useState(false);
@@ -150,7 +150,7 @@ export const Practice = () => {
         </button>
       </div>
 
-      <MorseKeys submitChar={addCharacter} />
+      <MorseKeys setGuess={addCharacter} />
     </div>
   );
 };

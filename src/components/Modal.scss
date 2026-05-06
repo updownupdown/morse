@@ -11,27 +11,30 @@
   display: flex;
   flex-direction: column;
 
-  background: rgba(var(--K950-rgb), 0.75);
+  background: rgba(var(--K950-rgb), 0.85);
   backdrop-filter: blur(10px);
 
   &__header {
+    position: relative;
+    z-index: 2;
     display: flex;
-    padding: var(--modal-padding);
+    justify-content: flex-end;
+    align-items: center;
+    padding: var(--side-padding);
 
     span {
-      width: 100%;
+      // Offset close icon spacing
+      padding-left: 32px;
+      flex: 1;
 
-      font-size: 0;
-      font-weight: 600;
-      line-height: 32px;
-      color: var(--K400);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--K600);
+      text-align: center;
+      text-transform: uppercase;
     }
 
     button {
-      position: absolute;
-      top: var(--modal-padding);
-      right: var(--modal-padding);
-
       svg {
         width: 32px;
         height: 32px;
@@ -46,6 +49,8 @@
   &__content {
     overflow: hidden;
 
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     flex: 1;

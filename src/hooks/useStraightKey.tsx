@@ -7,23 +7,21 @@ import {
   maxCodeLength,
   unitLengths,
 } from "../data/alphaToMorse";
-import { useMorseAudio } from "./useMorseAudio";
+import { useAudio } from "./useAudio";
 import { inProgressChar, MorseChar } from "../components/MorseChar";
 
 interface Props {
-  submitChar: (char: string) => void;
-  startTimer?: (now: number) => void;
+  setGuess: (char: string) => void;
 }
 
-export const useStraightKey = ({ submitChar, startTimer }: Props) => {
+export const useStraightKey = ({ setGuess }: Props) => {
   // ========== MAIN =========== //
   const { settings } = useContext(MorseContext);
 
   // ========== QUEUE LOGIC =========== //
   const [queue, setQueue] = useState("");
-  const [match, setMatch] = useState("");
-  const matchRef = useRef(match);
-  matchRef.current = match;
+  const queueRef = useRef(queue);
+  queueRef.current = queue;
 
   // Character break
   const charBreakTimeoutRef = useRef<number>(null);
@@ -35,12 +33,13 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
 
     charBreakTimeoutRef.current = setTimeout(() => {
       // Character over! Send character.
-      if (
-        matchRef.current.length !== 0 &&
-        matchRef.current !== invalidCharText
-      ) {
-        submitChar(matchRef.current);
-      }
+      const match =
+        queueRef.current.length !== 0 &&
+        Object.keys(alphaToMorseDict).find(
+          (key) => alphaToMorse(key) === queueRef.current,
+        );
+
+      match && setGuess(match);
 
       setQueue("");
     }, charBreakDuration);
@@ -53,7 +52,7 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
   };
 
   // ========== PRESS LOGIC =========== //
-  const { setIsPressed, isPressed } = useMorseAudio();
+  const { setIsPressed, isPressed } = useAudio();
   const [pressStart, setPressStart] = useState<number | null>(null);
   const pressStartRef = useRef(pressStart);
   pressStartRef.current = pressStart;
@@ -90,26 +89,12 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
     }
   }, [pressDuration, settings]);
 
-  useEffect(() => {
-    if (queue.length === 0) {
-      setMatch("");
-      return;
-    }
-
-    const match =
-      queue.length !== 0 &&
-      Object.keys(alphaToMorseDict).find((key) => alphaToMorse(key) === queue);
-
-    setMatch(match ? match : invalidCharText);
-  }, [queue]);
-
   // Presses
   function onPressDown() {
     if (isPressed || queue.length === maxCodeLength) return;
 
     setIsPressed(true);
     setPressStart(Date.now());
-    startTimer && startTimer(Date.now());
   }
   function onPressUp() {
     setIsPressed(false);
@@ -172,7 +157,6 @@ export const useStraightKey = ({ submitChar, startTimer }: Props) => {
     MorseQueue,
     MorseProgress,
     queue,
-    match,
     isPressed,
   };
 };

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
-import "./Study.scss";
+import "./Learn.scss";
 import clsx from "clsx";
-import { useMorseAudio } from "../hooks/useMorseAudio";
+import { useAudio } from "../hooks/useAudio";
 import { MorseContext } from "../context/MorseContext";
 import { prosigns } from "../data/prosigns";
 import { MorseChar } from "./MorseChar";
@@ -22,7 +22,7 @@ interface SymbolProps {
 
 export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
   const { selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useAudio();
 
   const [isPlayingThis, setIsPlayingThis] = useState(false);
 
@@ -86,7 +86,7 @@ type ProsignDictionaryProps = {
 
 const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
   const { selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useMorseAudio();
+  const { playMorse, stopMorse } = useAudio();
 
   useEffect(() => {
     stopMorse();
@@ -136,7 +136,7 @@ const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
   );
 };
 
-export const Study = () => {
+export const Learn = () => {
   const { isPlaying } = useContext(MorseContext);
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
 
@@ -155,8 +155,8 @@ export const Study = () => {
   }
 
   return (
-    <div className="study">
-      <div className="study__menu">
+    <div className="learn">
+      <div className="learn__menu">
         <div className="button-menu">
           {Object.values(Categories).map((cat) => {
             return (
@@ -177,11 +177,11 @@ export const Study = () => {
         </div>
       </div>
 
-      <div className="study__content">
-        <span className="study__content__instructions">Tap symbol to play</span>
+      <div className="learn__content">
+        <span className="learn__content__instructions">Tap symbol to play</span>
 
         {selectedCategory !== Categories.Misc && (
-          <div className="study__content__symbols">
+          <div className="learn__content__symbols">
             {Object.keys(alphaToMorseDict)
               .filter((key) => key.match(regex))
               .map((key, val) => {
