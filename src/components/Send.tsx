@@ -2,14 +2,15 @@ import { useContext, useEffect, useRef } from "react";
 import "./Send.scss";
 import { MorseKeys } from "./MorseKeys";
 import {
-  defaultSendSourceQty,
-  maxSendSourceQty,
-  SendSources,
+  defaultSourceQty,
+  maxSourceQty,
+  sendSources,
+  Sources,
 } from "../data/DataSources";
-import { MorseContext } from "../context/MorseContext";
+import { Modes, MorseContext } from "../context/MorseContext";
 import { conditionalPluralize, formatForCSSClass } from "../utils/utils";
 import { initCode } from "../hooks/useAudio";
-import { useQuiz } from "../hooks/useQuiz";
+import { Phase, quizQtIncrementDuration, useQuiz } from "../hooks/useQuiz";
 import { Word } from "./Word";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -21,32 +22,30 @@ import { useAudioContext } from "../context/AudioContext";
 export const Send = () => {
   const { setQuizSource, quizQty, setQuizQty, phase, setPhase } =
     useContext(MorseContext);
-  const { playMorse, stopMorse } = useAudioContext();
-
+  const { playMorse } = useAudioContext();
   const { setGuess, word, letterIndex, guess } = useQuiz();
+
   const [practiceWord, setPracticeWord] = useLocalStorage("practiceWord", "");
   const practiceWordRef = useRef(practiceWord);
   practiceWordRef.current = practiceWord;
 
-  const [sendSource, setSendSource] = useLocalStorage<SendSources>(
+  const [source, setSource] = useLocalStorage<Sources>(
     "sendSource",
-    SendSources.Words,
+    Sources.Words,
   );
-  const [sendSourceQuantities, setSendSourceQuantities] = useLocalStorage<
-    Record<SendSources, number>
-  >("sendSourceQty", defaultSendSourceQty);
+  const [sendQuantities, setSendQuantities] = useLocalStorage<
+    Record<Sources, number>
+  >("sendQuantities", defaultSourceQty);
 
   useEffect(() => {
-    setQuizSource(sendSource);
-    setQuizQty(
-      sendSourceQuantities[sendSource] ?? defaultSendSourceQty[sendSource],
-    );
-  }, [sendSource]);
+    setQuizSource(source);
+    setQuizQty(sendQuantities[source] ?? defaultSourceQty[source]);
+  }, [source]);
 
   useEffect(() => {
-    setSendSourceQuantities({
-      ...sendSourceQuantities,
-      [sendSource]: quizQty ?? defaultSendSourceQty[sendSource],
+    setSendQuantities({
+      ...sendQuantities,
+      [source]: quizQty ?? defaultSourceQty[source],
     });
   }, [quizQty]);
 
@@ -64,64 +63,19 @@ export const Send = () => {
 
   return (
     <div
-      className={`quiz quiz--send quiz--source-${formatForCSSClass(sendSource)}`}
+      className={`quiz quiz--send quiz--source-${formatForCSSClass(source)}`}
     >
       <div className="quiz__content">
-        {["standby", "stats"].includes(phase) && quizQty && (
-          <>
-            <div className="button-menu button-menu--vertical">
-              {Object.entries(SendSources).map(([key, val]) => {
-                return (
-                  <button
-                    key={key}
-                    className={`btn-menu-item btn-menu-item--${sendSource === val ? "selected" : "not-selected"}`}
-                    onClick={() => {
-                      setPhase("standby");
-                      setSendSource(val as SendSources);
-                    }}
-                  >
-                    {val}
-                  </button>
-                );
-              })}
-            </div>
-
-            <span className="quiz__content__qty">
-              <button
-                className="btn btn--outlined"
-                onClick={() => {
-                  if (quizQty) {
-                    setQuizQty(quizQty - 1);
-                  }
-                }}
-                disabled={quizQty === 1}
-              >
-                <MinusIcon />
-              </button>
-
-              <div className="quiz__content__qty__practice">
-                Send anything you want!
-              </div>
-
-              <div className="quiz__content__qty__desc">
-                <span>{quizQty}</span>
-                <span>{conditionalPluralize(sendSource, quizQty)}</span>
-              </div>
-
-              <button
-                className="btn btn--outlined"
-                onClick={() => {
-                  if (quizQty) {
-                    setQuizQty(quizQty + 1);
-                  }
-                }}
-                disabled={quizQty === maxSendSourceQty[sendSource]}
-              >
-                <PlusIcon />
-              </button>
-            </span>
-          </>
-        )}
+        <QuizSelect
+          phase={phase}
+          setPhase={setPhase}
+          quizQty={quizQty ?? 1}
+          source={source}
+          sources={sendSources}
+          setSource={setSource}
+          maxQty={maxSourceQty}
+          setQuizQty={setQuizQty}
+        />
 
         {phase === "practice" && (
           <Practice
@@ -146,9 +100,7 @@ export const Send = () => {
               : undefined
           }
           setGuess={
-            sendSource === SendSources.Practice
-              ? addPracticeCharacter
-              : setGuess
+            source === Sources.Practice ? addPracticeCharacter : setGuess
           }
         />
 
@@ -157,9 +109,7 @@ export const Send = () => {
             className="btn btn--large"
             onClick={async () => {
               await playMorse(initCode);
-              setPhase(
-                sendSource === SendSources.Practice ? "practice" : "prepare",
-              );
+              setPhase(source === Sources.Practice ? "practice" : "prepare");
             }}
           >
             <span>Start</span>
@@ -167,5 +117,155 @@ export const Send = () => {
         )}
       </div>
     </div>
+  );
+};
+
+interface QuizSelectProps {
+  setPhase: (phase: Phase) => void;
+  setQuizQty: (qty: number) => void;
+  quizQty: number;
+  phase: Phase;
+  source: Sources;
+  sources: Sources[];
+  setSource: (source: Sources) => void;
+  maxQty: Record<Sources, number>;
+}
+
+export const QuizSelect = ({
+  phase,
+  setPhase,
+  setQuizQty,
+  quizQty,
+  source,
+  setSource,
+  maxQty,
+  sources,
+}: QuizSelectProps) => {
+  const { selectedMode, setSelectedMode } = useContext(MorseContext);
+
+  const holdTimeoutRef = useRef<number | null>(null);
+  const holdIntervalRef = useRef<number | null>(null);
+  const quizQtyRef = useRef(quizQty);
+  quizQtyRef.current = quizQty;
+
+  function incrementQuizQty(increase: boolean) {
+    let newQty = quizQtyRef.current ?? defaultSourceQty[source];
+
+    if (increase) {
+      if (newQty < maxSourceQty[source]) {
+        newQty += 1;
+      }
+    } else {
+      if (newQty > 1) {
+        newQty -= 1;
+      }
+    }
+
+    setQuizQty(newQty);
+  }
+
+  const startHoldIncrement = (increase: boolean) => {
+    if (holdTimeoutRef.current || holdIntervalRef.current) return;
+
+    holdTimeoutRef.current = setTimeout(() => {
+      incrementQuizQty(increase);
+
+      holdIntervalRef.current = setInterval(() => {
+        incrementQuizQty(increase);
+      }, quizQtIncrementDuration.subsequent);
+      holdTimeoutRef.current = null;
+    }, quizQtIncrementDuration.initial);
+  };
+
+  const stopHoldIncrement = () => {
+    if (holdTimeoutRef.current) {
+      clearTimeout(holdTimeoutRef.current);
+      holdTimeoutRef.current = null;
+    }
+    if (holdIntervalRef.current) {
+      clearInterval(holdIntervalRef.current);
+      holdIntervalRef.current = null;
+    }
+  };
+
+  if (!["standby", "stats"].includes(phase)) return null;
+
+  return (
+    <>
+      <div className="button-menu">
+        <button
+          className={`btn-menu-item btn-menu-item--${selectedMode === Modes.Send ? "selected" : "not-selected"}`}
+          onClick={() => {
+            setSelectedMode(Modes.Send);
+          }}
+          disabled={selectedMode === Modes.Send}
+        >
+          Send
+        </button>
+        <button
+          className={`btn-menu-item btn-menu-item--${selectedMode === Modes.Receive ? "selected" : "not-selected"}`}
+          onClick={() => {
+            setSelectedMode(Modes.Receive);
+          }}
+          disabled={selectedMode === Modes.Receive}
+        >
+          Receive
+        </button>
+      </div>
+
+      <div className="button-menu button-menu--vertical">
+        {Object.values(sources).map((s) => {
+          return (
+            <button
+              key={s}
+              className={`btn-menu-item btn-menu-item--${s === source ? "selected" : "not-selected"}`}
+              onClick={() => {
+                setPhase("standby");
+                setSource(s);
+              }}
+            >
+              {s}
+            </button>
+          );
+        })}
+      </div>
+
+      <span className="quiz__content__qty">
+        <button
+          className="btn btn--outlined"
+          onClick={() => incrementQuizQty(false)}
+          onMouseDown={() => startHoldIncrement(false)}
+          onTouchStart={() => startHoldIncrement(false)}
+          onMouseUp={stopHoldIncrement}
+          onMouseLeave={stopHoldIncrement}
+          onTouchEnd={stopHoldIncrement}
+          disabled={quizQty === 1}
+        >
+          <MinusIcon />
+        </button>
+
+        <div className="quiz__content__qty__practice">
+          Send anything you want!
+        </div>
+
+        <div className="quiz__content__qty__desc">
+          <span>{quizQty}</span>
+          <span>{conditionalPluralize(source, quizQty)}</span>
+        </div>
+
+        <button
+          className="btn btn--outlined"
+          onClick={() => incrementQuizQty(true)}
+          onMouseDown={() => startHoldIncrement(true)}
+          onTouchStart={() => startHoldIncrement(true)}
+          onMouseUp={stopHoldIncrement}
+          onMouseLeave={stopHoldIncrement}
+          onTouchEnd={stopHoldIncrement}
+          disabled={quizQty === maxQty[source]}
+        >
+          <PlusIcon />
+        </button>
+      </span>
+    </>
   );
 };

@@ -2,44 +2,44 @@ import { words } from "./words";
 import { specialChars, letters } from "./chars";
 import { pangrams } from "./pangrams";
 
-export enum SendSources {
+export enum Sources {
   Words = "Words",
   Pangrams = "Pangrams",
   AllChars = "Characters",
   Practice = "Practice",
-}
-
-export enum ReceiveSources {
-  Words = "Words",
-  Pangrams = "Pangrams",
   Letters = "Letters",
   SpecialChars = "Special Characters",
 }
 
-export const defaultSendSourceQty: Record<SendSources, number> = {
-  [SendSources.Words]: 8,
-  [SendSources.Pangrams]: 2,
-  [SendSources.AllChars]: 52,
-  [SendSources.Practice]: 1,
-};
-export const defaultReceiveSourceQty: Record<ReceiveSources, number> = {
-  [ReceiveSources.Pangrams]: 2,
-  [ReceiveSources.Words]: 8,
-  [ReceiveSources.Letters]: 26,
-  [ReceiveSources.SpecialChars]: 26,
+export const sendSources = [
+  Sources.Words,
+  Sources.Pangrams,
+  Sources.AllChars,
+  Sources.Practice,
+];
+export const receiveSources = [
+  Sources.Words,
+  Sources.Pangrams,
+  Sources.Letters,
+  Sources.SpecialChars,
+];
+
+export const defaultSourceQty: Record<Sources, number> = {
+  [Sources.Words]: 8,
+  [Sources.Pangrams]: 2,
+  [Sources.AllChars]: 52,
+  [Sources.Practice]: 1,
+  [Sources.Letters]: 26,
+  [Sources.SpecialChars]: 26,
 };
 
-export const maxSendSourceQty: Record<SendSources, number> = {
-  [SendSources.Words]: words.length,
-  [SendSources.Pangrams]: pangrams.length,
-  [SendSources.AllChars]: 52,
-  [SendSources.Practice]: 1,
-};
-export const maxReceiveSourceQty: Record<ReceiveSources, number> = {
-  [ReceiveSources.Pangrams]: pangrams.length,
-  [ReceiveSources.Words]: words.length,
-  [ReceiveSources.Letters]: 26,
-  [ReceiveSources.SpecialChars]: 26,
+export const maxSourceQty: Record<Sources, number> = {
+  [Sources.Words]: 30,
+  [Sources.Pangrams]: 10,
+  [Sources.AllChars]: 52,
+  [Sources.Practice]: 1,
+  [Sources.Letters]: 26,
+  [Sources.SpecialChars]: 26,
 };
 
 export type Stats = {
@@ -71,28 +71,26 @@ function shuffle(array: string[]) {
 }
 
 export const useWordSets = () => {
-  function getWordSet(source: SendSources | ReceiveSources, qty: number) {
+  function getWordSet(source: Sources, qty: number) {
     let data: string[] = [];
     let chunkSize = 0;
 
     switch (source) {
-      case SendSources.Words:
-      case ReceiveSources.Words:
+      case Sources.Words:
         data = words;
         break;
-      case SendSources.Pangrams:
-      case ReceiveSources.Pangrams:
+      case Sources.Pangrams:
         data = pangrams;
         break;
-      case SendSources.AllChars:
+      case Sources.AllChars:
         data = [...letters, ...specialChars];
         chunkSize = 5;
         break;
-      case ReceiveSources.Letters:
+      case Sources.Letters:
         data = letters;
         chunkSize = 5;
         break;
-      case ReceiveSources.SpecialChars:
+      case Sources.SpecialChars:
         data = specialChars;
         chunkSize = 5;
         break;

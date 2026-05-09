@@ -445,6 +445,8 @@ table {
   position: relative;
 
   &:after {
+    user-select: none;
+    pointer-events: none;
     transition: 0.15s ease all;
     content: "";
     position: absolute;

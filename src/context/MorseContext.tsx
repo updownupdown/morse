@@ -4,9 +4,8 @@ import { SendIcon } from "../icons/SendIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
-import { TouchIcon } from "../icons/TouchIcon";
 import { Themes } from "../components/ThemeModal";
-import { ReceiveSources, SendSources, Stats } from "../data/DataSources";
+import { Sources, Stats } from "../data/DataSources";
 import { Phase } from "../hooks/useQuiz";
 
 export enum Hints {
@@ -178,8 +177,8 @@ interface ContextProps {
   setSelectedMode: (mode: Modes) => void;
   lastSelectedMode: Modes;
   setLastSelectedMode: (mode: Modes) => void;
-  quizSource: SendSources | ReceiveSources | undefined;
-  setQuizSource: (source: SendSources | ReceiveSources) => void;
+  quizSource: Sources | undefined;
+  setQuizSource: (source: Sources) => void;
   quizQty: number | undefined;
   setQuizQty: (qty: number) => void;
   stats: Stats | undefined;

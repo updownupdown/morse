@@ -8,17 +8,16 @@ import { MorseContext } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
 import {
-  defaultReceiveSourceQty,
-  maxReceiveSourceQty,
-  ReceiveSources,
+  defaultSourceQty,
+  maxSourceQty,
+  receiveSources,
+  Sources,
 } from "../data/DataSources";
 import { useQuiz } from "../hooks/useQuiz";
 import { Word } from "./Word";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { MinusIcon } from "../icons/MinusIcon";
-import { conditionalPluralize } from "../utils/utils";
-import { PlusIcon } from "../icons/PlusIcon";
 import { useAudioContext } from "../context/AudioContext";
+import { QuizSelect } from "./Send";
 
 export const Receive = () => {
   const { setPhase, phase, setQuizSource, quizQty, setQuizQty } =
@@ -28,27 +27,23 @@ export const Receive = () => {
 
   const { stats, setGuess, word, letterIndex, guess } = useQuiz();
 
-  const [receiveSource, setReceiveSource] = useLocalStorage<ReceiveSources>(
+  const [source, setSource] = useLocalStorage<Sources>(
     "receiveSource",
-    ReceiveSources.Words,
+    Sources.Words,
   );
-
-  const [receiveSourceQuantities, setReceiveSourceQuantities] = useLocalStorage<
-    Record<ReceiveSources, number>
-  >("receiveSourceQty", defaultReceiveSourceQty);
-
-  useEffect(() => {
-    setQuizSource(receiveSource);
-    setQuizQty(
-      receiveSourceQuantities[receiveSource] ??
-        defaultReceiveSourceQty[receiveSource],
-    );
-  }, [receiveSource]);
+  const [receiveQuantities, setReceiveQuantities] = useLocalStorage<
+    Record<Sources, number>
+  >("receiveQuantities", defaultSourceQty);
 
   useEffect(() => {
-    setReceiveSourceQuantities({
-      ...receiveSourceQuantities,
-      [receiveSource]: quizQty ?? defaultReceiveSourceQty[receiveSource],
+    setQuizSource(source);
+    setQuizQty(receiveQuantities[source] ?? defaultSourceQty[source]);
+  }, [source]);
+
+  useEffect(() => {
+    setReceiveQuantities({
+      ...receiveQuantities,
+      [source]: quizQty ?? defaultSourceQty[source],
     });
   }, [quizQty]);
 
@@ -108,59 +103,23 @@ export const Receive = () => {
   }, [stats]);
 
   return (
-    <div className="quiz quiz--receive">
+    <div
+      className={clsx(
+        "quiz quiz--receive beep-glow",
+        wordBtnIsStop() && "quiz--playing-word",
+      )}
+    >
       <div className="quiz__content">
-        {["standby", "stats"].includes(phase) && quizQty && (
-          <>
-            <div className="button-menu button-menu--vertical">
-              {Object.entries(ReceiveSources).map(([key, val]) => {
-                return (
-                  <button
-                    key={key}
-                    className={`btn-menu-item btn-menu-item--${receiveSource === val ? "selected" : "not-selected"}`}
-                    onClick={() => {
-                      stopMorse();
-                      setPhase("standby");
-                      setReceiveSource(val as ReceiveSources);
-                    }}
-                  >
-                    {val}
-                  </button>
-                );
-              })}
-            </div>
-
-            <span className="quiz__content__qty">
-              <button
-                className="btn btn--outlined"
-                onClick={() => {
-                  if (quizQty) {
-                    setQuizQty(quizQty - 1);
-                  }
-                }}
-                disabled={quizQty === 1}
-              >
-                <MinusIcon />
-              </button>
-
-              <div className="quiz__content__qty__desc">
-                <span>{quizQty}</span>
-                <span>{conditionalPluralize(receiveSource, quizQty)}</span>
-              </div>
-              <button
-                className="btn btn--outlined"
-                onClick={() => {
-                  if (quizQty) {
-                    setQuizQty(quizQty + 1);
-                  }
-                }}
-                disabled={quizQty === maxReceiveSourceQty[receiveSource]}
-              >
-                <PlusIcon />
-              </button>
-            </span>
-          </>
-        )}
+        <QuizSelect
+          phase={phase}
+          setPhase={setPhase}
+          quizQty={quizQty ?? 1}
+          source={source}
+          sources={receiveSources}
+          setSource={setSource}
+          maxQty={maxSourceQty}
+          setQuizQty={setQuizQty}
+        />
 
         {phase === "guess" && (
           <>
@@ -213,7 +172,7 @@ export const Receive = () => {
         {phase === "guess" && (
           <Keyboard
             setGuess={setGuess}
-            isSpecialChars={receiveSource === ReceiveSources.SpecialChars}
+            isSpecialChars={source === Sources.SpecialChars}
           />
         )}
       </div>

@@ -131,12 +131,10 @@ export const useStraightKey = ({ setGuess }: Props) => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      document.removeEventListener("contextmenu", (e) => e.preventDefault());
     };
   }, [queue, settings, isPressed, pressStart]);
 

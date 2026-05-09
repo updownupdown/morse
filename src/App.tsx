@@ -20,7 +20,7 @@ import { Home } from "./components/Home";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
 import { InfoModal } from "./components/InfoModal";
 import { ThemeModal } from "./components/ThemeModal";
-import { ReceiveSources, SendSources, Stats } from "./data/DataSources";
+import { Sources, Stats } from "./data/DataSources";
 import { Phase } from "./hooks/useQuiz";
 import { formatForCSSClass } from "./utils/utils";
 import { AudioProvider } from "./context/AudioContext";
@@ -41,9 +41,7 @@ function App() {
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
 
-  const [quizSource, setQuizSource] = useState<
-    SendSources | ReceiveSources | undefined
-  >(undefined);
+  const [quizSource, setQuizSource] = useState<Sources | undefined>(undefined);
   const [quizQty, setQuizQty] = useState<number | undefined>(undefined);
   const [stats, setStats] = useState<Stats | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>("standby");
@@ -53,9 +51,16 @@ function App() {
     setStats(undefined);
   }, [selectedMode]);
 
-  // Update theme-color meta tag when theme changes
   useEffect(() => {
+    // Update theme-color meta tag on init
     updateMetaThemeColor();
+
+    // Prevent context menu for long presses
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    return () => {
+      document.removeEventListener("contextmenu", (e) => e.preventDefault());
+    };
   }, []);
 
   return (

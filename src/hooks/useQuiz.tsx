@@ -10,12 +10,16 @@ import {
 import "./useQuiz.scss";
 import { useAudioContext } from "../context/AudioContext";
 
+export const quizQtIncrementDuration = {
+  initial: 750,
+  subsequent: 150,
+};
+
 export type Phase = "standby" | "prepare" | "guess" | "stats" | "practice";
 
 export const useQuiz = () => {
   const {
     settings,
-
     selectedMode,
     quizSource,
     setQuizSource,
@@ -25,7 +29,8 @@ export const useQuiz = () => {
     phase,
     setPhase,
   } = useContext(MorseContext);
-  const { playMorse, stopMorse, audioInitialized } = useAudioContext();
+  const { playMorse, stopMorse, audioInitialized, isPlaying } =
+    useAudioContext();
   const { getWordSet } = useWordSets();
 
   const [wordSet, setWordSet] = useState<string[]>([]);
@@ -145,6 +150,7 @@ export const useQuiz = () => {
       //  Play letter on index change
       // (will trigger on auto index change, but not on manual)
       if (
+        isPlaying === undefined &&
         selectedMode === Modes.Receive &&
         wordIndex !== undefined &&
         settings[Setting.AutoPlayLetter]
