@@ -4,59 +4,76 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
-
-  &__menu {
-    padding: 0 var(--side-padding);
-  }
 
   &__content {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     flex: 1;
+    width: 100%;
     height: 100%;
-    padding: 20px var(--side-padding);
+    padding: var(--side-padding);
     gap: 8px;
     min-height: 0; // prevents overflow!
+
+    .button-menu {
+      max-width: var(--max-quiz-settings-width);
+    }
+
+    &__qty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      width: 100%;
+      max-width: var(--max-quiz-settings-width);
+
+      border-radius: var(--box-radius);
+      background: var(--background-overlay);
+
+      .btn {
+        flex-grow: unset;
+        border: unset;
+        border-radius: 50%;
+
+        svg {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      &__desc {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        gap: 4px;
+        padding-bottom: 2px;
+
+        span {
+          color: var(--accent-input);
+
+          &:first-child {
+            font-size: 30px;
+            font-weight: 700;
+          }
+          &:last-child {
+            font-size: 14px;
+            text-transform: lowercase;
+          }
+        }
+      }
+    }
 
     &__progress-stats {
       display: flex;
       gap: 20px;
       padding: 0 8px;
-
-      .progress-bar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-
-        &__title {
-          font-size: 13px;
-          color: var(--K500);
-          text-transform: uppercase;
-        }
-
-        &__bar {
-          $bar-height: 8px;
-
-          overflow: hidden;
-          width: 100%;
-          height: $bar-height;
-
-          border-radius: calc($bar-height / 2);
-          background: var(--K850);
-
-          &__progress {
-            transition: 0.4s ease all;
-            width: 0%;
-            height: 100%;
-
-            background: var(--K400);
-          }
-        }
-      }
     }
 
     &__word {
@@ -66,12 +83,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
       flex: 1;
       gap: 4px;
     }
 
     &__action-buttons {
       display: flex;
+      width: 100%;
       gap: 12px;
     }
   }
@@ -86,7 +105,7 @@
     gap: var(--quiz-bottom-gap);
 
     .morse-keys,
-    .btn--large-orange {
+    .btn--large {
       width: 100%;
     }
   }
@@ -100,7 +119,7 @@
   padding: 0 40px;
 
   font-size: 14px;
-  color: var(--K400);
+  color: rgba(var(--text-rgb), 0.6);
   text-align: center;
   line-height: 1.5;
 }

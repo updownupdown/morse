@@ -112,10 +112,7 @@ export const Practice = () => {
       <div className="practice__buttons">
         {/* Play word */}
         <button
-          className={clsx(
-            "btn btn--outlined",
-            isPlayingWord && "btn--outlined-stop",
-          )}
+          className={clsx("btn btn--outlined", isPlayingWord && "btn--stop")}
           onClick={playPause}
           disabled={playPauseIsDisabled}
         >

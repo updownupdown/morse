@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import {
   defaultSettings,
+  Menus,
   MorseContext,
   Setting,
   settingsSpecs,
@@ -16,6 +17,7 @@ import { PlusIcon } from "../icons/PlusIcon";
 import { MinusIcon } from "../icons/MinusIcon";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
+import { PaletteIcon } from "../icons/PaletteIcon";
 
 interface SettingSliderProps {
   setting: Setting;
@@ -76,7 +78,7 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
       </div>
       <div className="setting__right">
         <button
-          className="setting-btn"
+          className="btn btn--small"
           onClick={() => {
             setThisSetting(currentValue + specs.step!);
           }}
@@ -85,7 +87,7 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
           <PlusIcon />
         </button>
         <button
-          className="setting-btn"
+          className="btn btn--small"
           onClick={() => {
             setThisSetting(currentValue - specs.step!);
           }}
@@ -117,7 +119,9 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
   }
 
   return (
-    <div className="setting setting--buttons">
+    <div
+      className={`setting setting--buttons setting--${setting.toLowerCase()}`}
+    >
       <div className="setting__left">
         <div className="setting__left__top">
           <div className="setting-title">
@@ -143,7 +147,10 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
         </div>
 
         <div
-          className={`button-menu button-menu--${isKeySelector ? "vertical" : "horizontal"}`}
+          className={clsx(
+            "button-menu",
+            isKeySelector ? "button-menu--vertical" : "button-menu--horizontal",
+          )}
         >
           {Object.values(specs.values).map((key) => {
             return (
@@ -208,7 +215,8 @@ export const SettingToggle = ({ setting }: SettingButtonsProps) => {
 
 export const SettingsModal = () => {
   const { playMorse, stopMorse } = useAudio();
-  const { settings, setSettings, isPlaying } = useContext(MorseContext);
+  const { setSettings, isPlaying, settings, setSelectedMenu } =
+    useContext(MorseContext);
 
   useEffect(() => {
     return () => {
@@ -225,7 +233,24 @@ export const SettingsModal = () => {
           <div className="settings__content__toggles">
             <SettingToggle setting={Setting.AutoPlayLetter} />
             {/* <SettingToggle setting={Setting.AutoWordBreak} /> */}
-            <SettingToggle setting={Setting.ShowStats} />
+          </div>
+
+          <div className="settings__content__theme">
+            <span className="setting">
+              <span className="setting-title">
+                <span>Theme</span>
+              </span>
+            </span>
+
+            <button
+              className="btn btn--outlined"
+              onClick={() => {
+                setSelectedMenu(Menus.Theme);
+              }}
+            >
+              <PaletteIcon />
+              <span>{settings[Setting.Theme]}</span>
+            </button>
           </div>
 
           <SettingSlider setting={Setting.UnitTime} />
@@ -235,7 +260,7 @@ export const SettingsModal = () => {
 
           <div className="settings__content__buttons">
             <button
-              className="btn btn--outlined"
+              className="btn btn--flex btn--outlined"
               onClick={() => {
                 setSettings(defaultSettings);
               }}
@@ -245,8 +270,8 @@ export const SettingsModal = () => {
             </button>
             <button
               className={clsx(
-                "btn btn--outlined",
-                isPlaying && "btn--outlined-stop",
+                "btn btn--flex btn--outlined",
+                isPlaying && "btn--stop",
               )}
               onClick={() => {
                 if (isPlaying) {

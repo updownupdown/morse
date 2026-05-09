@@ -10,19 +10,20 @@ input[type="number"] {
   margin: unset;
   border: unset;
 
-  @include inset-black-box;
+  border-radius: var(--box-radius);
+  background: var(--background-overlay);
 
   font-family: var(--font);
-  font-size: 16px;
-  color: var(--K200);
+  font-size: 15px;
+  color: rgba(var(--text-rgb), 1);
+  text-transform: uppercase;
 
   &::placeholder {
-    color: var(--K700);
+    color: rgba(var(--text-rgb), 0.3);
   }
 
   &:disabled {
-    background: var(--K900);
-    border: 2px solid var(--K850);
+    background: rgba(var(--text-rgb), 0.08);
     box-shadow: unset;
   }
 
@@ -32,20 +33,12 @@ input[type="number"] {
       transition: 0.2s ease all;
       transition-property: box-shadow;
 
-      box-shadow:
-        inset 0 0 8px rgba(var(--black-rgb), 0.4),
-        inset 0 0 20px rgba(var(--black-rgb), 0.3),
-        0 0 8px 2px rgba(var(--link-rgb), 0.4),
-        0 0 24px rgba(var(--K700-rgb), 0.5);
+      box-shadow: 0 0 12px 2px rgba(var(--accent-btn-rgb), 0.3);
     }
 
     &:focus {
       outline: none;
-      box-shadow:
-        inset 0 0 8px rgba(var(--black-rgb), 0.4),
-        inset 0 0 20px rgba(var(--black-rgb), 0.3),
-        0 0 0 3px rgba(var(--link-rgb), 0.8),
-        0 0 24px rgba(var(--K700-rgb), 0.5);
+      box-shadow: 0 0 0 3px rgba(var(--accent-btn-hover-rgb), 0.4);
     }
   }
 }
@@ -80,7 +73,7 @@ input[type="range"]:focus {
   width: 100%;
   height: $track-height;
   border-radius: calc($track-height / 2);
-  background: var(--K800);
+  background: rgba(var(--text-rgb), 0.2);
 }
 input[type="range"]::-webkit-slider-runnable-track {
   @include track;
@@ -89,7 +82,7 @@ input[type="range"]::-moz-range-track {
   @include track;
 }
 input[type="range"]:focus::-webkit-slider-runnable-track {
-  background: var(--K800);
+  background: rgba(var(--text-rgb), 0.2);
 }
 
 // Slider Thumb
@@ -105,7 +98,7 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
   margin-top: -(($slider-height - $track-height) * 0.5);
 
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-input);
   box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.8);
 }
 input[type="range"]::-webkit-slider-thumb {
@@ -115,5 +108,5 @@ input[type="range"]::-moz-range-thumb {
   @include thumb;
 }
 input[type="range"]:where(:hover, :focus)::-webkit-slider-thumb {
-  background: var(--accent);
+  background: var(--accent-input);
 }

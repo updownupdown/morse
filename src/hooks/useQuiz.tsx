@@ -6,10 +6,9 @@ import {
   Stats,
   useWordSets,
 } from "../data/DataSources";
-import { useLocalStorage } from "./useLocalStorage";
 import { Modes, MorseContext, Setting } from "../context/MorseContext";
 import { useAudio } from "./useAudio";
-import { calculateWPM, getStatusColor } from "../utils/utils";
+import { calculateWPM } from "../utils/utils";
 import {
   alphaToMorse,
   calculateMorseUnitLength,
@@ -17,51 +16,30 @@ import {
 } from "../data/alphaToMorse";
 import "./useQuiz.scss";
 
-export const ProgressBar = ({
-  title,
-  progress,
-  useStatusColor,
-}: {
-  title: string;
-  progress?: number;
-  useStatusColor?: boolean;
-}) => {
-  return (
-    <div className="progress-bar">
-      <span className="progress-bar__title">{title}</span>
-      <div className="progress-bar__bar">
-        <div
-          className="progress-bar__bar__progress"
-          style={{
-            width: progress !== undefined ? `${progress}%` : undefined,
-            background:
-              useStatusColor && progress !== undefined
-                ? getStatusColor(progress)
-                : undefined,
-          }}
-        />
-      </div>
-    </div>
-  );
-};
+export type Phase = "standby" | "prepare" | "guess" | "stats";
 
 export const useQuiz = () => {
-  const { settings, audioInitialized, selectedMode } = useContext(MorseContext);
+  const {
+    settings,
+    audioInitialized,
+    selectedMode,
+    quizSource,
+    setQuizSource,
+    quizQty,
+    stats,
+    setStats,
+    phase,
+    setPhase,
+  } = useContext(MorseContext);
   const { playMorse } = useAudio();
   const { getWordSet } = useWordSets();
 
-  const [quizSource, setQuizSource] = useState<
-    SendSources | ReceiveSources | undefined
-  >(undefined);
   const [wordSet, setWordSet] = useState<string[]>([]);
-  const [phase, setPhase] = useState<"standby" | "prepare" | "guess" | "stats">(
-    "standby",
-  );
   const [word, setWord] = useState<string | undefined>(undefined);
   const [letterIndex, setLetterIndex] = useState<number | undefined>(undefined);
   const [wordIndex, setWordIndex] = useState<number | undefined>(undefined);
   const [guess, setGuess] = useState<string | undefined>(undefined);
-  const [stats, setStats] = useState<Stats>(defaultStats);
+
   const timerRef = useRef<number>(null);
 
   // Source change
@@ -71,10 +49,15 @@ export const useQuiz = () => {
 
   // Set up new set
   useEffect(() => {
-    if (phase !== "prepare" || quizSource === undefined || !audioInitialized)
+    if (
+      phase !== "prepare" ||
+      quizSource === undefined ||
+      quizQty === undefined ||
+      !audioInitialized
+    )
       return;
 
-    const newWordSet = getWordSet(quizSource);
+    const newWordSet = getWordSet(quizSource, quizQty);
 
     let charsTotal = 0;
     newWordSet.forEach((word) => {
@@ -100,6 +83,7 @@ export const useQuiz = () => {
       wordSet.length === 0 ||
       word === undefined ||
       wordIndex === undefined ||
+      stats === undefined ||
       letterIndex === undefined
     ) {
       return;
@@ -178,8 +162,6 @@ export const useQuiz = () => {
     stats,
     guess,
     setQuizSource,
-    source: quizSource,
-    phase,
     word,
     letterIndex,
     setGuess,

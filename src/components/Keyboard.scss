@@ -34,7 +34,7 @@
       padding: 0 $gap-width;
 
       border-radius: 4px;
-      background: var(--K850);
+      background: rgba(var(--text-rgb), 0.1);
 
       &__letter {
         font-size: 22px;
@@ -46,8 +46,8 @@
       }
 
       &:hover {
-        color: var(--K100);
-        background: var(--K700);
+        color: rgba(var(--text-rgb), 0.9);
+        background: rgba(var(--text-rgb), 0.3);
       }
     }
 

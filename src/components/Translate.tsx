@@ -137,7 +137,7 @@ export const Translate = () => {
           <div className="translate-header">
             {!isAlphaInput && (
               <button
-                className="btn"
+                className="btn btn--small"
                 onClick={() => {
                   copyText(alpha);
                 }}
@@ -150,12 +150,12 @@ export const Translate = () => {
 
             {isAlphaInput && (
               <>
-                <button className="btn" onClick={pasteTextAlpha}>
+                <button className="btn btn--small" onClick={pasteTextAlpha}>
                   <PasteIcon />
                   <span>Paste</span>
                 </button>
                 <button
-                  className="btn"
+                  className="btn btn--small"
                   onClick={clearAlpha}
                   disabled={!alpha.length}
                 >
@@ -172,9 +172,15 @@ export const Translate = () => {
             placeholder={!isAlphaInput ? "" : "Enter text"}
             value={alpha}
             onChange={(e) => {
-              const text = e.target.value.toUpperCase();
+              const pointer = e.target.selectionStart;
+              const element = e.target;
 
-              setAlpha(text);
+              setAlpha(e.target.value);
+
+              window.requestAnimationFrame(() => {
+                element.selectionStart = pointer;
+                element.selectionEnd = pointer;
+              });
             }}
             onPaste={(e) => {
               setAlpha((prev) => prev + e.clipboardData.getData("Text"));
@@ -188,8 +194,8 @@ export const Translate = () => {
           <div className="translate-header">
             <button
               className={clsx(
-                "btn btn--play",
-                isPlaying && "btn--outlined-stop",
+                "btn btn--small btn--play-stop",
+                isPlaying && "btn--stop",
               )}
               onClick={playPauseMorse}
               disabled={!morse.length}
@@ -200,7 +206,7 @@ export const Translate = () => {
 
             {isAlphaInput && (
               <button
-                className="btn"
+                className="btn btn--small"
                 onClick={() => {
                   copyText(morse);
                 }}
@@ -213,12 +219,12 @@ export const Translate = () => {
 
             {!isAlphaInput && (
               <>
-                <button className="btn" onClick={pasteTextMorse}>
+                <button className="btn btn--small" onClick={pasteTextMorse}>
                   <PasteIcon />
                   <span>Paste</span>
                 </button>
                 <button
-                  className="btn btn--delete"
+                  className="btn btn--small btn--delete"
                   onClick={clearMorse}
                   disabled={!morse.length}
                 >
@@ -234,12 +240,17 @@ export const Translate = () => {
             className="translate-morse"
             value={morse}
             placeholder={isAlphaInput ? "" : 'Use ".", "-", spaces, or slashes'}
-            onChange={(e) => {
-              let text = e.target.value;
-
-              if (text === "" || regexTest.test(text)) {
-                setMorse(sanitizeMorse(text));
+            onKeyDown={(e) => {
+              if (!regexTest.test(e.key)) {
+                e.preventDefault();
+                e.stopPropagation();
               }
+            }}
+            onChange={(e) => {
+              setMorse(e.target.value);
+            }}
+            onBlur={() => {
+              setMorse(sanitizeMorse(morse));
             }}
             onPaste={(e) => {
               setMorse(

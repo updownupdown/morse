@@ -7,6 +7,7 @@ import { initCode, useAudio } from "../hooks/useAudio";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { HelpIcon } from "../icons/HelpIcon";
 import { KeyboardIcon } from "../icons/KeyboardIcon";
+import { PaletteIcon } from "../icons/PaletteIcon";
 
 export const MenuLinks = () => {
   const links = [
@@ -30,7 +31,6 @@ export const MenuLinks = () => {
 
   const { setSelectedMode, setLastSelectedMode, setSelectedMenu } =
     useContext(MorseContext);
-  const { playMorse } = useAudio();
 
   return (
     <>
@@ -67,7 +67,7 @@ export const MenuLinks = () => {
 
       <div className="secondary-menu-links">
         <button
-          className="btn btn--outlined"
+          className="btn btn--flex btn--outlined"
           onClick={() => setSelectedMenu(Menus.Settings)}
         >
           <SettingsIcon />
@@ -75,14 +75,21 @@ export const MenuLinks = () => {
         </button>
 
         {/* <button
-          className="btn btn--outlined"
+          className="btn btn--flex btn--outlined"
           onClick={() => setSelectedMenu(Menus.Info)}
         >
           <HelpIcon />
           <span>Info</span>
         </button> */}
         <button
-          className="btn btn--outlined"
+          className="btn btn--flex btn--outlined"
+          onClick={() => setSelectedMenu(Menus.Theme)}
+        >
+          <PaletteIcon />
+          <span>Theme</span>
+        </button>
+        <button
+          className="btn btn--flex btn--outlined"
           onClick={() => setSelectedMenu(Menus.Shortcuts)}
         >
           <KeyboardIcon />

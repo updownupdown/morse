@@ -1,0 +1,48 @@
+import { useContext } from "react";
+import { Menus, MorseContext, Setting } from "../context/MorseContext";
+import "./ThemeModal.scss";
+import { Modal } from "./Modal";
+
+export enum Themes {
+  Teal = "Teal",
+  Antique = "Antique",
+  Rose = "Rose",
+  Neon = "Neon",
+  Robot = "Robot",
+  Mono = "Mono",
+  Matrix = "Matrix",
+  Fruity = "Fruity",
+}
+
+export const ThemeModal = () => {
+  const { settings, setSettings, setSelectedMenu } = useContext(MorseContext);
+
+  return (
+    <Modal title="Themes">
+      <div className="themes">
+        <div className="button-menu button-menu--vertical  button-menu--vertical-wrap">
+          {Object.values(Themes).map((theme) => (
+            <button
+              key={theme}
+              className={`btn-menu-item btn-menu-item--${settings.Theme === theme ? "selected" : "not-selected"}`}
+              onClick={() => {
+                setSettings({ ...settings, [Setting.Theme]: theme });
+              }}
+            >
+              {theme}
+            </button>
+          ))}
+        </div>
+
+        <button
+          className="btn btn--large"
+          onClick={() => {
+            setSelectedMenu(Menus.None);
+          }}
+        >
+          <span>Close</span>
+        </button>
+      </div>
+    </Modal>
+  );
+};

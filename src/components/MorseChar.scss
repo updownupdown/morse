@@ -12,7 +12,7 @@
       background: var(--dah);
     }
     &--in-progress {
-      background: var(--K200);
+      background: rgba(var(--text-rgb), 0.8);
 
       animation-name: in-progress;
       animation-timing-function: linear;

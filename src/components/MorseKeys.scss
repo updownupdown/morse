@@ -27,12 +27,12 @@
         font-weight: 600;
 
         &:first-child {
-          color: var(--K700);
+          color: rgba(var(--text-rgb), 0.3);
         }
         &:last-child {
           padding-top: 2%;
           padding-bottom: 2px;
-          color: var(--K500);
+          color: rgba(var(--text-rgb), 0.7);
         }
       }
 
@@ -40,7 +40,7 @@
         &:hover,
         &:active {
           span:last-child {
-            color: var(--K300);
+            color: rgba(var(--text-rgb), 0.7);
           }
         }
       }
@@ -67,7 +67,7 @@
 
         .morse-char {
           .dit-dah {
-            background: var(--K700);
+            background: rgba(var(--text-rgb), 0.32);
           }
         }
 
@@ -115,7 +115,7 @@
     height: var(--morse-key-height);
 
     border-radius: calc(var(--morse-key-height) * 2);
-    background: var(--K600);
+    background: rgba(var(--text-rgb), 0.4);
 
     user-select: none;
 
@@ -123,7 +123,7 @@
       width: 24px;
       height: 24px;
 
-      fill: var(--K200);
+      fill: rgba(var(--text-rgb), 0.8);
     }
 
     &:disabled {
@@ -134,23 +134,16 @@
     &--straight {
       flex: 1;
 
-      background: rgba(var(--K500-rgb), 0.7);
-      box-shadow:
-        inset 0 0 2px 2px rgba(var(--K100-rgb), 0.4),
-        inset 0 0 24px rgba(var(--K100-rgb), 0.4),
-        0 0 8px rgba(var(--K200-rgb), 0.2);
+      background: rgba(var(--text-rgb), 0.3);
 
-      font-size: 18px;
-      color: var(--K850);
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(var(--black-rgb), 0.6);
 
       &:not(:disabled) {
         &.morse-key--pressed,
         &:active {
-          background: var(--K500);
-          box-shadow:
-            inset 0 0 2px 2px rgba(var(--K100-rgb), 0.3),
-            inset 0 0 20px rgba(var(--K100-rgb), 0.3),
-            0 0 20px rgba(var(--K200-rgb), 0.4);
+          background: rgba(var(--accent-btn-rgb), 0.5);
         }
       }
     }
@@ -159,10 +152,6 @@
       flex: 1;
 
       background: rgba(var(--dit-rgb), 0.15);
-      box-shadow:
-        inset 0 0 2px 2px rgba(var(--dit-rgb), 0.2),
-        inset 0 0 24px rgba(var(--dit-rgb), 0.3),
-        0 0 6px rgba(var(--dit-rgb), 0.2);
 
       color: var(--dit);
 
@@ -178,10 +167,6 @@
         &.morse-key--pressed,
         &:active {
           background: rgba(var(--dit-rgb), 0.4);
-          box-shadow:
-            inset 0 0 2px 2px rgba(var(--dit-rgb), 0.3),
-            inset 0 0 24px rgba(var(--dit-rgb), 0.3),
-            0 0 12px rgba(var(--dit-rgb), 0.6);
         }
       }
     }
@@ -189,10 +174,6 @@
       flex: 1;
 
       background: rgba(var(--dah-rgb), 0.2);
-      box-shadow:
-        inset 0 0 2px 2px rgba(var(--dah-rgb), 0.3),
-        inset 0 0 24px rgba(var(--dah-rgb), 0.4),
-        0 0 6px rgba(var(--dah-rgb), 0.25);
 
       color: var(--dah);
 
@@ -208,10 +189,6 @@
         &.morse-key--pressed,
         &:active {
           background: rgba(var(--dah-rgb), 0.5);
-          box-shadow:
-            inset 0 0 2px 2px rgba(var(--dah-rgb), 0.3),
-            inset 0 0 24px rgba(var(--dah-rgb), 0.3),
-            0 0 12px rgba(var(--dah-rgb), 0.7);
         }
       }
     }
@@ -228,11 +205,11 @@
 
   background: linear-gradient(
     to bottom,
-    rgba(var(--K950-rgb), 0.2) 0%,
-    rgba(var(--K950-rgb), 0.6) 70%,
-    rgba(var(--K950-rgb), 0.8) 100%
+    rgba(var(--background-main-rgb), 0.2) 0%,
+    rgba(var(--background-main-rgb), 0.6) 70%,
+    rgba(var(--background-main-rgb), 0.8) 100%
   );
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(10px);
 }
 .key-selector-modal {
   position: fixed;

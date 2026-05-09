@@ -28,26 +28,34 @@ export const regexTest = /^[/. -]*$/;
 
 export function sanitizeMorse(morse: string) {
   return morse
-    .replace(regexCleanup, "")
-    .replace(/\/+/g, "/")
-    .replace(/\s+/g, " ");
+    .replaceAll(regexCleanup, "")
+    .replaceAll(/\/+/g, "/")
+    .replaceAll(/\s+/g, " ")
+    .replaceAll("/", " / ")
+    .replaceAll(/\/+/g, "/")
+    .replaceAll(/\s+/g, " ");
 }
 
 export function morseToAlpha(morse: string) {
-  const splitMorse = sanitizeMorse(morse).split(" ");
   let alpha: string[] = [];
 
-  if (splitMorse.length !== 0) {
-    splitMorse.forEach((symbol) => {
-      if (symbol === "/") {
-        alpha.push(" ");
-      } else {
-        const match = Object.keys(alphaToMorseDict).find(
-          (key) => alphaToMorseDict[key] === symbol,
-        );
-        alpha.push(match ?? "�");
-      }
-    });
+  const morseWords = sanitizeMorse(morse).split("/");
+
+  for (let w = 0; w < morseWords.length; w++) {
+    if (w !== 0 && w !== morseWords.length - 1) {
+      alpha.push(" ");
+    }
+
+    const morseChars = morseWords[w].split(" ");
+
+    for (let l = 0; l < morseChars.length; l++) {
+      if (morseChars[l] === "") continue;
+
+      const match = Object.keys(alphaToMorseDict).find(
+        (key) => alphaToMorseDict[key] === morseChars[l],
+      );
+      alpha.push(match ?? "�");
+    }
   }
 
   return alpha.join("");

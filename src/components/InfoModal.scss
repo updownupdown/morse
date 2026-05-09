@@ -1,5 +1,5 @@
 .info {
-  $details-col: var(--K500);
+  $details-col: rgba(var(--text-rgb), 0.5);
 
   display: flex;
   padding: var(--main-padding);

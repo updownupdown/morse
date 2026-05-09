@@ -5,6 +5,14 @@ import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { TouchIcon } from "../icons/TouchIcon";
+import { Themes } from "../components/ThemeModal";
+import {
+  defaultStats,
+  ReceiveSources,
+  SendSources,
+  Stats,
+} from "../data/DataSources";
+import { Phase } from "../hooks/useQuiz";
 
 export enum Hints {
   On = "On",
@@ -37,7 +45,7 @@ export enum Setting {
   Volume = "Volume",
   AutoPlayLetter = "AutoPlayLetter", // on receive
   AutoWordBreak = "AutoWordBreak", // off by default, for free play only?
-  ShowStats = "ShowStats", // on by default
+  Theme = "Theme",
 }
 
 export type Settings = {
@@ -51,7 +59,7 @@ export type Settings = {
   [Setting.Hints]: Hints;
   [Setting.AutoPlayLetter]: boolean;
   [Setting.AutoWordBreak]: boolean;
-  [Setting.ShowStats]: boolean;
+  [Setting.Theme]: Themes;
 };
 
 export const defaultSettings: Settings = {
@@ -65,7 +73,7 @@ export const defaultSettings: Settings = {
   [Setting.Hints]: Hints.On,
   [Setting.AutoPlayLetter]: true,
   [Setting.AutoWordBreak]: false,
-  [Setting.ShowStats]: true,
+  [Setting.Theme]: Themes.Teal,
 };
 
 export const settingsSpecs: Record<
@@ -81,6 +89,10 @@ export const settingsSpecs: Record<
     hint?: string;
   }
 > = {
+  [Setting.Theme]: {
+    title: "Themes",
+    // values: Hints,
+  },
   // Toggles
   [Setting.AutoPlayLetter]: {
     title: "Auto-play next letter",
@@ -89,10 +101,6 @@ export const settingsSpecs: Record<
   [Setting.AutoWordBreak]: {
     title: "Auto-add wordbreak",
     // hint: 'Used in "Send" mode, free play',
-  },
-  [Setting.ShowStats]: {
-    title: "Show WPM and accuracy",
-    // hint: 'Used in "Send" mode',
   },
   // Buttons
   [Setting.Hints]: {
@@ -147,6 +155,7 @@ export enum Menus {
   Settings = "Settings",
   Shortcuts = "Shortcuts",
   Info = "Info",
+  Theme = "Theme",
 }
 
 export enum Modes {
@@ -182,6 +191,14 @@ interface ContextProps {
   setIsPlaying: (playing: IsPlaying) => void;
   audioInitialized: boolean;
   setAudioInitialized: (initialized: boolean) => void;
+  quizSource: SendSources | ReceiveSources | undefined;
+  setQuizSource: (source: SendSources | ReceiveSources) => void;
+  quizQty: number | undefined;
+  setQuizQty: (qty: number) => void;
+  stats: Stats | undefined;
+  setStats: (stats: Stats | undefined) => void;
+  phase: Phase;
+  setPhase: (phase: Phase) => void;
 }
 
 export const MorseContext = createContext<ContextProps>({
@@ -197,4 +214,12 @@ export const MorseContext = createContext<ContextProps>({
   setIsPlaying: () => {},
   audioInitialized: false,
   setAudioInitialized: () => {},
+  phase: "standby",
+  setPhase: () => {},
+  quizSource: undefined,
+  setQuizSource: () => {},
+  quizQty: undefined,
+  setQuizQty: () => {},
+  stats: undefined,
+  setStats: () => {},
 });

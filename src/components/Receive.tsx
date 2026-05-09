@@ -1,41 +1,59 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Receive.scss";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { initCode, useAudio } from "../hooks/useAudio";
-import { MorseContext, Setting } from "../context/MorseContext";
+import { MorseContext } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
-import { ReceiveSources } from "../data/DataSources";
-import { clamp } from "../utils/utils";
-import { ProgressBar, useQuiz } from "../hooks/useQuiz";
+import {
+  defaultReceiveSourceQty,
+  maxReceiveSourceQty,
+  ReceiveSources,
+} from "../data/DataSources";
+import { useQuiz } from "../hooks/useQuiz";
 import { Word } from "./Word";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { MinusIcon } from "../icons/MinusIcon";
+import { conditionalPluralize } from "../utils/utils";
+import { PlusIcon } from "../icons/PlusIcon";
 
 export const Receive = () => {
-  const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
+  const {
+    isPlaying,
+    selectedMenu,
+    setPhase,
+    phase,
+    setQuizSource,
+    quizQty,
+    setQuizQty,
+  } = useContext(MorseContext);
+
   const { playMorse, stopMorse } = useAudio();
 
-  const {
-    setPhase,
-    stats,
-    setGuess,
-    word,
-    letterIndex,
-    setQuizSource,
-    phase,
-    guess,
-  } = useQuiz();
+  const { stats, setGuess, word, letterIndex, guess } = useQuiz();
 
   const [receiveSource, setReceiveSource] = useLocalStorage<ReceiveSources>(
     "receiveSource",
     ReceiveSources.Words,
   );
 
+  const [receiveSourceQuantities, setReceiveSourceQuantities] = useLocalStorage<
+    Record<ReceiveSources, number>
+  >("receiveSourceQty", defaultReceiveSourceQty);
+
   useEffect(() => {
     setQuizSource(receiveSource);
+    setQuizQty(receiveSourceQuantities[receiveSource]);
   }, [receiveSource]);
+
+  useEffect(() => {
+    setReceiveSourceQuantities({
+      ...receiveSourceQuantities,
+      [receiveSource]: quizQty,
+    });
+  }, [quizQty]);
 
   const [lastPlayBtnPressed, setLastPlayBtnPressed] = useState<
     "word" | "letter"
@@ -100,58 +118,70 @@ export const Receive = () => {
 
   return (
     <div className="quiz quiz--receive">
-      <div className="quiz__menu">
-        <div className="button-menu">
-          {Object.entries(ReceiveSources).map(([key, val]) => {
-            return (
-              <button
-                key={key}
-                className={`btn-menu-item btn-menu-item--${receiveSource === val ? "selected" : "not-selected"}`}
-                onClick={() => {
-                  stopMorse();
-                  setPhase("standby");
-                  setReceiveSource(val as ReceiveSources);
-                }}
-              >
-                {val}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       <div className="quiz__content">
+        {["standby", "stats"].includes(phase) && quizQty && (
+          <>
+            <div className="button-menu button-menu--vertical">
+              {Object.entries(ReceiveSources).map(([key, val]) => {
+                return (
+                  <button
+                    key={key}
+                    className={`btn-menu-item btn-menu-item--${receiveSource === val ? "selected" : "not-selected"}`}
+                    onClick={() => {
+                      stopMorse();
+                      setPhase("standby");
+                      setReceiveSource(val as ReceiveSources);
+                    }}
+                  >
+                    {val}
+                  </button>
+                );
+              })}
+            </div>
+
+            <span className="quiz__content__qty">
+              <button
+                className="btn btn--outlined"
+                onClick={() => {
+                  if (quizQty) {
+                    setQuizQty(quizQty - 1);
+                  }
+                }}
+                disabled={quizQty === 1}
+              >
+                <MinusIcon />
+              </button>
+
+              <div className="quiz__content__qty__desc">
+                <span>{quizQty}</span>
+                <span>{conditionalPluralize(receiveSource, quizQty)}</span>
+              </div>
+              <button
+                className="btn btn--outlined"
+                onClick={() => {
+                  if (quizQty) {
+                    setQuizQty(quizQty + 1);
+                  }
+                }}
+                disabled={quizQty === maxReceiveSourceQty[receiveSource]}
+              >
+                <PlusIcon />
+              </button>
+            </span>
+          </>
+        )}
+
         {phase === "guess" && (
           <>
-            {settings[Setting.ShowStats] && (
-              <div className="quiz__content__progress-stats">
-                <ProgressBar
-                  title="Progress"
-                  progress={(stats.charsDone / stats.charsTotal) * 100}
-                />
-                <ProgressBar
-                  title={`Acc.${Math.round(stats.accuracy)}%`}
-                  progress={stats.accuracy}
-                  useStatusColor
-                />
-                <ProgressBar
-                  title={`${Math.round(stats.wpm)} WPM`}
-                  progress={clamp((stats.wpm / 30) * 100, 0, 30)}
-                />
-              </div>
-            )}
-
-            {phase === "guess" && (
-              <div className="quiz__content__word">
-                <Word guess={guess} word={word} letterIndex={letterIndex} />
-              </div>
-            )}
+            <div className="quiz__content__word">
+              <Word guess={guess} word={word} letterIndex={letterIndex} />
+            </div>
 
             <div className="quiz__content__action-buttons">
               <button
                 className={clsx(
-                  "btn btn--outlined",
-                  wordBtnIsStop() && "btn--outlined-stop",
+                  "btn btn--flex btn--outlined",
+                  wordBtnIsStop() && "btn--stop",
                 )}
                 onClick={playPauseWord}
                 disabled={letterBtnIsStop()}
@@ -162,8 +192,8 @@ export const Receive = () => {
 
               <button
                 className={clsx(
-                  "btn btn--outlined",
-                  letterBtnIsStop() && "btn--outlined-stop",
+                  "btn btn--flex btn--outlined",
+                  letterBtnIsStop() && "btn--stop",
                 )}
                 onClick={playPauseLetter}
                 disabled={wordBtnIsStop()}
@@ -174,39 +204,12 @@ export const Receive = () => {
             </div>
           </>
         )}
-
-        {phase === "standby" && (
-          <span className="quiz-instructions">
-            Send each character in morse code.
-          </span>
-        )}
-
-        {phase === "stats" && (
-          <>
-            <div className="quiz-done-stats">
-              <div>
-                <span>{Math.round(stats.accuracy)}%</span>
-                <span>Accuracy</span>
-              </div>
-
-              <div>
-                <span>{stats.incorrect}</span>
-                <span>Mistake{stats.incorrect === 1 ? "" : "s"}</span>
-              </div>
-
-              <div>
-                <span>{Math.round(stats.wpm)}</span>
-                <span>WPM</span>
-              </div>
-            </div>
-          </>
-        )}
       </div>
 
       <div className="quiz__bottom">
         {["standby", "stats"].includes(phase) && (
           <button
-            className="btn btn--large-orange"
+            className="btn btn--large"
             onClick={() => {
               playMorse(initCode);
               setPhase("prepare");

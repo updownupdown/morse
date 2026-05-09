@@ -16,10 +16,18 @@ import { Receive } from "./components/Receive";
 import { Translate } from "./components/Translate";
 import { Practice } from "./components/Practice";
 import { Send } from "./components/Send";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Home } from "./components/Home";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
 import { InfoModal } from "./components/InfoModal";
+import { ThemeModal } from "./components/ThemeModal";
+import {
+  defaultStats,
+  ReceiveSources,
+  SendSources,
+  Stats,
+} from "./data/DataSources";
+import { Phase } from "./hooks/useQuiz";
 
 function App() {
   const [lastSelectedMode, setLastSelectedMode] = useLocalStorage(
@@ -39,6 +47,18 @@ function App() {
   const [isPlaying, setIsPlaying] = useState<IsPlaying>(undefined);
   const [audioInitialized, setAudioInitialized] = useState(false);
 
+  const [quizSource, setQuizSource] = useState<
+    SendSources | ReceiveSources | undefined
+  >(undefined);
+  const [quizQty, setQuizQty] = useState<number | undefined>(undefined);
+  const [stats, setStats] = useState<Stats | undefined>(undefined);
+  const [phase, setPhase] = useState<Phase>("standby");
+
+  // Reset stats on mode change
+  useEffect(() => {
+    setStats(undefined);
+  }, [selectedMode]);
+
   return (
     <MorseContext.Provider
       value={{
@@ -54,26 +74,37 @@ function App() {
         setIsPlaying,
         audioInitialized,
         setAudioInitialized,
+        quizSource,
+        setQuizSource,
+        quizQty,
+        setQuizQty,
+        stats,
+        setStats,
+        phase,
+        setPhase,
       }}
     >
       <div
-        className={`app app--mode-${selectedMode.replace(/[^a-zA-Z]/g, "").toLowerCase()} app--hints-${settings[Setting.Hints].toLowerCase()}`}
+        className={`app app--theme-${settings[Setting.Theme].toLowerCase()} app--mode-${selectedMode.replace(/[^a-zA-Z]/g, "").toLowerCase()} app--hints-${settings[Setting.Hints].toLowerCase()}`}
       >
-        {selectedMenu === Menus.Menu && <Menu />}
-        {selectedMenu === Menus.Settings && <SettingsModal />}
-        {selectedMenu === Menus.Shortcuts && <KeyboardShortcuts />}
-        {selectedMenu === Menus.Info && <InfoModal />}
+        <div className="app-center">
+          {selectedMenu === Menus.Menu && <Menu />}
+          {selectedMenu === Menus.Settings && <SettingsModal />}
+          {selectedMenu === Menus.Shortcuts && <KeyboardShortcuts />}
+          {selectedMenu === Menus.Info && <InfoModal />}
+          {selectedMenu === Menus.Theme && <ThemeModal />}
 
-        {selectedMode !== Modes.Home && <Header />}
+          {selectedMode !== Modes.Home && <Header />}
 
-        <div className="main">
-          <div className="main__content">
-            {selectedMode === Modes.Home && <Home />}
-            {selectedMode === Modes.Send && <Send />}
-            {selectedMode === Modes.Receive && <Receive />}
-            {selectedMode === Modes.Learn && <Learn />}
-            {selectedMode === Modes.Translate && <Translate />}
-            {selectedMode === Modes.Practice && <Practice />}
+          <div className="main">
+            <div className="main__content">
+              {selectedMode === Modes.Home && <Home />}
+              {selectedMode === Modes.Send && <Send />}
+              {selectedMode === Modes.Receive && <Receive />}
+              {selectedMode === Modes.Learn && <Learn />}
+              {selectedMode === Modes.Translate && <Translate />}
+              {selectedMode === Modes.Practice && <Practice />}
+            </div>
           </div>
         </div>
       </div>

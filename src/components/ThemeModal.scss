@@ -1,0 +1,17 @@
+.themes {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--side-padding);
+  flex-grow: 1;
+  gap: 20px;
+
+  .button-menu {
+    margin: auto 0;
+  }
+
+  .btn--large {
+    flex-grow: unset;
+    width: 100%;
+  }
+}

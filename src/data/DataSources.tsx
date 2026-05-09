@@ -9,11 +9,35 @@ export enum SendSources {
 }
 
 export enum ReceiveSources {
-  Pangrams = "Pangrams",
   Words = "Words",
+  Pangrams = "Pangrams",
   Letters = "Letters",
-  SpecialChars = "123!?&",
+  SpecialChars = "Special Characters",
 }
+
+export const defaultSendSourceQty: Record<SendSources, number> = {
+  [SendSources.Words]: 8,
+  [SendSources.Pangrams]: 2,
+  [SendSources.AllChars]: 52,
+};
+export const defaultReceiveSourceQty: Record<ReceiveSources, number> = {
+  [ReceiveSources.Pangrams]: 2,
+  [ReceiveSources.Words]: 8,
+  [ReceiveSources.Letters]: 26,
+  [ReceiveSources.SpecialChars]: 26,
+};
+
+export const maxSendSourceQty: Record<SendSources, number> = {
+  [SendSources.Words]: words.length,
+  [SendSources.Pangrams]: pangrams.length,
+  [SendSources.AllChars]: 52,
+};
+export const maxReceiveSourceQty: Record<ReceiveSources, number> = {
+  [ReceiveSources.Pangrams]: pangrams.length,
+  [ReceiveSources.Words]: words.length,
+  [ReceiveSources.Letters]: 26,
+  [ReceiveSources.SpecialChars]: 26,
+};
 
 export type Stats = {
   correct: number;
@@ -44,44 +68,36 @@ function shuffle(array: string[]) {
 }
 
 export const useWordSets = () => {
-  function getWordSet(source: SendSources | ReceiveSources) {
+  function getWordSet(source: SendSources | ReceiveSources, qty: number) {
     let data: string[] = [];
-    let num = 0;
     let chunkSize = 0;
 
     switch (source) {
       case SendSources.Words:
       case ReceiveSources.Words:
         data = words;
-        num = 10;
         break;
       case SendSources.Pangrams:
       case ReceiveSources.Pangrams:
         data = pangrams;
-        num = 2;
         break;
       case SendSources.AllChars:
         data = [...letters, ...specialChars];
-        num = 25;
         chunkSize = 5;
         break;
       case ReceiveSources.Letters:
         data = letters;
-        num = 25;
         chunkSize = 5;
         break;
       case ReceiveSources.SpecialChars:
         data = specialChars;
-        num = 25;
         chunkSize = 5;
         break;
     }
 
     shuffle(data);
 
-    if (num !== 0) {
-      data = data.slice(0, num);
-    }
+    data = data.slice(0, qty);
 
     if (chunkSize !== 0) {
       const chunkedData = [];
