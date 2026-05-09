@@ -112,7 +112,7 @@
   @include size("lg", 8px, 10px, 80px, 100px, 50px);
 
   // ========== Receive ========== //
-  // Receive + Easy
+  // Receive + On
   .app--hints-on.app--mode-receive & {
     .letter {
       // &--none,
@@ -125,8 +125,7 @@
         span {
           opacity: 0;
 
-          animation: 4s fade-in linear forwards;
-          animation-delay: 3s;
+          animation: 3s fade-in linear forwards;
         }
       }
       &--incorrect {
@@ -138,10 +137,9 @@
     }
   }
 
-  // Receive + Moderate
+  // Receive + Delayed
   .app--hints-delayed.app--mode-receive & {
     .letter {
-      // &--none,
       &--empty {
         span {
           opacity: 0;
@@ -151,8 +149,8 @@
         span {
           opacity: 0;
 
-          animation: 5s fade-in linear forwards;
-          animation-delay: 6s;
+          animation: 4s fade-in linear forwards;
+          animation-delay: 5s;
         }
       }
       &--incorrect {
@@ -164,8 +162,8 @@
     }
   }
 
-  // Receive + Hard
-  .app--hints-none.app--mode-receive & {
+  // Receive + Off
+  .app--hints-off.app--mode-receive & {
     .letter {
       &--empty {
         span {

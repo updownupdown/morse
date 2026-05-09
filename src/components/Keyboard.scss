@@ -70,7 +70,7 @@
   }
 
   .app--mode-receive.app--hints-delayed &,
-  .app--mode-receive.app--hints-none & {
+  .app--mode-receive.app--hints-off & {
     .keyboard__row .key .morse-char {
       display: none;
     }

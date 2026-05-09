@@ -72,12 +72,12 @@
         }
 
         // ========== Send ========== //
-        // Easy
+        // On
         .app--hints-on.app--mode-send & {
-          animation: 4s fade-in linear forwards;
+          animation: 3s fade-in linear forwards;
         }
 
-        // Moderate
+        // Delayed
         .app--hints-delayed.app--mode-send & {
           animation: 4s fade-in linear forwards;
           animation-delay: 5s;
