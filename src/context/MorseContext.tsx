@@ -6,12 +6,7 @@ import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { TouchIcon } from "../icons/TouchIcon";
 import { Themes } from "../components/ThemeModal";
-import {
-  defaultStats,
-  ReceiveSources,
-  SendSources,
-  Stats,
-} from "../data/DataSources";
+import { ReceiveSources, SendSources, Stats } from "../data/DataSources";
 import { Phase } from "../hooks/useQuiz";
 
 export enum Hints {
@@ -164,7 +159,6 @@ export enum Modes {
   Receive = "Receive",
   Learn = "Learn",
   Translate = "Translate",
-  Practice = "Practice",
 }
 
 export const ModeIcons: Record<Modes, React.ReactNode> = {
@@ -173,10 +167,7 @@ export const ModeIcons: Record<Modes, React.ReactNode> = {
   [Modes.Receive]: <ReceiveIcon />,
   [Modes.Learn]: <DictionaryIcon />,
   [Modes.Translate]: <TranslateIcon />,
-  [Modes.Practice]: <TouchIcon />,
 };
-
-export type IsPlaying = "symbol" | "charOrWord" | undefined;
 
 interface ContextProps {
   settings: Settings;
@@ -187,10 +178,6 @@ interface ContextProps {
   setSelectedMode: (mode: Modes) => void;
   lastSelectedMode: Modes;
   setLastSelectedMode: (mode: Modes) => void;
-  isPlaying: IsPlaying;
-  setIsPlaying: (playing: IsPlaying) => void;
-  audioInitialized: boolean;
-  setAudioInitialized: (initialized: boolean) => void;
   quizSource: SendSources | ReceiveSources | undefined;
   setQuizSource: (source: SendSources | ReceiveSources) => void;
   quizQty: number | undefined;
@@ -210,10 +197,6 @@ export const MorseContext = createContext<ContextProps>({
   setSelectedMode: () => {},
   lastSelectedMode: Modes.Home,
   setLastSelectedMode: () => {},
-  isPlaying: undefined,
-  setIsPlaying: () => {},
-  audioInitialized: false,
-  setAudioInitialized: () => {},
   phase: "standby",
   setPhase: () => {},
   quizSource: undefined,

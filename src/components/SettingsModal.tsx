@@ -10,7 +10,6 @@ import "./SettingsModal.scss";
 import { Modal } from "./Modal";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { ResetIcon } from "../icons/ResetIcon";
-import { useAudio } from "../hooks/useAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { CloseIcon } from "../icons/CloseIcon";
 import { PlusIcon } from "../icons/PlusIcon";
@@ -18,6 +17,8 @@ import { MinusIcon } from "../icons/MinusIcon";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
 import { PaletteIcon } from "../icons/PaletteIcon";
+import { formatForCSSClass } from "../utils/utils";
+import { useAudioContext } from "../context/AudioContext";
 
 interface SettingSliderProps {
   setting: Setting;
@@ -120,7 +121,7 @@ export const SettingButtons = ({ setting, onClose }: SettingButtonsProps) => {
 
   return (
     <div
-      className={`setting setting--buttons setting--${setting.toLowerCase()}`}
+      className={`setting setting--buttons setting--${formatForCSSClass(setting)}`}
     >
       <div className="setting__left">
         <div className="setting__left__top">
@@ -214,15 +215,8 @@ export const SettingToggle = ({ setting }: SettingButtonsProps) => {
 };
 
 export const SettingsModal = () => {
-  const { playMorse, stopMorse } = useAudio();
-  const { setSettings, isPlaying, settings, setSelectedMenu } =
-    useContext(MorseContext);
-
-  useEffect(() => {
-    return () => {
-      stopMorse();
-    };
-  }, []);
+  const { playMorse, stopMorse, isPlaying } = useAudioContext();
+  const { setSettings, settings, setSelectedMenu } = useContext(MorseContext);
 
   return (
     <Modal title="Settings">
@@ -277,7 +271,7 @@ export const SettingsModal = () => {
                 if (isPlaying) {
                   stopMorse();
                 } else {
-                  playMorse(alphaToMorse("ABC"));
+                  playMorse(alphaToMorse("AB CD"));
                 }
               }}
             >

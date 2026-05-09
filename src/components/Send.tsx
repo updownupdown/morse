@@ -7,22 +7,24 @@ import {
   SendSources,
 } from "../data/DataSources";
 import { MorseContext } from "../context/MorseContext";
-import { conditionalPluralize } from "../utils/utils";
-import { initCode, useAudio } from "../hooks/useAudio";
+import { conditionalPluralize, formatForCSSClass } from "../utils/utils";
+import { initCode } from "../hooks/useAudio";
 import { useQuiz } from "../hooks/useQuiz";
 import { Word } from "./Word";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { PlusIcon } from "../icons/PlusIcon";
 import { MinusIcon } from "../icons/MinusIcon";
+import { Practice } from "./Practice";
+import { useAudioContext } from "../context/AudioContext";
 
 export const Send = () => {
   const { setQuizSource, quizQty, setQuizQty, phase, setPhase } =
     useContext(MorseContext);
-  const { playMorse, stopMorse } = useAudio();
+  const { playMorse, stopMorse } = useAudioContext();
 
   const { setGuess, word, letterIndex, guess } = useQuiz();
-
+  const [practiceWord, setPracticeWord] = useLocalStorage("practiceWord", "");
   const [sendSource, setSendSource] = useLocalStorage<SendSources>(
     "sendSource",
     SendSources.Words,
@@ -33,18 +35,26 @@ export const Send = () => {
 
   useEffect(() => {
     setQuizSource(sendSource);
-    setQuizQty(sendSourceQuantities[sendSource]);
+    setQuizQty(
+      sendSourceQuantities[sendSource] ?? defaultSendSourceQty[sendSource],
+    );
   }, [sendSource]);
 
   useEffect(() => {
     setSendSourceQuantities({
       ...sendSourceQuantities,
-      [sendSource]: quizQty,
+      [sendSource]: quizQty ?? defaultSendSourceQty[sendSource],
     });
   }, [quizQty]);
 
+  function addPracticeCharacter(char: string) {
+    setPracticeWord(practiceWord + char);
+  }
+
   return (
-    <div className="quiz quiz--send">
+    <div
+      className={`quiz quiz--send quiz--source-${formatForCSSClass(sendSource)}`}
+    >
       <div className="quiz__content">
         {["standby", "stats"].includes(phase) && quizQty && (
           <>
@@ -55,7 +65,6 @@ export const Send = () => {
                     key={key}
                     className={`btn-menu-item btn-menu-item--${sendSource === val ? "selected" : "not-selected"}`}
                     onClick={() => {
-                      stopMorse();
                       setPhase("standby");
                       setSendSource(val as SendSources);
                     }}
@@ -79,10 +88,15 @@ export const Send = () => {
                 <MinusIcon />
               </button>
 
+              <div className="quiz__content__qty__practice">
+                Send anything you want!
+              </div>
+
               <div className="quiz__content__qty__desc">
                 <span>{quizQty}</span>
                 <span>{conditionalPluralize(sendSource, quizQty)}</span>
               </div>
+
               <button
                 className="btn btn--outlined"
                 onClick={() => {
@@ -96,6 +110,14 @@ export const Send = () => {
               </button>
             </span>
           </>
+        )}
+
+        {phase === "practice" && (
+          <Practice
+            practiceWord={practiceWord}
+            setPracticeWord={setPracticeWord}
+            addPracticeCharacter={addPracticeCharacter}
+          />
         )}
 
         {phase === "guess" && (
@@ -112,15 +134,21 @@ export const Send = () => {
               ? alphaToMorse(word.charAt(letterIndex).toUpperCase())
               : undefined
           }
-          setGuess={setGuess}
+          setGuess={
+            sendSource === SendSources.Practice
+              ? addPracticeCharacter
+              : setGuess
+          }
         />
 
         {["standby", "stats"].includes(phase) && (
           <button
             className="btn btn--large"
-            onClick={() => {
-              playMorse(initCode);
-              setPhase("prepare");
+            onClick={async () => {
+              await playMorse(initCode);
+              setPhase(
+                sendSource === SendSources.Practice ? "practice" : "prepare",
+              );
             }}
           >
             <span>Start</span>

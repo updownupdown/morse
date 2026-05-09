@@ -13,3 +13,7 @@ export function conditionalPluralize(string: string, qty: number) {
     return string;
   }
 }
+
+export function formatForCSSClass(string: string) {
+  return string.replace(/[^a-zA-Z]/g, "").toLowerCase();
+}

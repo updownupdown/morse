@@ -391,7 +391,6 @@ table {
 
   td {
     padding: 8px;
-    border: 1px solid rgba(var(--K200-rgb), 0.2);
   }
 }
 
@@ -454,11 +453,11 @@ table {
     left: 0;
     bottom: 0;
     right: 0;
-    box-shadow: 0 0 0 rgba(var(--K400-rgb), 0.1);
+    box-shadow: 0 0 0 rgba(var(--text-rgb), 0.1);
   }
 
   &.beep-glow--on:after {
-    box-shadow: 0 0 14px rgba(var(--K200-rgb), 0.15);
+    box-shadow: 0 0 14px rgba(var(--text-rgb), 0.15);
   }
 }
 

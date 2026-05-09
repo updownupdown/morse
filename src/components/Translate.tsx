@@ -9,16 +9,14 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import "./Translate.scss";
 import clsx from "clsx";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
-import { useAudio } from "../hooks/useAudio";
-import { MorseContext } from "../context/MorseContext";
 import { DeleteIcon } from "../icons/DeleteIcon";
 import { StopIcon } from "../icons/StopIcon";
 import { PasteIcon } from "../icons/PasteIcon";
 import { CopyIcon } from "../icons/CopyIcon";
+import { useAudioContext } from "../context/AudioContext";
 
 export const Translate = () => {
-  const { isPlaying, selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useAudio();
+  const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
   const [alpha, setAlpha] = useLocalStorage("convertedAlpha", "");
   const [morse, setMorse] = useLocalStorage("convertedMorse", "");
@@ -26,10 +24,6 @@ export const Translate = () => {
     "translateDirection",
     true,
   );
-
-  useEffect(() => {
-    stopMorse();
-  }, [selectedMenu]);
 
   const clearAlpha = () => {
     setAlpha("");

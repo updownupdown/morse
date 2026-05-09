@@ -1,0 +1,14 @@
+.quiz--source-practice {
+  .quiz__content__qty {
+    .btn,
+    &__desc {
+      display: none;
+    }
+
+    &__practice {
+      display: flex;
+      padding: 10px;
+      color: var(--accent-input);
+    }
+  }
+}

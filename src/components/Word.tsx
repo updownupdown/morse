@@ -1,9 +1,7 @@
-import React, { useContext, useEffect } from "react";
 import clsx from "clsx";
-import { useAudio } from "../hooks/useAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import "./Word.scss";
-import { MorseContext } from "../context/MorseContext";
+import { useAudioContext } from "../context/AudioContext";
 
 export type Status = "empty" | "correct" | "incorrect" | "space";
 
@@ -14,16 +12,11 @@ interface Props {
 }
 
 export const Word = ({ word, guess, letterIndex }: Props) => {
-  const { isPlaying, selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useAudio();
-
-  useEffect(() => {
-    stopMorse();
-  }, [selectedMenu]);
+  const { playMorse, isPlaying } = useAudioContext();
 
   let letterSize = "sm";
 
-  if (word === undefined || letterIndex === undefined) return null;
+  if (word === undefined) return null;
 
   if (word.length < 2) {
     letterSize = "lg";
@@ -37,14 +30,16 @@ export const Word = ({ word, guess, letterIndex }: Props) => {
         word.split("").map((letter, i) => {
           let statusClass = "";
 
-          if (letter === " ") {
-            statusClass = "space";
-          } else if (i > letterIndex) {
-            statusClass = "empty";
-          } else if (i < letterIndex) {
-            statusClass = "correct";
-          } else if (guess !== undefined && guess !== letter) {
-            statusClass = "incorrect";
+          if (letterIndex !== undefined) {
+            if (letter === " ") {
+              statusClass = "space";
+            } else if (i > letterIndex) {
+              statusClass = "empty";
+            } else if (i < letterIndex) {
+              statusClass = "correct";
+            } else if (guess !== undefined && guess !== letter) {
+              statusClass = "incorrect";
+            }
           }
 
           if (letter === " ") {

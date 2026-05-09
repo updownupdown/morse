@@ -1,13 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import {
-  defaultStats,
-  ReceiveSources,
-  SendSources,
-  Stats,
-  useWordSets,
-} from "../data/DataSources";
+import { defaultStats, useWordSets } from "../data/DataSources";
 import { Modes, MorseContext, Setting } from "../context/MorseContext";
-import { useAudio } from "./useAudio";
 import { calculateWPM } from "../utils/utils";
 import {
   alphaToMorse,
@@ -15,13 +8,14 @@ import {
   unitLengths,
 } from "../data/alphaToMorse";
 import "./useQuiz.scss";
+import { useAudioContext } from "../context/AudioContext";
 
-export type Phase = "standby" | "prepare" | "guess" | "stats";
+export type Phase = "standby" | "prepare" | "guess" | "stats" | "practice";
 
 export const useQuiz = () => {
   const {
     settings,
-    audioInitialized,
+
     selectedMode,
     quizSource,
     setQuizSource,
@@ -31,7 +25,7 @@ export const useQuiz = () => {
     phase,
     setPhase,
   } = useContext(MorseContext);
-  const { playMorse } = useAudio();
+  const { playMorse, stopMorse, audioInitialized } = useAudioContext();
   const { getWordSet } = useWordSets();
 
   const [wordSet, setWordSet] = useState<string[]>([]);
@@ -49,13 +43,16 @@ export const useQuiz = () => {
 
   // Set up new set
   useEffect(() => {
+    stopMorse();
+
     if (
       phase !== "prepare" ||
       quizSource === undefined ||
       quizQty === undefined ||
       !audioInitialized
-    )
+    ) {
       return;
+    }
 
     const newWordSet = getWordSet(quizSource, quizQty);
 

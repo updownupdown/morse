@@ -3,7 +3,7 @@ import { Keyboard } from "./Keyboard";
 import "./Receive.scss";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { alphaToMorse } from "../data/alphaToMorse";
-import { initCode, useAudio } from "../hooks/useAudio";
+import { initCode } from "../hooks/useAudio";
 import { MorseContext } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
@@ -18,19 +18,13 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { MinusIcon } from "../icons/MinusIcon";
 import { conditionalPluralize } from "../utils/utils";
 import { PlusIcon } from "../icons/PlusIcon";
+import { useAudioContext } from "../context/AudioContext";
 
 export const Receive = () => {
-  const {
-    isPlaying,
-    selectedMenu,
-    setPhase,
-    phase,
-    setQuizSource,
-    quizQty,
-    setQuizQty,
-  } = useContext(MorseContext);
+  const { setPhase, phase, setQuizSource, quizQty, setQuizQty } =
+    useContext(MorseContext);
 
-  const { playMorse, stopMorse } = useAudio();
+  const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
   const { stats, setGuess, word, letterIndex, guess } = useQuiz();
 
@@ -45,13 +39,16 @@ export const Receive = () => {
 
   useEffect(() => {
     setQuizSource(receiveSource);
-    setQuizQty(receiveSourceQuantities[receiveSource]);
+    setQuizQty(
+      receiveSourceQuantities[receiveSource] ??
+        defaultReceiveSourceQty[receiveSource],
+    );
   }, [receiveSource]);
 
   useEffect(() => {
     setReceiveSourceQuantities({
       ...receiveSourceQuantities,
-      [receiveSource]: quizQty,
+      [receiveSource]: quizQty ?? defaultReceiveSourceQty[receiveSource],
     });
   }, [quizQty]);
 
@@ -73,12 +70,6 @@ export const Receive = () => {
       playMorse(alphaToMorse(word));
     }
   }
-
-  useEffect(() => {
-    if (isPlaying) {
-      stopMorse();
-    }
-  }, [selectedMenu]);
 
   function playPauseLetter() {
     if (word === undefined || letterIndex === undefined) return;
@@ -210,8 +201,8 @@ export const Receive = () => {
         {["standby", "stats"].includes(phase) && (
           <button
             className="btn btn--large"
-            onClick={() => {
-              playMorse(initCode);
+            onClick={async () => {
+              await playMorse(initCode);
               setPhase("prepare");
             }}
           >

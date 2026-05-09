@@ -16,7 +16,7 @@
     flex: 1;
     width: 100%;
     height: 100%;
-    padding: var(--side-padding);
+    padding: calc(var(--side-padding) / 2) var(--side-padding);
     gap: 8px;
     min-height: 0; // prevents overflow!
 
@@ -28,9 +28,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 0 12px;
       width: 100%;
       max-width: var(--max-quiz-settings-width);
+      min-height: 76px;
 
       border-radius: var(--box-radius);
       background: var(--background-overlay);
@@ -44,6 +45,10 @@
           width: 32px;
           height: 32px;
         }
+      }
+
+      &__practice {
+        display: none;
       }
 
       &__desc {

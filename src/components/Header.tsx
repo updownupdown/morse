@@ -1,14 +1,31 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { MenuIcon } from "../icons/MenuIcon";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import "./Header.scss";
 import { Menus, Modes, MorseContext } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
+import { useAudioContext } from "../context/AudioContext";
+import { initCode } from "../hooks/useAudio";
 
 export const Header = () => {
-  const { setSelectedMenu, selectedMode, quizSource, phase, setPhase, stats } =
-    useContext(MorseContext);
+  const {
+    setSelectedMenu,
+    selectedMode,
+    selectedMenu,
+    quizSource,
+    phase,
+    setPhase,
+    stats,
+  } = useContext(MorseContext);
+
+  const { playMorse, stopMorse } = useAudioContext();
+
+  useEffect(() => {
+    if (selectedMenu !== undefined) {
+      stopMorse();
+    }
+  }, [selectedMenu]);
 
   return (
     <div className="header">
@@ -23,7 +40,10 @@ export const Header = () => {
 
       <button
         className="header-btn"
-        onClick={() => setSelectedMenu(Menus.Settings)}
+        onClick={() => {
+          playMorse(initCode);
+          setSelectedMenu(Menus.Settings);
+        }}
       >
         <SettingsIcon />
       </button>

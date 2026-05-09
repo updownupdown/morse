@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
 import "./Learn.scss";
 import clsx from "clsx";
-import { useAudio } from "../hooks/useAudio";
+import { useAudioContext } from "../context/AudioContext";
 import { MorseContext } from "../context/MorseContext";
 import { prosigns } from "../data/prosigns";
 import { MorseChar } from "./MorseChar";
@@ -21,8 +21,7 @@ interface SymbolProps {
 }
 
 export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
-  const { selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useAudio();
+  const { playMorse } = useAudioContext();
 
   const [isPlayingThis, setIsPlayingThis] = useState(false);
 
@@ -31,10 +30,6 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
       setIsPlayingThis(false);
     }
   }, [disabled]);
-
-  useEffect(() => {
-    stopMorse();
-  }, [selectedMenu]);
 
   return (
     <button
@@ -85,12 +80,7 @@ type ProsignDictionaryProps = {
 };
 
 const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
-  const { selectedMenu } = useContext(MorseContext);
-  const { playMorse, stopMorse } = useAudio();
-
-  useEffect(() => {
-    stopMorse();
-  }, [selectedMenu]);
+  const { playMorse } = useAudioContext();
 
   return (
     <div className="prosigns">
@@ -137,7 +127,7 @@ const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
 };
 
 export const Learn = () => {
-  const { isPlaying } = useContext(MorseContext);
+  const { isPlaying } = useAudioContext();
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
 
   let regex: RegExp;

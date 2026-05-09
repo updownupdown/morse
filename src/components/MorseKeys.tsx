@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const MorseKeys = ({ hint, setGuess }: Props) => {
-  const { settings, selectedMenu } = useContext(MorseContext);
+  const { settings, selectedMenu, phase } = useContext(MorseContext);
 
   const [selectKeyType, setSelectKeyType] = useState(false);
 
@@ -51,7 +51,8 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
     <div
       className={clsx(
         "morse-keys",
-        hint === undefined && "morse-keys--no-hint",
+        ["prepare", "standby", "stats"].includes(phase) &&
+          "morse-keys--hide-keys",
       )}
     >
       <div className="morse-keys__top">

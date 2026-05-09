@@ -3,12 +3,11 @@ import { KeyTypes, MorseContext, Setting } from "../context/MorseContext";
 import {
   alphaToMorse,
   alphaToMorseDict,
-  invalidCharText,
   maxCodeLength,
   unitLengths,
 } from "../data/alphaToMorse";
-import { useAudio } from "./useAudio";
 import { inProgressChar, MorseChar } from "../components/MorseChar";
+import { useAudioContext } from "../context/AudioContext";
 
 interface Props {
   setGuess: (char: string) => void;
@@ -52,7 +51,7 @@ export const useStraightKey = ({ setGuess }: Props) => {
   };
 
   // ========== PRESS LOGIC =========== //
-  const { setIsPressed, isPressed } = useAudio();
+  const { setIsPressed, isPressed } = useAudioContext();
   const [pressStart, setPressStart] = useState<number | null>(null);
   const pressStartRef = useRef(pressStart);
   pressStartRef.current = pressStart;

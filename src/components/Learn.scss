@@ -65,7 +65,7 @@
 
   &:disabled.symbol--is-playing {
     opacity: 1;
-    background: rgba(var(--text-rgb), 0.05);
+    background: var(--background-overlay);
   }
 }
 

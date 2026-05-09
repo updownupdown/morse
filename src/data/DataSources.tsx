@@ -6,6 +6,7 @@ export enum SendSources {
   Words = "Words",
   Pangrams = "Pangrams",
   AllChars = "Characters",
+  Practice = "Practice",
 }
 
 export enum ReceiveSources {
@@ -19,6 +20,7 @@ export const defaultSendSourceQty: Record<SendSources, number> = {
   [SendSources.Words]: 8,
   [SendSources.Pangrams]: 2,
   [SendSources.AllChars]: 52,
+  [SendSources.Practice]: 1,
 };
 export const defaultReceiveSourceQty: Record<ReceiveSources, number> = {
   [ReceiveSources.Pangrams]: 2,
@@ -31,6 +33,7 @@ export const maxSendSourceQty: Record<SendSources, number> = {
   [SendSources.Words]: words.length,
   [SendSources.Pangrams]: pangrams.length,
   [SendSources.AllChars]: 52,
+  [SendSources.Practice]: 1,
 };
 export const maxReceiveSourceQty: Record<ReceiveSources, number> = {
   [ReceiveSources.Pangrams]: pangrams.length,

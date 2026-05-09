@@ -14,6 +14,17 @@ export enum Themes {
   Fruity = "Fruity",
 }
 
+export function updateMetaThemeColor() {
+  const themeBgColor =
+    getComputedStyle(document.documentElement).getPropertyValue(
+      "--background-main",
+    ) ?? "#000000";
+
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", themeBgColor);
+}
+
 export const ThemeModal = () => {
   const { settings, setSettings, setSelectedMenu } = useContext(MorseContext);
 
@@ -27,6 +38,7 @@ export const ThemeModal = () => {
               className={`btn-menu-item btn-menu-item--${settings.Theme === theme ? "selected" : "not-selected"}`}
               onClick={() => {
                 setSettings({ ...settings, [Setting.Theme]: theme });
+                updateMetaThemeColor();
               }}
             >
               {theme}

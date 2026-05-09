@@ -26,9 +26,15 @@ function beepGlow(on: boolean) {
   }
 }
 
+export type IsPlaying = "symbol" | "charOrWord" | undefined;
+
 export function useAudio() {
-  const { settings, setIsPlaying, audioInitialized, setAudioInitialized } =
-    useContext(MorseContext);
+  const { settings } = useContext(MorseContext);
+
+  const [audioInitialized, setAudioInitialized] = useState(false);
+  const [isPlaying, setIsPlaying] = useState<IsPlaying>(undefined);
+  const isPlayingRef = useRef(isPlaying);
+  isPlayingRef.current = isPlaying;
 
   const cancelPlaybackRef = useRef(false);
   // ctxRef used for type compatibility, but always points to singleton
@@ -42,6 +48,8 @@ export function useAudio() {
   const pressGainRef = useRef<GainNode | null>(null);
 
   function startPress() {
+    stopMorse();
+
     const ctx = getAudioContext();
     ctxRef.current = ctx;
 
@@ -120,62 +128,62 @@ export function useAudio() {
     }
   }, [isPressed]);
 
-  function playBeep(durationInMs: number, frequency: number) {
-    return new Promise<void>((resolve) => {
-      if (cancelPlaybackRef.current) {
-        resolve();
-        return;
+  async function playBeep(durationInMs: number, frequency: number) {
+    if (cancelPlaybackRef.current) {
+      return;
+    }
+
+    const ctx = getAudioContext();
+    ctxRef.current = ctx;
+
+    // Ensure AudioContext is resumed (required by browsers after user gesture)
+    if (ctx.state === "suspended") {
+      try {
+        await ctx.resume();
+      } catch (e) {
+        // ignore
       }
+    }
 
-      const ctx = getAudioContext();
-      ctxRef.current = ctx;
+    if (!audioInitialized) {
+      setAudioInitialized(true);
+    }
 
-      if (!audioInitialized) {
-        setAudioInitialized(true);
-      }
+    beepGlow(true);
 
-      beepGlow(true);
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
 
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = frequency;
+    o.connect(g);
+    g.connect(ctx.destination);
 
-      o.type = "sine";
-      o.frequency.value = frequency;
-      o.connect(g);
-      g.connect(ctx.destination);
+    const now = ctx.currentTime;
+    let beepDurationInSec = (durationInMs - fadeDurationInSec * 2) / 1000; // in sec
 
-      const now = ctx.currentTime;
+    // Start
+    g.gain.setValueAtTime(0.001, now);
+    // Fade in
+    g.gain.exponentialRampToValueAtTime(
+      settings[Setting.Volume] / 100,
+      now + fadeDurationInSec,
+    );
+    // Sustain
+    g.gain.setValueAtTime(
+      settings[Setting.Volume] / 100,
+      now + beepDurationInSec,
+    );
+    // Fade out
+    g.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now + beepDurationInSec + fadeDurationInSec * 2,
+    );
 
-      let beepDurationInSec = (durationInMs - fadeDurationInSec * 2) / 1000; // in sec
+    o.start();
+    o.stop(now + beepDurationInSec + fadeDurationInSec * 2);
 
-      // Start
-      g.gain.setValueAtTime(0.001, now);
-      // Fade in
-      g.gain.exponentialRampToValueAtTime(
-        settings[Setting.Volume] / 100,
-        now + fadeDurationInSec,
-      );
-      // Sustain
-      g.gain.setValueAtTime(
-        settings[Setting.Volume] / 100,
-        now + beepDurationInSec,
-      );
-      // Fade out
-      g.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + beepDurationInSec + fadeDurationInSec * 2,
-      );
-
-      o.start();
-      o.stop(now + beepDurationInSec + fadeDurationInSec * 2);
-      o.onended = () => {
-        g.disconnect();
-        o.disconnect();
-        beepGlow(false);
-        resolve();
-      };
-
-      // If cancelled during beep, stop immediately
+    return await new Promise<void>((resolve) => {
       const checkCancel = () => {
         if (cancelPlaybackRef.current) {
           try {
@@ -193,8 +201,13 @@ export function useAudio() {
           requestAnimationFrame(checkCancel);
         }
       };
-
       checkCancel();
+      o.onended = () => {
+        g.disconnect();
+        o.disconnect();
+        beepGlow(false);
+        resolve();
+      };
     });
   }
 
@@ -213,15 +226,17 @@ export function useAudio() {
   }
 
   async function playMorse(morse: string) {
-    // This must be at the top of the function, to allow initializing the audio instantly
+    await stopMorse();
+
+    // Always reset cancel flag before starting
+    cancelPlaybackRef.current = false;
+
+    // This must be at/near the top of the function, to allow initializing the audio instantly
     if (morse === initCode) {
-      playBeep(1, 1);
+      await playBeep(1, 1);
       return;
     }
 
-    await stopMorse();
-
-    cancelPlaybackRef.current = false;
     setIsPlaying(morse.length > 1 ? "charOrWord" : "symbol");
 
     for (let i = 0; i < morse.length; i++) {
@@ -263,5 +278,12 @@ export function useAudio() {
     setIsPlaying(undefined);
   }
 
-  return { playMorse, stopMorse, setIsPressed, isPressed };
+  return {
+    playMorse,
+    stopMorse,
+    setIsPressed,
+    isPressed,
+    audioInitialized,
+    isPlaying,
+  };
 }

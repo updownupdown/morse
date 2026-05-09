@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Practice.scss";
-import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Word } from "./Word";
-import { MorseKeys } from "./MorseKeys";
-import { useAudio } from "../hooks/useAudio";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { StopIcon } from "../icons/StopIcon";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
@@ -12,27 +9,32 @@ import { DeleteIcon } from "../icons/DeleteIcon";
 import { BackspaceIcon } from "../icons/BackspaceIcon";
 import { SlashIcon } from "../icons/SlashIcon";
 import clsx from "clsx";
+import { useAudioContext } from "../context/AudioContext";
 
-export const Practice = () => {
-  const { isPlaying, selectedMenu } = useContext(MorseContext);
+interface PracticeProps {
+  practiceWord: string;
+  setPracticeWord: (word: string) => void;
+  addPracticeCharacter: (char: string) => void;
+}
 
-  const { playMorse, stopMorse } = useAudio();
+export const Practice = ({
+  practiceWord,
+  setPracticeWord,
+  addPracticeCharacter,
+}: PracticeProps) => {
+  const { setPhase } = useContext(MorseContext);
+  const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
-  const [word, setWord] = useLocalStorage("practiceWord", "");
   const [isPlayingWord, setIsPlayingWord] = useState(false);
   const [isWordEmpty, setIsWordEmpty] = useState(true);
 
   useEffect(() => {
-    setIsWordEmpty(word.length === 0);
-  }, [word]);
+    setIsWordEmpty(practiceWord.length === 0);
+  }, [practiceWord]);
 
   useEffect(() => {
     setIsPlayingWord(isPlaying === "charOrWord");
   }, [isPlaying]);
-
-  function addCharacter(char: string) {
-    setWord(word + char);
-  }
 
   const playPauseIsDisabled = isWordEmpty;
 
@@ -41,35 +43,33 @@ export const Practice = () => {
       if (isPlayingWord) {
         stopMorse();
       } else {
-        playMorse(alphaToMorse(word));
+        playMorse(alphaToMorse(practiceWord));
       }
     }
   }
 
-  useEffect(() => {
-    stopMorse();
-  }, [selectedMenu]);
-
   const deleteAllIsDisabled = isWordEmpty || isPlayingWord;
   function deleteAll() {
     if (!deleteAllIsDisabled) {
-      setWord("");
+      setPracticeWord("");
     }
   }
 
   const backspaceIsDisabled = isWordEmpty || isPlayingWord;
   function backspaceChar() {
     if (!backspaceIsDisabled) {
-      setWord(word.slice(0, -1));
+      setPracticeWord(practiceWord.slice(0, -1));
     }
   }
 
   const addSlashDisabled =
-    word.charAt(word.length - 1) === " " || isWordEmpty || isPlayingWord;
+    practiceWord.charAt(practiceWord.length - 1) === " " ||
+    isWordEmpty ||
+    isPlayingWord;
 
   function addSlash() {
     if (!addSlashDisabled) {
-      setWord(word + " ");
+      setPracticeWord(practiceWord + " ");
     }
   }
 
@@ -91,7 +91,7 @@ export const Practice = () => {
         playPause();
         e.preventDefault();
       } else if (/^[a-z]$/i.test(e.key)) {
-        addCharacter(e.key.toUpperCase());
+        addPracticeCharacter(e.key.toUpperCase());
         e.preventDefault();
       }
     };
@@ -101,18 +101,31 @@ export const Practice = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [word, isPlayingWord, isWordEmpty]);
+  }, [practiceWord, isPlayingWord, isWordEmpty]);
 
   return (
     <div className="practice">
+      <div className="practice__stop">
+        <button
+          className="btn btn--flex btn--outlined"
+          onClick={() => {
+            setPhase("standby");
+          }}
+        >
+          <span>Leave Practice</span>
+        </button>
+      </div>
       <div className="practice__word">
-        <Word word={word} />
+        <Word word={practiceWord} />
       </div>
 
       <div className="practice__buttons">
         {/* Play word */}
         <button
-          className={clsx("btn btn--outlined", isPlayingWord && "btn--stop")}
+          className={clsx(
+            "btn btn--flex btn--outlined",
+            isPlayingWord && "btn--stop",
+          )}
           onClick={playPause}
           disabled={playPauseIsDisabled}
         >
@@ -121,7 +134,7 @@ export const Practice = () => {
 
         {/* Delete */}
         <button
-          className="btn btn--outlined"
+          className="btn btn--flex btn--outlined"
           onClick={deleteAll}
           disabled={deleteAllIsDisabled}
         >
@@ -130,7 +143,7 @@ export const Practice = () => {
 
         {/* Backspace */}
         <button
-          className="btn btn--outlined"
+          className="btn btn--flex btn--outlined"
           onClick={backspaceChar}
           disabled={backspaceIsDisabled}
         >
@@ -139,15 +152,13 @@ export const Practice = () => {
 
         {/* Wordbreak */}
         <button
-          className="btn btn--outlined"
+          className="btn btn--flex btn--outlined"
           onClick={addSlash}
           disabled={addSlashDisabled}
         >
           <SlashIcon />
         </button>
       </div>
-
-      <MorseKeys setGuess={addCharacter} />
     </div>
   );
 };

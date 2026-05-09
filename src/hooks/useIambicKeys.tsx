@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useAudio } from "./useAudio";
 import { KeyTypes, MorseContext, Setting } from "../context/MorseContext";
 import {
   alphaToMorse,
@@ -8,6 +7,7 @@ import {
   unitLengths,
 } from "../data/alphaToMorse";
 import { MorseChar } from "../components/MorseChar";
+import { useAudioContext } from "../context/AudioContext";
 
 type PressedState = {
   dit?: number;
@@ -27,11 +27,10 @@ type IambicKeysProps = {
 
 export const useIambicKeys = ({ setGuess }: IambicKeysProps) => {
   // ========== MAIN =========== //
-  const { settings, isPlaying, selectedMenu } = useContext(MorseContext);
+  const { settings, selectedMenu } = useContext(MorseContext);
+  const { isPlaying, playMorse } = useAudioContext();
   const isPlayingRef = useRef(isPlaying);
   isPlayingRef.current = isPlaying;
-
-  const { playMorse } = useAudio();
 
   // ========== QUEUE LOGIC =========== //
   const [queue, setQueue] = useState("");
