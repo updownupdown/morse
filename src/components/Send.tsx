@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import "./Send.scss";
 import { MorseKeys } from "./MorseKeys";
 import {
@@ -25,6 +25,9 @@ export const Send = () => {
 
   const { setGuess, word, letterIndex, guess } = useQuiz();
   const [practiceWord, setPracticeWord] = useLocalStorage("practiceWord", "");
+  const practiceWordRef = useRef(practiceWord);
+  practiceWordRef.current = practiceWord;
+
   const [sendSource, setSendSource] = useLocalStorage<SendSources>(
     "sendSource",
     SendSources.Words,
@@ -48,7 +51,15 @@ export const Send = () => {
   }, [quizQty]);
 
   function addPracticeCharacter(char: string) {
-    setPracticeWord(practiceWord + char);
+    // Don't add more than one wordbreak in a row
+    if (
+      char === " " &&
+      practiceWordRef.current.charAt(practiceWordRef.current.length - 1) === " "
+    ) {
+      return;
+    }
+
+    setPracticeWord(practiceWordRef.current + char);
   }
 
   return (

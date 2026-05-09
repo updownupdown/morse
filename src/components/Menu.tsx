@@ -67,33 +67,32 @@ export const MenuLinks = () => {
 
       <div className="secondary-menu-links">
         <button
-          className="btn btn--flex btn--outlined"
-          onClick={() => setSelectedMenu(Menus.Settings)}
-        >
-          <SettingsIcon />
-          <span>Settings</span>
-        </button>
-
-        {/* <button
-          className="btn btn--flex btn--outlined"
-          onClick={() => setSelectedMenu(Menus.Info)}
-        >
-          <HelpIcon />
-          <span>Info</span>
-        </button> */}
-        <button
-          className="btn btn--flex btn--outlined"
+          className="btn btn--outlined"
           onClick={() => setSelectedMenu(Menus.Theme)}
         >
           <PaletteIcon />
           <span>Theme</span>
         </button>
         <button
-          className="btn btn--flex btn--outlined"
+          className="btn  btn--outlined"
           onClick={() => setSelectedMenu(Menus.Shortcuts)}
         >
           <KeyboardIcon />
           <span>Shortcuts</span>
+        </button>
+        <button
+          className="btn  btn--outlined"
+          onClick={() => setSelectedMenu(Menus.Info)}
+        >
+          <HelpIcon />
+          <span>Info</span>
+        </button>
+        <button
+          className="btn btn--outlined"
+          onClick={() => setSelectedMenu(Menus.Settings)}
+        >
+          <SettingsIcon />
+          <span>Settings</span>
         </button>
       </div>
     </>

@@ -91,11 +91,11 @@ export const settingsSpecs: Record<
   // Toggles
   [Setting.AutoPlayLetter]: {
     title: "Auto-play next letter",
-    // hint: 'Used in "Receive" mode',
+    hint: 'Used in "Receive" mode',
   },
   [Setting.AutoWordBreak]: {
-    title: "Auto-add wordbreak",
-    // hint: 'Used in "Send" mode, free play',
+    title: "Auto-add wordbreaks",
+    hint: 'Used in "Send > Practice" mode',
   },
   // Buttons
   [Setting.Hints]: {

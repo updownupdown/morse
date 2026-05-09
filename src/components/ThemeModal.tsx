@@ -7,18 +7,20 @@ export enum Themes {
   Teal = "Teal",
   Antique = "Antique",
   Rose = "Rose",
+  Autumn = "Autumn",
   Neon = "Neon",
   Robot = "Robot",
-  Mono = "Mono",
+  HiFi = "Hi-Fi",
+  Monochrome = "Monochrome",
   Matrix = "Matrix",
   Fruity = "Fruity",
 }
 
 export function updateMetaThemeColor() {
   const themeBgColor =
-    getComputedStyle(document.documentElement).getPropertyValue(
-      "--background-main",
-    ) ?? "#000000";
+    getComputedStyle(
+      document.getElementsByClassName("app")[0],
+    ).getPropertyValue("--background-main") ?? "#000000";
 
   document
     .querySelector('meta[name="theme-color"]')

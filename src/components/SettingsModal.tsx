@@ -224,11 +224,6 @@ export const SettingsModal = () => {
         <div className="settings__content">
           <SettingButtons setting={Setting.Hints} />
 
-          <div className="settings__content__toggles">
-            <SettingToggle setting={Setting.AutoPlayLetter} />
-            {/* <SettingToggle setting={Setting.AutoWordBreak} /> */}
-          </div>
-
           <div className="settings__content__theme">
             <span className="setting">
               <span className="setting-title">
@@ -245,6 +240,11 @@ export const SettingsModal = () => {
               <PaletteIcon />
               <span>{settings[Setting.Theme]}</span>
             </button>
+          </div>
+
+          <div className="settings__content__toggles">
+            <SettingToggle setting={Setting.AutoPlayLetter} />
+            <SettingToggle setting={Setting.AutoWordBreak} />
           </div>
 
           <SettingSlider setting={Setting.UnitTime} />

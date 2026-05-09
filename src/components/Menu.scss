@@ -15,6 +15,7 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  margin-top: -30px;
 
   h3 {
     color: rgba(var(--text-rgb), 1);
@@ -51,9 +52,10 @@
   }
 }
 
-.menu-links {
-  $gap: 12px;
+$btn-gap: 12px;
+$half-width-btn: calc((100% - $btn-gap) / 2);
 
+.menu-links {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -72,7 +74,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: calc((100% - $gap) / 2);
+    width: $half-width-btn;
     gap: 12px;
 
     border-radius: 8px;
@@ -122,13 +124,11 @@
 
 .secondary-menu-links {
   display: flex;
-  gap: 12px;
+  flex-direction: unset;
+  flex-wrap: wrap;
+  gap: $btn-gap;
 
   .btn {
-    flex-direction: column;
-    border-radius: 8px;
-    padding: 10px 0;
-    height: auto;
-    gap: 2px;
+    width: $half-width-btn;
   }
 }

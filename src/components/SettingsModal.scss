@@ -14,7 +14,7 @@
 
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: var(--side-padding);
     padding: 10px var(--side-padding) 30px;
 
     &__toggles {
@@ -33,6 +33,7 @@
       z-index: 2;
       display: flex;
       gap: 12px;
+      padding: 12px 0;
 
       .btn {
         flex: 1;
@@ -63,19 +64,17 @@
     span {
       font-size: 17px;
       font-weight: 700;
-      color: rgba(var(--text-rgb), 0.8);
+      color: rgba(var(--text-rgb), 1);
 
       &:not(:first-child) {
         font-size: 13px;
-        color: rgba(var(--text-rgb), 0.4);
+        font-weight: 400;
+        color: rgba(var(--text-rgb), 0.7);
       }
     }
   }
-  &--toggle .setting-title {
-    span {
-      font-size: 14px;
-      font-weight: 400;
-    }
+  &--toggle {
+    padding: 4px 0;
   }
 
   &__left {
@@ -103,11 +102,11 @@
         svg {
           width: 32px;
           height: 32px;
-          fill: var(--accent-input);
+          fill: rgba(var(--text-rgb), 0.6);
         }
 
         &:hover svg {
-          fill: var(--accent-input-hover);
+          fill: var(--accent-btn-hover);
         }
       }
 
@@ -186,12 +185,12 @@
         }
       }
       &--on {
-        background: var(--accent-input);
+        background: var(--accent-btn);
 
         .setting-toggle__plate {
           left: calc(100% - $height + $padding);
           background: rgba(var(--white-rgb), 1);
-          box-shadow: 0 0 0 1px rgba(var(--background-main-rgb), 1);
+          box-shadow: 0 0 0 1px rgba(var(--black-rgb), 0.4);
         }
       }
     }

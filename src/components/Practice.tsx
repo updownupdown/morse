@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Practice.scss";
 import { Word } from "./Word";
-import { alphaToMorse } from "../data/alphaToMorse";
+import { alphaToMorse, unitLengths } from "../data/alphaToMorse";
 import { StopIcon } from "../icons/StopIcon";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
-import { MorseContext } from "../context/MorseContext";
+import { MorseContext, Setting } from "../context/MorseContext";
 import { DeleteIcon } from "../icons/DeleteIcon";
 import { BackspaceIcon } from "../icons/BackspaceIcon";
 import { SlashIcon } from "../icons/SlashIcon";
@@ -22,24 +22,55 @@ export const Practice = ({
   setPracticeWord,
   addPracticeCharacter,
 }: PracticeProps) => {
-  const { setPhase } = useContext(MorseContext);
+  const { setPhase, settings } = useContext(MorseContext);
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
-  const [isPlayingWord, setIsPlayingWord] = useState(false);
   const [isWordEmpty, setIsWordEmpty] = useState(true);
+  const [isPlayingWord, setIsPlayingWord] = useState(false);
+  const addWordBreakAfterTimeoutRef = useRef(false);
 
   useEffect(() => {
     setIsWordEmpty(practiceWord.length === 0);
   }, [practiceWord]);
 
-  useEffect(() => {
-    setIsPlayingWord(isPlaying === "charOrWord");
-  }, [isPlaying]);
+  const timeoutRef = useRef<number | null>(null);
 
-  const playPauseIsDisabled = isWordEmpty;
+  useEffect(() => {
+    // Update isPlayingWord for "stop" button states
+    setIsPlayingWord(isPlaying === "charOrWord");
+
+    // Auto-add wordbreak
+    const autoWordbreak = settings[Setting.AutoWordBreak];
+
+    // Cancel any previous timeout if isPlaying changes
+    if (timeoutRef.current && !autoWordbreak) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    if (!autoWordbreak) return;
+
+    if (isPlaying !== undefined) {
+      addWordBreakAfterTimeoutRef.current = isPlaying === "symbol";
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      if (addWordBreakAfterTimeoutRef.current) {
+        addPracticeCharacter(" ");
+        addWordBreakAfterTimeoutRef.current = false;
+      }
+    }, settings[Setting.UnitTime] * unitLengths["/"]);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, [isPlaying, settings]);
 
   function playPause() {
-    if (!playPauseIsDisabled) {
+    if (!isWordEmpty) {
       if (isPlayingWord) {
         stopMorse();
       } else {
@@ -69,7 +100,7 @@ export const Practice = ({
 
   function addSlash() {
     if (!addSlashDisabled) {
-      setPracticeWord(practiceWord + " ");
+      addPracticeCharacter(" ");
     }
   }
 
@@ -127,7 +158,7 @@ export const Practice = ({
             isPlayingWord && "btn--stop",
           )}
           onClick={playPause}
-          disabled={playPauseIsDisabled}
+          disabled={isWordEmpty}
         >
           {isPlayingWord ? <StopIcon /> : <SpeakerIcon />}
         </button>

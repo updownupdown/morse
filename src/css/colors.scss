@@ -35,7 +35,7 @@ $theme-colors: (
 }
 
 @function textColor($color) {
-  @return color.scale($color, $lightness: 85%, $saturation: 20%);
+  @return color.scale($color, $lightness: 85%);
 }
 
 :root {
@@ -51,7 +51,7 @@ $themes: (
     (
       "background-main": #2f3841,
       "accent-btn": #add7a5,
-      "accent-input": #7ad5e9,
+      "accent-input": #74c6d8,
     ),
   "neon"
     (
@@ -63,7 +63,7 @@ $themes: (
     (
       "background-main": #23292f,
       "accent-btn": #ff8b4b,
-      "accent-input": #69e1e6,
+      "accent-input": #77d8db,
     ),
   "rose"
     (
@@ -73,7 +73,7 @@ $themes: (
     ),
   "matrix"
     (
-      "background-main": #111111,
+      "background-main": #292929,
       "accent-btn": #62dd8e,
       "accent-input": #62dd8e,
     ),
@@ -83,11 +83,23 @@ $themes: (
       "accent-btn": #9bb7b5,
       "accent-input": #e3af7b,
     ),
-  "mono"
+  "monochrome"
+    (
+      "background-main": #333317,
+      "accent-btn": #e5ffff,
+      "accent-input": #e5ffff,
+    ),
+  "hifi"
     (
       "background-main": #272a2b,
-      "accent-btn": #ddd0a0,
-      "accent-input": #bbe4d8,
+      "accent-btn": #d3c590,
+      "accent-input": #aae4d4,
+    ),
+  "autumn"
+    (
+      "background-main": #2a3b42,
+      "accent-btn": #da8c55,
+      "accent-input": #b2e0bc,
     ),
   "fruity"
     (
