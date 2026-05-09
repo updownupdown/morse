@@ -17,14 +17,16 @@ export enum Themes {
 }
 
 export function updateMetaThemeColor() {
-  const themeBgColor =
-    getComputedStyle(
-      document.getElementsByClassName("app")[0],
-    ).getPropertyValue("--background-main") ?? "#000000";
+  setTimeout(() => {
+    const themeBgColor =
+      getComputedStyle(
+        document.getElementsByClassName("app")[0],
+      ).getPropertyValue("--background-main") ?? "#000000";
 
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", themeBgColor);
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", themeBgColor);
+  }, 100);
 }
 
 export const ThemeModal = () => {

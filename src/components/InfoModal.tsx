@@ -4,7 +4,7 @@ import "./InfoModal.scss";
 import { Modal } from "./Modal";
 
 export const InfoModal = () => {
-  const { settings, setSettings } = useContext(MorseContext);
+  const { settings } = useContext(MorseContext);
 
   return (
     <Modal title="Info">
