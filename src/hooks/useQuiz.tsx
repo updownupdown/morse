@@ -105,7 +105,7 @@ export const useQuiz = () => {
       updatedStats.unitLength += guessCharUnitLength;
 
       // Add unit length between characters unless it's the last character
-      if (letterIndex <= word.length) {
+      if (letterIndex < word.length - 1) {
         updatedStats.unitLength += unitLengths[" "];
       }
 
