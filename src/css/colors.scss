@@ -9,9 +9,9 @@ $theme-colors: (
   "accent-btn": #add7a5,
   "accent-btn-hover": #c2e1bc,
   "dit": #ffff4e,
-  "dah": #d06cff,
-  "status-green": #3fdd93,
-  "status-red": #fb5d5d,
+  "dah": #74c6d8,
+  "status-green": #74c6d8,
+  "status-red": #fb755d,
   "background-main": #2f3841,
   "background-overlay": #1f242a,
 );
@@ -53,14 +53,18 @@ $themes: (
       "accent-input": #74c6d8,
       "dit": #ffff4e,
       "dah": #74c6d8,
+      "status-green": #74c6d8,
+      "status-red": #fb755d,
     ),
   "antique"
     (
       "background-main": #303235,
       "accent-btn": #9bb7b5,
       "accent-input": #e3af7b,
-      "dit": #e3af7b,
+      "dit": #f8b067,
       "dah": #b884e2,
+      "status-green": #68dbb9,
+      "status-red": #f3a992,
     ),
   "rose"
     (
@@ -69,6 +73,8 @@ $themes: (
       "accent-input": #ef9dab,
       "dit": #b4e3ab,
       "dah": #ef9dab,
+      "status-green": #83e0a7,
+      "status-red": #f17b99,
     ),
   "autumn"
     (
@@ -77,6 +83,8 @@ $themes: (
       "accent-input": #b2e0bc,
       "dit": #b2e0bc,
       "dah": #da8c55,
+      "status-green": #90daac,
+      "status-red": #fb7d5d,
     ),
   "neon"
     (
@@ -85,14 +93,18 @@ $themes: (
       "accent-input": #ff6dca,
       "dit": #e2ff61,
       "dah": #ff6dca,
+      "status-green": #3fddbb,
+      "status-red": #fb5dac,
     ),
   "hifi"
     (
       "background-main": #272a2b,
-      "accent-btn": #d3c590,
-      "accent-input": #aae4d4,
-      "dit": #aae4d4,
-      "dah": #dd965c,
+      "accent-btn": #dfc38f,
+      "accent-input": #79d3ad,
+      "dit": #79d3ad,
+      "dah": #f78778,
+      "status-green": #79d3ad,
+      "status-red": #f78778,
     ),
   "tropical"
     (
@@ -101,6 +113,8 @@ $themes: (
       "accent-input": #ffcb5c,
       "dit": #ffcb5c,
       "dah": #57ded7,
+      "status-green": #3fdd93,
+      "status-red": #ff4d79,
     ),
   "eggplant"
     (
@@ -109,6 +123,8 @@ $themes: (
       "accent-input": #d5ec9e,
       "dit": #d4f48a,
       "dah": #ffb34a,
+      "status-green": #62e9c1,
+      "status-red": #fd646b,
     ),
   "console"
     (
@@ -118,7 +134,7 @@ $themes: (
       "dit": #7edaaf,
       "dah": #6d8181,
       "status-green": #7edaaf,
-      "status-red": #7edaaf,
+      "status-red": #daa07e,
     ),
   "robot"
     (
@@ -127,6 +143,8 @@ $themes: (
       "accent-input": #77d8db,
       "dit": #77d8db,
       "dah": #ff8b4b,
+      "status-green": #3fddae,
+      "status-red": #f56033,
     )
 );
 

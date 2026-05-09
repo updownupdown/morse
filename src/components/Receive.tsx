@@ -171,7 +171,7 @@ export const Receive = () => {
             <div className="quiz__content__action-buttons">
               <button
                 className={clsx(
-                  "btn btn--flex btn--outlined",
+                  "btn  btn--outlined",
                   wordBtnIsStop() && "btn--stop",
                 )}
                 onClick={playPauseWord}
@@ -183,14 +183,14 @@ export const Receive = () => {
 
               <button
                 className={clsx(
-                  "btn btn--flex btn--outlined",
+                  "btn btn--outlined",
                   letterBtnIsStop() && "btn--stop",
                 )}
                 onClick={playPauseLetter}
                 disabled={wordBtnIsStop()}
               >
                 {letterBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
-                <span>Letter</span>
+                <span>{letterBtnIsStop() ? "Stop" : "Letter"}</span>
               </button>
             </div>
           </>
