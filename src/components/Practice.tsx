@@ -54,12 +54,17 @@ export const Practice = ({
       addWordBreakAfterTimeoutRef.current = isPlaying === "symbol";
     }
 
-    timeoutRef.current = setTimeout(() => {
-      if (addWordBreakAfterTimeoutRef.current) {
-        addPracticeCharacter(" ");
-        addWordBreakAfterTimeoutRef.current = false;
-      }
-    }, settings[Setting.UnitTime] * unitLengths["/"]);
+    timeoutRef.current = setTimeout(
+      () => {
+        if (addWordBreakAfterTimeoutRef.current) {
+          addPracticeCharacter(" ");
+          addWordBreakAfterTimeoutRef.current = false;
+        }
+      },
+      settings[Setting.UnitTime] *
+        unitLengths["/"] *
+        settings[Setting.Farnsworth],
+    );
 
     return () => {
       if (timeoutRef.current) {

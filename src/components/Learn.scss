@@ -42,12 +42,15 @@
 }
 
 .symbol {
+  transition: 0.3s ease all;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   width: 90px;
   padding: 12px 0 22px;
+
+  background: transparent;
 
   &,
   &:after {
@@ -76,6 +79,7 @@
   padding: 10px;
 
   .prosign {
+    transition: 0.3s ease all;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -145,7 +149,7 @@
 
     &:disabled.prosign--is-playing {
       opacity: 1;
-      background: rgba(var(--text-rgb), 0.05);
+      background: var(--background-overlay);
     }
   }
 }
