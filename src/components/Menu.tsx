@@ -85,7 +85,7 @@ export const MenuLinks = () => {
           onClick={() => setSelectedMenu(Menus.Info)}
         >
           <HelpIcon />
-          <span>Info</span>
+          <span>Help</span>
         </button>
         <button
           className="btn btn--outlined"

@@ -23,8 +23,7 @@ import { ThemeModal } from "./components/ThemeModal";
 import { ReceiveSources, SendSources, Stats } from "./data/DataSources";
 import { Phase } from "./hooks/useQuiz";
 import { formatForCSSClass } from "./utils/utils";
-import { useAudio } from "./hooks/useAudio";
-import { AudioProvider, useAudioContext } from "./context/AudioContext";
+import { AudioProvider } from "./context/AudioContext";
 
 function App() {
   const [lastSelectedMode, setLastSelectedMode] = useLocalStorage(

@@ -43,8 +43,6 @@ $header-icon-size: 28px;
   }
 }
 
-$quiz-border-color: rgba(var(--black-rgb), 0.75);
-
 .quiz-stats {
   $top-bottom-padding: 8px;
 
@@ -129,7 +127,7 @@ $quiz-border-color: rgba(var(--black-rgb), 0.75);
     left: 0;
     bottom: 0;
 
-    background: $quiz-border-color;
+    background: rgba(var(--text-rgb), 0.25);
   }
 
   .quiz-stats-results {
@@ -140,7 +138,7 @@ $quiz-border-color: rgba(var(--black-rgb), 0.75);
     height: 100%;
     padding: 0 4px;
 
-    background: $quiz-border-color;
+    background: rgba(var(--black-rgb), 0.75);
 
     div {
       display: flex;

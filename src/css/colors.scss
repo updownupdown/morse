@@ -3,18 +3,17 @@
 $theme-colors: (
   "black": #000000,
   "white": #ffffff,
-  "text": #ffffff,
-  "accent-inputs": #f37c3c,
-  "accent-inputs-hover": #da7842,
-  "accent-light": #ffa573,
-  "accent-btn": #f37c3c,
-  "accent-btn-hover": #da7842,
+  "text": #dce1e6,
+  "accent-inputs": #74c6d8,
+  "accent-inputs-hover": #97d4e2,
+  "accent-btn": #add7a5,
+  "accent-btn-hover": #c2e1bc,
   "dit": #ffff4e,
   "dah": #d06cff,
   "status-green": #3fdd93,
   "status-red": #fb5d5d,
-  "background-main": #23292f,
-  "background-overlay": #121518,
+  "background-main": #2f3841,
+  "background-overlay": #1f242a,
 );
 
 @function hexToRGB($hex) {
@@ -52,60 +51,82 @@ $themes: (
       "background-main": #2f3841,
       "accent-btn": #add7a5,
       "accent-input": #74c6d8,
-    ),
-  "neon"
-    (
-      "background-main": #262c47,
-      "accent-btn": #e2ff61,
-      "accent-input": #ff6dca,
-    ),
-  "robot"
-    (
-      "background-main": #23292f,
-      "accent-btn": #ff8b4b,
-      "accent-input": #77d8db,
-    ),
-  "rose"
-    (
-      "background-main": #2f3841,
-      "accent-btn": #b4e3ab,
-      "accent-input": #ef9dab,
-    ),
-  "matrix"
-    (
-      "background-main": #292929,
-      "accent-btn": #62dd8e,
-      "accent-input": #62dd8e,
+      "dit": #ffff4e,
+      "dah": #74c6d8,
     ),
   "antique"
     (
       "background-main": #303235,
       "accent-btn": #9bb7b5,
       "accent-input": #e3af7b,
+      "dit": #e3af7b,
+      "dah": #b884e2,
     ),
-  "monochrome"
+  "rose"
     (
-      "background-main": #333317,
-      "accent-btn": #e5ffff,
-      "accent-input": #e5ffff,
-    ),
-  "hifi"
-    (
-      "background-main": #272a2b,
-      "accent-btn": #d3c590,
-      "accent-input": #aae4d4,
+      "background-main": #2f3841,
+      "accent-btn": #b4e3ab,
+      "accent-input": #ef9dab,
+      "dit": #b4e3ab,
+      "dah": #ef9dab,
     ),
   "autumn"
     (
       "background-main": #2a3b42,
       "accent-btn": #da8c55,
       "accent-input": #b2e0bc,
+      "dit": #b2e0bc,
+      "dah": #da8c55,
     ),
-  "fruity"
+  "neon"
+    (
+      "background-main": #262c47,
+      "accent-btn": #e2ff61,
+      "accent-input": #ff6dca,
+      "dit": #e2ff61,
+      "dah": #ff6dca,
+    ),
+  "hifi"
+    (
+      "background-main": #272a2b,
+      "accent-btn": #d3c590,
+      "accent-input": #aae4d4,
+      "dit": #aae4d4,
+      "dah": #dd965c,
+    ),
+  "tropical"
+    (
+      "background-main": #2f343f,
+      "accent-btn": #57ded7,
+      "accent-input": #ffcb5c,
+      "dit": #ffcb5c,
+      "dah": #57ded7,
+    ),
+  "eggplant"
     (
       "background-main": #483b48,
       "accent-btn": #ffb34a,
-      "accent-input": #d4f48a,
+      "accent-input": #d5ec9e,
+      "dit": #d4f48a,
+      "dah": #ffb34a,
+    ),
+  "console"
+    (
+      "background-main": #2e3d3a,
+      "accent-btn": #7edaaf,
+      "accent-input": #7edaaf,
+      "dit": #7edaaf,
+      "dah": #6d8181,
+      "status-green": #7edaaf,
+      "status-red": #7edaaf,
+    ),
+  "robot"
+    (
+      "background-main": #293541,
+      "accent-btn": #ff8b4b,
+      "accent-input": #77d8db,
+      "dit": #77d8db,
+      "dah": #ff8b4b,
     )
 );
 

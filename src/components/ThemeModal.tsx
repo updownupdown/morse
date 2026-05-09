@@ -9,14 +9,15 @@ export enum Themes {
   Rose = "Rose",
   Autumn = "Autumn",
   Neon = "Neon",
-  Robot = "Robot",
   HiFi = "Hi-Fi",
-  Monochrome = "Monochrome",
-  Matrix = "Matrix",
-  Fruity = "Fruity",
+  Tropical = "Tropical",
+  Eggplant = "Eggplant",
+  Console = "Console",
+  Robot = "Robot",
 }
 
 export function updateMetaThemeColor() {
+  // Delay setting the theme-color, or the outdated value will be used
   setTimeout(() => {
     const themeBgColor =
       getComputedStyle(
@@ -26,7 +27,7 @@ export function updateMetaThemeColor() {
     document
       .querySelector('meta[name="theme-color"]')
       ?.setAttribute("content", themeBgColor);
-  }, 100);
+  }, 20);
 }
 
 export const ThemeModal = () => {

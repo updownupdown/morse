@@ -96,6 +96,8 @@
       align-items: flex-start;
       gap: 6px;
 
+      color: rgba(var(--text-rgb), 1);
+
       &__sign {
         display: flex;
 
@@ -134,7 +136,7 @@
     &__details {
       font-size: 12px;
       line-height: 1.4;
-      color: rgba(var(--text-rgb), 0.5);
+      color: rgba(var(--text-rgb), 0.8);
     }
 
     &:disabled {
