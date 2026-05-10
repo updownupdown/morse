@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { MorseContext, Setting } from "../context/MorseContext";
 import { unitLengths } from "../data/alphaToMorse";
+import { clamp } from "../utils/utils";
 
 // Singleton AudioContext instance
 let singletonAudioContext: AudioContext | null = null;
@@ -12,7 +13,10 @@ function getAudioContext() {
 }
 
 const maxPressTime = 1200; // ms
-const fadeDurationInSec = 0.002; // 2 ms in seconds
+const fadeDurationInSec = {
+  min: 0.005, // 5 ms
+  max: 0.02, // 50 ms
+};
 export const initCode = "init";
 
 function beepGlow(on: boolean) {
@@ -74,7 +78,7 @@ export function useAudio() {
     g.gain.setValueAtTime(0.0001, now);
     g.gain.exponentialRampToValueAtTime(
       settings[Setting.Volume] / 100,
-      now + fadeDurationInSec,
+      now + adjustedFadeDuration,
     );
 
     o.start();
@@ -90,13 +94,19 @@ export function useAudio() {
     const g = pressGainRef.current;
 
     if (o && g && ctxRef.current) {
+      const adjustedFadeDuration = clamp(
+        settings[Setting.UnitTime] / 4,
+        fadeDurationInSec.min,
+        fadeDurationInSec.max,
+      );
+
       const ctx = ctxRef.current;
       const now = ctx.currentTime;
       // Fade out
       g.gain.cancelScheduledValues(now);
       g.gain.setValueAtTime(g.gain.value, now);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + fadeDurationInSec);
-      o.stop(now + fadeDurationInSec);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + adjustedFadeDuration);
+      o.stop(now + adjustedFadeDuration);
       o.onended = () => {
         g.disconnect();
         o.disconnect();
@@ -106,6 +116,12 @@ export function useAudio() {
     pressOscRef.current = null;
     pressGainRef.current = null;
   }
+
+  const adjustedFadeDuration = clamp(
+    settings[Setting.UnitTime] / 4 / 1000,
+    fadeDurationInSec.min,
+    fadeDurationInSec.max,
+  );
 
   useEffect(() => {
     if (isPressed) {
@@ -160,28 +176,28 @@ export function useAudio() {
     g.connect(ctx.destination);
 
     const now = ctx.currentTime;
-    let beepDurationInSec = (durationInMs - fadeDurationInSec * 2) / 1000; // in sec
+    let beepDurationInSec = (durationInMs - adjustedFadeDuration * 2) / 1000; // in sec
 
     // Start
     g.gain.setValueAtTime(0.001, now);
     // Fade in
     g.gain.exponentialRampToValueAtTime(
       settings[Setting.Volume] / 100,
-      now + fadeDurationInSec,
+      now + adjustedFadeDuration,
     );
     // Sustain
     g.gain.setValueAtTime(
       settings[Setting.Volume] / 100,
-      now + beepDurationInSec,
+      now + adjustedFadeDuration + beepDurationInSec,
     );
     // Fade out
     g.gain.exponentialRampToValueAtTime(
       0.0001,
-      now + beepDurationInSec + fadeDurationInSec * 2,
+      now + beepDurationInSec + adjustedFadeDuration * 2,
     );
 
     o.start();
-    o.stop(now + beepDurationInSec + fadeDurationInSec * 2);
+    o.stop(now + beepDurationInSec + adjustedFadeDuration * 2);
 
     return await new Promise<void>((resolve) => {
       const checkCancel = () => {
