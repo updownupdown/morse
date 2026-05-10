@@ -12,7 +12,7 @@ function getAudioContext() {
 }
 
 const maxPressTime = 1200; // ms
-const fadeDurationInSec = 0.02; // 20 ms
+const fadeDurationInSec = 0.002; // 2 ms in seconds
 export const initCode = "init";
 
 function beepGlow(on: boolean) {

@@ -58,7 +58,7 @@ export type Settings = {
 
 export const defaultSettings: Settings = {
   // Audio
-  [Setting.UnitTime]: 100,
+  [Setting.UnitTime]: 80,
   [Setting.Farnsworth]: 2,
   [Setting.Frequency]: 550,
   [Setting.Volume]: 30,
@@ -124,13 +124,13 @@ export const settingsSpecs: Record<
     title: "Farnsworth",
     unit: "x",
     min: 1,
-    max: 10,
+    max: 8,
     step: 1,
   },
   [Setting.Frequency]: {
     title: "Frequency",
     unit: "Hz",
-    min: 200,
+    min: 350,
     max: 700,
     step: 10,
   },

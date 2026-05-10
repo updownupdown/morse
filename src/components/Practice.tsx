@@ -202,7 +202,7 @@ export const Practice = ({
 
         {/* Wordbreak */}
         <button
-          className="btn btn--flex btn--outlined"
+          className="btn btn--flex btn--outlined btn--auto-wordbreak"
           onClick={addSlash}
           disabled={addSlashDisabled}
         >

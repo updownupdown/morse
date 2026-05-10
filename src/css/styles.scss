@@ -94,7 +94,6 @@ a {
 }
 
 button {
-  overflow: hidden;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -129,9 +128,11 @@ button {
     top: 0;
     left: 0;
     bottom: 0;
+
+    background: var(--background-overlay);
+
     animation-name: growToFullWidth;
     animation-timing-function: linear;
-    background: var(--background-overlay);
     opacity: 0;
   }
 
