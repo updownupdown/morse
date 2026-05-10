@@ -105,7 +105,7 @@ export const Receive = () => {
   return (
     <div
       className={clsx(
-        "quiz quiz--receive beep-glow",
+        "quiz quiz--receive",
         wordBtnIsStop() && "quiz--playing-word",
       )}
     >

@@ -19,17 +19,6 @@ const fadeDurationInSec = {
 };
 export const initCode = "init";
 
-function beepGlow(on: boolean) {
-  const beeps = document.getElementsByClassName("beep-glow");
-  for (let i = 0; i < beeps.length; i++) {
-    if (on) {
-      beeps[i].classList.add("beep-glow--on");
-    } else {
-      beeps[i].classList.remove("beep-glow--on");
-    }
-  }
-}
-
 export type IsPlaying = "symbol" | "charOrWord" | undefined;
 
 export function useAudio() {
@@ -165,8 +154,6 @@ export function useAudio() {
       setAudioInitialized(true);
     }
 
-    beepGlow(true);
-
     const o = ctx.createOscillator();
     const g = ctx.createGain();
 
@@ -204,7 +191,6 @@ export function useAudio() {
         if (cancelPlaybackRef.current) {
           try {
             o.stop();
-            beepGlow(false);
           } catch {}
           try {
             g.disconnect();
@@ -221,7 +207,6 @@ export function useAudio() {
       o.onended = () => {
         g.disconnect();
         o.disconnect();
-        beepGlow(false);
         resolve();
       };
     });

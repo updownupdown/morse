@@ -56,7 +56,7 @@ export const Word = ({ word, guess, letterIndex }: Props) => {
               className={clsx(
                 "letter",
                 `letter--${statusClass}`,
-                i === letterIndex && "letter--current beep-glow",
+                i === letterIndex && "letter--current",
               )}
               onClick={() => {
                 if (i !== letterIndex) return;

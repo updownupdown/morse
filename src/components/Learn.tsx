@@ -33,10 +33,7 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
 
   return (
     <button
-      className={clsx(
-        "symbol",
-        isPlayingThis && "symbol--is-playing beep-glow",
-      )}
+      className={clsx("symbol", isPlayingThis && "symbol--is-playing")}
       onClick={() => {
         setIsPlayingThis(true);
         playMorse(morse);
@@ -96,10 +93,7 @@ const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
         return (
           <button
             key={sign.prosign}
-            className={clsx(
-              "prosign",
-              isPlayingThis && "prosign--is-playing beep-glow",
-            )}
+            className={clsx("prosign", isPlayingThis && "prosign--is-playing")}
             onClick={() => {
               setIsPlayingThis(true);
               playMorse(sign.code);

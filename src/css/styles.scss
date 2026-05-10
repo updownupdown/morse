@@ -473,28 +473,6 @@ table {
   }
 }
 
-.beep-glow {
-  position: relative;
-
-  &:after {
-    user-select: none;
-    pointer-events: none;
-    transition: 0.15s ease all;
-    content: "";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    box-shadow: 0 0 0 rgba(var(--accent-input-rgb), 0.1);
-  }
-
-  &.beep-glow--on:after {
-    box-shadow: 0 0 14px rgba(var(--accent-input-rgb), 0.5);
-  }
-}
-
 @keyframes fade-out {
   from {
     opacity: 1;
