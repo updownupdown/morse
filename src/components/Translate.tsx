@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import {
   alphaToMorse,
   morseToAlpha,
-  regexTest,
+  isAllowedMorseRegex,
   sanitizeMorse,
 } from "../data/alphaToMorse";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -235,7 +235,7 @@ export const Translate = () => {
             value={morse}
             placeholder={isAlphaInput ? "" : 'Use ".", "-", spaces, or slashes'}
             onKeyDown={(e) => {
-              if (!regexTest.test(e.key)) {
+              if (e.key.length === 1 && !isAllowedMorseRegex.test(e.key)) {
                 e.preventDefault();
                 e.stopPropagation();
               }

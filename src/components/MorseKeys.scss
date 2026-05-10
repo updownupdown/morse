@@ -223,6 +223,8 @@
     z-index: 2;
     gap: var(--side-padding);
     padding: var(--side-padding);
+    max-width: var(--max-content-width);
+    margin: 0 auto;
 
     &__left {
       gap: 16px;

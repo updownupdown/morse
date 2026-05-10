@@ -136,7 +136,7 @@ export const useStraightKey = ({ setGuess }: Props) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [queue, settings, isPressed, pressStart]);
 
   const MorseQueue = () => {
     return queue.length !== 0 ? <MorseChar morse={queue} size="xl" /> : null;

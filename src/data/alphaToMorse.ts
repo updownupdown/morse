@@ -23,12 +23,12 @@ export function alphaToMorse(alpha: string) {
   return morse.join(" ");
 }
 
-export const regexCleanup = /[^-. /]/g;
-export const regexTest = /^[/. -]*$/;
+export const morseCleanupRegex = /[^-. /]/g;
+export const isAllowedMorseRegex = /^[/. -]*$/;
 
 export function sanitizeMorse(morse: string) {
   return morse
-    .replaceAll(regexCleanup, "")
+    .replaceAll(morseCleanupRegex, "")
     .replaceAll(/\/+/g, "/")
     .replaceAll(/\s+/g, " ")
     .replaceAll("/", " / ")
