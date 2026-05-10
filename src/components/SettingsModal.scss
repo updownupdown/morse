@@ -14,7 +14,7 @@
 
     display: flex;
     flex-direction: column;
-    gap: var(--side-padding);
+    gap: 30px;
     padding: 10px var(--side-padding) 30px;
 
     &__toggles {
@@ -28,12 +28,30 @@
       justify-content: space-between;
     }
 
+    &__wpm {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+
+      &__text {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+        height: 100%;
+        flex: 1;
+      }
+
+      .btn {
+        width: 130px;
+        flex-grow: 0;
+      }
+    }
+
     &__buttons {
       position: relative;
       z-index: 2;
       display: flex;
-      gap: 12px;
-      padding: 12px 0;
 
       .btn {
         flex: 1;
@@ -208,7 +226,7 @@
         width: auto;
 
         .btn-menu-item {
-          flex: 0;
+          flex: unset;
         }
       }
     }

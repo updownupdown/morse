@@ -17,7 +17,7 @@ import { MinusIcon } from "../icons/MinusIcon";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
 import { PaletteIcon } from "../icons/PaletteIcon";
-import { formatForCSSClass } from "../utils/utils";
+import { calculateWPM, formatForCSSClass } from "../utils/utils";
 import { useAudioContext } from "../context/AudioContext";
 
 interface SettingSliderProps {
@@ -247,21 +247,23 @@ export const SettingsModal = () => {
             <SettingToggle setting={Setting.AutoWordBreak} />
           </div>
 
-          <SettingSlider setting={Setting.UnitTime} />
-          <SettingSlider setting={Setting.Farnsworth} />
-          <SettingSlider setting={Setting.Frequency} />
-          <SettingSlider setting={Setting.Volume} />
-
-          <div className="settings__content__buttons">
-            <button
-              className="btn btn--flex btn--outlined"
-              onClick={() => {
-                setSettings(defaultSettings);
-              }}
-            >
-              <ResetIcon />
-              <span>Reset all</span>
-            </button>
+          <div className="settings__content__wpm">
+            <div className="settings__content__wpm__text">
+              <span>
+                Characters:{" "}
+                {Math.round(calculateWPM(settings[Setting.UnitTime], 1))} WPM
+              </span>
+              <span>
+                Farnsworth:{" "}
+                {Math.round(
+                  calculateWPM(
+                    settings[Setting.UnitTime] / settings[Setting.Farnsworth],
+                    1,
+                  ),
+                )}{" "}
+                WPM
+              </span>
+            </div>
             <button
               className={clsx(
                 "btn btn--flex btn--outlined",
@@ -276,7 +278,26 @@ export const SettingsModal = () => {
               }}
             >
               {isPlaying ? <StopIcon /> : <SpeakerIcon />}
-              <span>{isPlaying ? "Stop" : "Play sample"}</span>
+              <span>{isPlaying ? "Stop" : "Sample"}</span>
+            </button>
+          </div>
+
+          <SettingSlider setting={Setting.UnitTime} />
+          <SettingSlider setting={Setting.Farnsworth} />
+          <SettingSlider setting={Setting.Frequency} />
+          <SettingSlider setting={Setting.Volume} />
+
+          <SettingButtons setting={Setting.KeyType} />
+
+          <div className="settings__content__buttons">
+            <button
+              className="btn btn--flex btn--outlined"
+              onClick={() => {
+                setSettings(defaultSettings);
+              }}
+            >
+              <ResetIcon />
+              <span>Reset all settings</span>
             </button>
           </div>
         </div>

@@ -100,7 +100,7 @@ export const Receive = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [stats]);
+  }, []);
 
   return (
     <div

@@ -94,7 +94,9 @@ a {
 }
 
 button {
+  overflow: hidden;
   cursor: pointer;
+  position: relative;
   display: flex;
   background: unset;
   border: unset;
@@ -112,11 +114,40 @@ button {
   &,
   span,
   svg {
+    position: relative;
+    z-index: 2;
     transition: 0.2s ease all;
   }
 
   svg {
     flex-shrink: 0;
+  }
+
+  .btn-auto-progress {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    animation-name: growToFullWidth;
+    animation-timing-function: linear;
+    background: var(--background-overlay);
+    opacity: 0;
+  }
+
+  @keyframes growToFullWidth {
+    0% {
+      opacity: 0;
+      width: 0%;
+    }
+    20% {
+      opacity: 0;
+      width: 30%;
+    }
+    100% {
+      opacity: 1;
+      width: 100%;
+    }
   }
 
   &.btn {

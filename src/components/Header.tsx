@@ -63,7 +63,7 @@ export const Header = () => {
           <div
             className="quiz-stats-progress"
             style={{
-              width: `${(stats.charsDone / stats.charsTotal) * 100}%`,
+              width: `${phase === "guess" ? (stats.charsDone / stats.charsTotal) * 100 : 0}%`,
             }}
           />
 

@@ -5,6 +5,10 @@
   flex-direction: column;
   gap: var(--quiz-bottom-gap);
 
+  &--hide-keys {
+    display: none;
+  }
+
   &__top {
     position: relative;
     z-index: 1;
@@ -67,14 +71,14 @@
 
         .morse-char {
           .dit-dah {
-            background: rgba(var(--text-rgb), 0.32);
+            background: rgba(var(--text-rgb), 0.3);
           }
         }
 
         // ========== Send ========== //
         // On
         .app--hints-on.app--mode-send & {
-          animation: 3s fade-in linear forwards;
+          animation: 0.3s fade-in linear forwards;
         }
 
         // Delayed
@@ -98,10 +102,6 @@
   &__keys {
     display: flex;
     gap: 12px;
-
-    .morse-keys--hide-keys & {
-      display: none;
-    }
   }
 
   .morse-key {

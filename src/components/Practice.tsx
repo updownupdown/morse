@@ -34,45 +34,59 @@ export const Practice = ({
   }, [practiceWord]);
 
   const timeoutRef = useRef<number | null>(null);
+  const wordbreakDelay =
+    settings[Setting.UnitTime] *
+    unitLengths["/"] *
+    settings[Setting.Farnsworth];
+
+  const [showWordbreakProgress, setShowWordbreakProgress] = useState(false);
+
+  async function cancelWorkbreak() {
+    setShowWordbreakProgress(false);
+    addWordBreakAfterTimeoutRef.current = false;
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }
+
+  async function startWordbreak() {
+    await cancelWorkbreak();
+    // setShowWordbreakProgress(true);
+    setTimeout(() => setShowWordbreakProgress(true), 10);
+    addWordBreakAfterTimeoutRef.current = true;
+
+    timeoutRef.current = setTimeout(() => {
+      if (addWordBreakAfterTimeoutRef.current) {
+        addPracticeCharacter(" ");
+        cancelWorkbreak();
+      }
+    }, wordbreakDelay);
+  }
 
   useEffect(() => {
     // Update isPlayingWord for "stop" button states
     setIsPlayingWord(isPlaying === "charOrWord");
 
-    // Auto-add wordbreak
+    // Auto-add wordbreak?
     const autoWordbreak = settings[Setting.AutoWordBreak];
-
-    // Cancel any previous timeout if isPlaying changes
-    if (timeoutRef.current && !autoWordbreak) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
     if (!autoWordbreak) return;
 
-    if (isPlaying !== undefined) {
-      addWordBreakAfterTimeoutRef.current = isPlaying === "symbol";
+    if (isPlaying === "charOrWord") {
+      // When playing a character or word, cancel wordbreak
+      cancelWorkbreak();
+    } else if (isPlaying === "symbol") {
+      // When playing a symbol, start a new timeout (which also cancels the previous)
+      startWordbreak();
     }
-
-    timeoutRef.current = setTimeout(
-      () => {
-        if (addWordBreakAfterTimeoutRef.current) {
-          addPracticeCharacter(" ");
-          addWordBreakAfterTimeoutRef.current = false;
-        }
-      },
-      settings[Setting.UnitTime] *
-        unitLengths["/"] *
-        settings[Setting.Farnsworth],
-    );
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
   }, [isPlaying, settings]);
+
+  useEffect(() => {
+    return () => {
+      cancelWorkbreak();
+    };
+  }, []);
 
   function playPause() {
     if (!isWordEmpty) {
@@ -137,7 +151,7 @@ export const Practice = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [practiceWord, isPlayingWord, isWordEmpty]);
+  }, []);
 
   return (
     <div className="practice">
@@ -193,6 +207,12 @@ export const Practice = ({
           disabled={addSlashDisabled}
         >
           <SlashIcon />
+          {!addSlashDisabled && showWordbreakProgress && (
+            <div
+              className="btn-auto-progress"
+              style={{ animationDuration: `${wordbreakDelay}ms` }}
+            />
+          )}
         </button>
       </div>
     </div>
