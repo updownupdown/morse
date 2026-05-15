@@ -27,7 +27,7 @@
     gap: 12px;
 
     &__instructions {
-      font-size: 12px;
+      font-size: 14px;
       color: rgba(var(--text-rgb), 0.5);
       text-align: center;
     }
@@ -58,8 +58,8 @@
   }
 
   &__text {
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 500;
   }
 
   &:disabled {
@@ -130,7 +130,7 @@
       display: flex;
 
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 400;
 
       .morse-char {
         justify-content: flex-start;
@@ -138,7 +138,8 @@
     }
 
     &__details {
-      font-size: 12px;
+      font-size: 15px;
+      font-weight: 300;
       line-height: 1.4;
       color: rgba(var(--text-rgb), 0.8);
     }

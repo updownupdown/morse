@@ -14,6 +14,8 @@ export enum Themes {
   Eggplant = "Eggplant",
   Console = "Console",
   Robot = "Robot",
+  Coral = "Coral",
+  Galaxy = "Galaxy",
 }
 
 export function updateMetaThemeColor() {

@@ -2,10 +2,11 @@
 @use "./mixins.scss" as *;
 @use "./inputs.scss";
 @use "./colors.scss";
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
 
 :root {
-  --font: "JetBrains Mono", Courier, monospace;
+  --font: "Outfit", sans-serif;
   --font-mono: "JetBrains Mono", Courier, monospace;
 
   --max-content-width: 600px;
@@ -174,6 +175,7 @@ button {
     }
 
     &:not(:disabled) {
+      &:hover,
       &:active {
         span {
           color: rgba(var(--text-rgb), 0.9);
@@ -205,10 +207,11 @@ button {
 
       background: rgba(var(--background-overlay-rgb), 0.2);
       box-shadow:
-        inset 0 1px 1px rgba(var(--text-rgb), 0.2),
+        inset 0 1px 1px rgba(var(--text-rgb), 0.3),
+        inset 0 -1px 1px 1px rgba(var(--text-rgb), 0.05),
         inset 4px 6px 30px rgba(var(--background-light-rgb), 0.5),
-        -4px -4px 12px rgba(var(--background-light-rgb), 0.1),
-        8px 8px 12px rgba(var(--background-overlay-hover-rgb), 0.4);
+        -4px -4px 12px rgba(var(--background-light-rgb), 0.3),
+        5px 5px 12px rgba(var(--background-overlay-hover-rgb), 0.3);
 
       span {
         color: var(--accent-btn);
@@ -228,7 +231,7 @@ button {
             inset 0 1px 1px rgba(var(--text-rgb), 0.2),
             inset 4px 6px 30px rgba(var(--background-light-rgb), 0.7),
             -2px -2px 6px rgba(var(--background-light-rgb), 0.2),
-            4px 4px 6px rgba(var(--background-overlay-hover-rgb), 0.6);
+            3px 3px 6px rgba(var(--background-overlay-hover-rgb), 0.2);
 
           span {
             color: var(--accent-btn-hover);
@@ -262,21 +265,22 @@ button {
       padding: 0 4px;
       gap: 6px;
 
-      border-radius: 6px;
+      border-radius: 8px;
       background: rgba(var(--background-overlay-rgb), 0.3);
 
       box-shadow:
         inset 0 1px 1px rgba(var(--text-rgb), 0.2),
         inset 1px 1px 30px rgba(var(--background-light-rgb), 0.4),
-        -3px -3px 8px rgba(var(--background-light-rgb), 0.1),
-        4px 4px 8px rgba(var(--background-overlay-hover-rgb), 0.4);
+        -3px -3px 8px rgba(var(--background-light-rgb), 0.25),
+        3px 3px 6px rgba(var(--background-overlay-hover-rgb), 0.2);
 
       svg {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
         fill: var(--accent-btn);
       }
       span {
+        font-size: 12px;
         color: var(--accent-btn);
       }
       svg + span {
@@ -311,8 +315,8 @@ button {
         inset 1px 1px 4px rgba(var(--accent-btn-light-rgb), 1),
         inset 0 0 20px rgba(var(--accent-btn-light-rgb), 1),
         -2px -2px 12px rgba(var(--accent-btn-light-rgb), 0.3),
-        -4px -4px 30px rgba(var(--accent-btn-light-rgb), 0.3),
-        8px 8px 24px rgba(var(--black-rgb), 0.8);
+        -4px -4px 20px rgba(var(--accent-btn-light-rgb), 0.2),
+        4px 4px 20px rgba(var(--black-rgb), 0.6);
 
       svg {
         width: 38px;
@@ -334,36 +338,50 @@ button {
         }
       }
 
-      &:hover {
-        box-shadow:
-          inset 1px 1px 14px rgba(var(--accent-btn-hover-rgb), 0.3),
-          inset 0 0 10px rgba(var(--accent-btn-hover-rgb), 1),
-          -1px -1px 8px rgba(var(--accent-btn-hover-rgb), 0.3),
-          -2px -2px 12px rgba(var(--accent-btn-light-rgb), 0.4),
-          4px 4px 14px rgba(var(--black-rgb), 0.8);
+      &:not(:disabled) {
+        &:active,
+        &:hover {
+          opacity: 0.8;
+          box-shadow:
+            inset 1px 1px 14px rgba(var(--accent-btn-hover-rgb), 0.3),
+            inset 0 0 10px rgba(var(--accent-btn-hover-rgb), 1),
+            -1px -1px 8px rgba(var(--accent-btn-hover-rgb), 0.3),
+            -2px -2px 8px rgba(var(--accent-btn-light-rgb), 0.2),
+            3px 3px 10px rgba(var(--black-rgb), 0.4);
+
+          span {
+            color: rgba(var(--black-rgb), 0.75);
+          }
+          svg {
+            fill: rgba(var(--black-rgb), 0.75);
+          }
+        }
       }
     }
 
     &--stop {
       &:not(:disabled) {
-        background: rgba(var(--accent-input-rgb), 0.2);
-
         &,
         &:hover,
         &:active {
-          border-color: var(--accent-input);
+          background: rgba(var(--status-red-rgb), 0.1);
+
+          box-shadow:
+            inset 0 1px 1px rgba(var(--status-red-rgb), 0.2),
+            inset 0 -1px 1px 1px rgba(var(--status-red-rgb), 0.05),
+            inset 4px 6px 30px rgba(var(--status-red-rgb), 0.3),
+            -4px -4px 12px rgba(var(--status-red-rgb), 0.1),
+            5px 5px 12px rgba(var(--background-overlay-hover-rgb), 0.1);
 
           span {
-            color: var(--accent-input);
+            color: var(--status-red);
           }
           svg {
-            fill: var(--accent-input);
+            fill: var(--status-red);
           }
         }
-
-        &:hover,
-        &:active {
-          background: rgba(var(--accent-input-rgb), 0.4);
+        &:hover {
+          background: rgba(var(--status-red-rgb), 0.2);
         }
       }
     }
@@ -379,12 +397,12 @@ button {
   border-radius: var(--box-radius);
   background: var(--background-overlay);
   background: linear-gradient(
-    rgba(var(--background-overlay-rgb), 0.5),
-    rgba(var(--background-overlay-hover-rgb), 0.5)
+    rgba(var(--background-overlay-rgb), 0.4),
+    rgba(var(--background-overlay-hover-rgb), 0.4)
   );
   box-shadow:
-    inset 0 0 20px rgba(var(--black-rgb), 0.8),
-    inset -1px -1px 1.5px rgba(var(--accent-input-light-rgb), 0.4),
+    inset 0 0 20px rgba(var(--black-rgb), 0.3),
+    inset -1px -1px 2px rgba(var(--accent-input-light-rgb), 0.3),
     0 0 10px rgba(var(--background-light-rgb), 0.4);
 
   .btn-menu-item {
@@ -397,9 +415,9 @@ button {
 
     border-radius: 6px;
 
-    font-size: 16px;
+    font-size: 15px;
     color: rgba(var(--text-rgb), 0.8);
-    font-weight: 600;
+    font-weight: 450;
     line-height: 1;
     text-transform: uppercase;
 
@@ -415,11 +433,7 @@ button {
       text-shadow: 0 0 3px rgba(var(--accent-input-rgb), 0.3);
     }
     &--not-selected:hover {
-      background: rgba(var(--accent-input-rgb), 0.05);
-
-      box-shadow:
-        inset 0 0 0 1px rgba(var(--accent-input-rgb), 0.3),
-        0 0 4px rgba(var(--accent-input-rgb), 0.2);
+      background: rgba(var(--accent-input-rgb), 0.1);
 
       color: var(--accent-input);
     }
@@ -435,12 +449,12 @@ button {
 
       span:first-child {
         font-size: 18px;
-        font-weight: 700;
+        font-weight: 600;
         color: rgba(var(--text-rgb), 0.8);
       }
       span:last-child {
-        font-size: 13px;
-        font-weight: 500;
+        font-size: 14px;
+        font-weight: 300;
         color: rgba(var(--text-rgb), 0.6);
         line-height: 1.2;
         text-transform: none;
@@ -449,6 +463,11 @@ button {
       &--selected {
         span:first-child,
         span:last-child {
+          color: var(--accent-input);
+        }
+      }
+      &--not-selected:hover {
+        span {
           color: var(--accent-input);
         }
       }
@@ -513,7 +532,7 @@ table {
 }
 
 .main {
-  // overflow: hidden;
+  overflow-y: auto;
 
   position: relative;
   z-index: 2;

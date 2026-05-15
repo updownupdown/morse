@@ -5,13 +5,21 @@ select,
 input[type="text"],
 input[type="number"] {
   width: 100%;
-  padding: 12px;
+  padding: 16px;
 
   margin: unset;
   border: unset;
 
   border-radius: var(--box-radius);
   background: var(--background-overlay);
+  background: linear-gradient(
+    rgba(var(--background-overlay-rgb), 0.4),
+    rgba(var(--background-overlay-hover-rgb), 0.4)
+  );
+  box-shadow:
+    inset 0 0 20px rgba(var(--black-rgb), 0.2),
+    inset -1px -1px 2px rgba(var(--accent-input-light-rgb), 0.3),
+    0 0 10px rgba(var(--background-light-rgb), 0.2);
 
   font-family: var(--font);
   font-size: 15px;
@@ -23,22 +31,29 @@ input[type="number"] {
   }
 
   &:disabled {
-    background: rgba(var(--text-rgb), 0.08);
-    box-shadow: unset;
+    background: rgba(var(--background-main-rgb), 1);
+    box-shadow:
+      4px 4px 16px rgba(var(--black-rgb), 0.1),
+      inset 0 0 60px rgba(var(--background-light-rgb), 0.2);
   }
 
   &:not(:disabled) {
-    &:hover,
-    :active {
-      transition: 0.2s ease all;
-      transition-property: box-shadow;
+    transition: 0.2s ease all;
 
-      box-shadow: 0 0 12px 2px rgba(var(--accent-btn-rgb), 0.3);
+    &:hover,
+    &:active {
+      box-shadow:
+        inset 0 0 20px rgba(var(--black-rgb), 0.2),
+        inset -1px -1px 2px rgba(var(--accent-input-light-rgb), 0.2),
+        0 0 12px 2px rgba(var(--accent-btn-rgb), 0.3);
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--accent-btn-hover-rgb), 0.4);
+      box-shadow:
+        inset 0 0 20px rgba(var(--black-rgb), 0.2),
+        inset -1px -1px 2px rgba(var(--accent-input-light-rgb), 0.2),
+        0 0 0 3px rgba(var(--accent-btn-hover-rgb), 0.4);
     }
   }
 }

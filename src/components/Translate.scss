@@ -79,6 +79,11 @@
     textarea {
       height: 180px;
 
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 18px;
+      font-weight: 250;
+
       @media (max-height: 700px) {
         height: 160px;
       }
@@ -86,11 +91,6 @@
 
     textarea + .translate-header {
       margin-top: 40px;
-    }
-
-    .translate-morse {
-      font-family: var(--font-mono);
-      font-weight: 600;
     }
   }
 }

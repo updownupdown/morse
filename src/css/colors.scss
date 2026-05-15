@@ -31,13 +31,13 @@ $theme-colors: (
   @return color.scale($color, $lightness: 15%, $saturation: 7%);
 }
 @function bgOverlayColor($color) {
-  @return color.scale($color, $lightness: -35%);
+  @return color.scale($color, $lightness: -40%);
 }
 @function bgOverlayHoverColor($color) {
   @return color.scale($color, $lightness: -70%);
 }
 @function textColor($color) {
-  @return color.scale($color, $lightness: 85%, $saturation: 20%);
+  @return color.scale($color, $lightness: 100%, $saturation: 50%);
 }
 
 :root {
@@ -51,9 +51,9 @@ $theme-colors: (
 $themes: (
   "teal"
     (
-      "background-main": #2f3841,
-      "accent-btn": #add7a5,
-      "accent-input": #74c6d8,
+      "background-main": #3c4d52,
+      "accent-btn": #b1e2a8,
+      "accent-input": #74cfe4,
       "dit": #ffff4e,
       "dah": #74c6d8,
       "status-green": #74c6d8,
@@ -61,19 +61,19 @@ $themes: (
     ),
   "antique"
     (
-      "background-main": #303235,
-      "accent-btn": #9bb7b5,
-      "accent-input": #e3af7b,
+      "background-main": #4d5050,
+      "accent-btn": #95e6e0,
+      "accent-input": #f1bd81,
       "dit": #f8b067,
       "dah": #b884e2,
-      "status-green": #68dbb9,
+      "status-green": #5fc2a4,
       "status-red": #f3a992,
     ),
   "rose"
     (
-      "background-main": #2f3841,
+      "background-main": #3f504e,
       "accent-btn": #b4e3ab,
-      "accent-input": #ef9dab,
+      "accent-input": #f17695,
       "dit": #b4e3ab,
       "dah": #ef9dab,
       "status-green": #83e0a7,
@@ -81,9 +81,9 @@ $themes: (
     ),
   "autumn"
     (
-      "background-main": #2a3b42,
-      "accent-btn": #da8c55,
-      "accent-input": #b2e0bc,
+      "background-main": #554f4c,
+      "accent-btn": #dba555,
+      "accent-input": #addf96,
       "dit": #b2e0bc,
       "dah": #da8c55,
       "status-green": #90daac,
@@ -91,8 +91,8 @@ $themes: (
     ),
   "neon"
     (
-      "background-main": #262c47,
-      "accent-btn": #e2ff61,
+      "background-main": #2b3358,
+      "accent-btn": #cfe66c,
       "accent-input": #ff6dca,
       "dit": #e2ff61,
       "dah": #ff6dca,
@@ -101,19 +101,19 @@ $themes: (
     ),
   "hifi"
     (
-      "background-main": #272a2b,
-      "accent-btn": #dfc38f,
-      "accent-input": #79d3ad,
-      "dit": #79d3ad,
-      "dah": #f78778,
+      "background-main": #45494b,
+      "accent-btn": #e2d59a,
+      "accent-input": #69f8f1,
+      "dit": #6dfcfc,
+      "dah": #e7da9c,
       "status-green": #79d3ad,
       "status-red": #f78778,
     ),
   "tropical"
     (
-      "background-main": #2f343f,
+      "background-main": #394152,
       "accent-btn": #57ded7,
-      "accent-input": #ffcb5c,
+      "accent-input": #ffe054,
       "dit": #ffcb5c,
       "dah": #57ded7,
       "status-green": #3fdd93,
@@ -121,9 +121,9 @@ $themes: (
     ),
   "eggplant"
     (
-      "background-main": #483b48,
+      "background-main": #504450,
       "accent-btn": #ffb34a,
-      "accent-input": #d5ec9e,
+      "accent-input": #d2ec95,
       "dit": #d4f48a,
       "dah": #ffb34a,
       "status-green": #62e9c1,
@@ -131,23 +131,43 @@ $themes: (
     ),
   "console"
     (
-      "background-main": #2e3d3a,
-      "accent-btn": #7edaaf,
-      "accent-input": #7edaaf,
-      "dit": #7edaaf,
-      "dah": #6d8181,
-      "status-green": #7edaaf,
-      "status-red": #daa07e,
+      "background-main": #343f39,
+      "accent-btn": #7edaa7,
+      "accent-input": #7edaa7,
+      "dit": #7edaa7,
+      "dah": #648874,
+      "status-green": #7edaa7,
+      "status-red": #7edaa7,
     ),
   "robot"
     (
-      "background-main": #293541,
+      "background-main": #2f3e4d,
       "accent-btn": #ff8b4b,
       "accent-input": #77d8db,
       "dit": #77d8db,
       "dah": #ff8b4b,
       "status-green": #3fddae,
       "status-red": #f56033,
+    ),
+  "coral"
+    (
+      "background-main": #3e5358,
+      "accent-btn": #ee7a8d,
+      "accent-input": #70dfe7,
+      "dit": #5de4ee,
+      "dah": #cc7685,
+      "status-green": #4fcca6,
+      "status-red": #f57a33,
+    ),
+  "galaxy"
+    (
+      "background-main": #343f49,
+      "accent-btn": #21f0ff,
+      "accent-input": #ff4382,
+      "dit": #15c0eb,
+      "dah": #da4672,
+      "status-green": #2ef1b7,
+      "status-red": #f53363,
     )
 );
 

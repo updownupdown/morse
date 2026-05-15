@@ -80,14 +80,14 @@
     text-align: left;
 
     span {
-      font-size: 17px;
-      font-weight: 700;
-      color: rgba(var(--text-rgb), 1);
+      font-size: 18px;
+      font-weight: 350;
+      color: rgba(var(--text-rgb), 0.8);
 
       &:not(:first-child) {
         font-size: 13px;
-        font-weight: 400;
-        color: rgba(var(--text-rgb), 0.7);
+        font-weight: 300;
+        color: rgba(var(--text-rgb), 0.6);
       }
     }
   }
@@ -151,10 +151,10 @@
         margin-top: -6px;
         min-width: 50px;
 
-        font-weight: 700;
+        font-weight: 400;
         font-size: 17px;
         color: var(--accent-input);
-        text-shadow: 0 0 3px rgba(var(--accent-input-rgb), 0.3);
+        text-shadow: 0 0 4px rgba(var(--accent-input-rgb), 0.3);
       }
 
       input[type="range"] {
@@ -183,6 +183,13 @@
 
       border-radius: calc($height / 2);
 
+      background: rgba(var(--background-light-rgb), 1);
+      box-shadow:
+        -2px -2px 4px rgba(var(--background-light-rgb), 0.4),
+        -5px -5px 15px rgba(var(--background-light-rgb), 0.4),
+        2px 2px 4px rgba(var(--black-rgb), 0.1),
+        4px 4px 10px rgba(var(--black-rgb), 0.15);
+
       &__plate {
         transition: $transition;
         position: absolute;
@@ -193,31 +200,20 @@
         height: calc($height - $padding * 2);
 
         border-radius: 50%;
-      }
 
-      &--off {
-        background: rgba(var(--background-light-rgb), 1);
-
+        background: rgba(var(--text-rgb), 0.5);
         box-shadow:
-          inset 0 0 10px rgba(var(--black-rgb), 0.5),
-          inset -1px -1px 1px rgba(var(--text-rgb), 0.2);
-
-        .setting-toggle__plate {
-          background: rgba(var(--text-rgb), 0.5);
-          box-shadow: 1px 2px 4px rgba(var(--black-rgb), 1);
-        }
+          1px 2px 6px rgba(var(--black-rgb), 0.2),
+          2px 4px 8px rgba(var(--black-rgb), 0.2);
       }
+
+      // &--off {}
       &--on {
         background: rgba(var(--accent-btn-rgb), 1);
-
-        box-shadow:
-          inset 0 0 10px rgba(var(--black-rgb), 0.5),
-          inset -1px -1px 1px rgba(var(--accent-btn-light-rgb), 0.8);
 
         .setting-toggle__plate {
           left: calc(100% - $height + $padding);
           background: rgba(var(--white-rgb), 1);
-          box-shadow: 1px 2px 4px rgba(var(--black-rgb), 0.6);
         }
       }
     }
