@@ -108,5 +108,5 @@ input[type="range"]::-moz-range-thumb {
   @include thumb;
 }
 input[type="range"]:where(:hover, :focus)::-webkit-slider-thumb {
-  background: var(--accent-input);
+  background: var(--accent-btn);
 }

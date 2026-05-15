@@ -134,7 +134,19 @@
     &--straight {
       flex: 1;
 
-      background: rgba(var(--text-rgb), 0.3);
+      // background: rgba(var(--text-rgb), 0.3);
+
+      background: rgba(var(--accent-btn-rgb), 0.9);
+      background: linear-gradient(
+        rgba(var(--accent-btn-light-rgb), 0.9),
+        rgba(var(--accent-btn-rgb), 0.9)
+      );
+      box-shadow:
+        inset 1px 1px 4px rgba(var(--accent-btn-light-rgb), 1),
+        inset 0 0 20px rgba(var(--accent-btn-light-rgb), 1),
+        -2px -2px 12px rgba(var(--accent-btn-light-rgb), 0.3),
+        -4px -4px 30px rgba(var(--accent-btn-light-rgb), 0.3),
+        8px 8px 24px rgba(var(--black-rgb), 0.8);
 
       font-size: 16px;
       font-weight: 500;
@@ -143,7 +155,13 @@
       &:not(:disabled) {
         &.morse-key--pressed,
         &:active {
-          background: rgba(var(--text-rgb), 0.5);
+          opacity: 0.8;
+          box-shadow:
+            inset 1px 1px 1px rgba(var(--accent-btn-light-rgb), 0.5),
+            inset 0 0 2px rgba(var(--accent-btn-light-rgb), 0.2),
+            -2px -2px 12px rgba(var(--accent-btn-light-rgb), 0.3),
+            -4px -4px 20px rgba(var(--accent-btn-light-rgb), 0.2),
+            8px 8px 14px rgba(var(--black-rgb), 0.2);
         }
       }
     }
@@ -151,7 +169,17 @@
     &--dit {
       flex: 1;
 
-      background: rgba(var(--dit-rgb), 0.15);
+      background: rgba(var(--dit-rgb), 0.9);
+      background: linear-gradient(
+        rgba(var(--dit-rgb), 0.1),
+        rgba(var(--dit-rgb), 0.2)
+      );
+      box-shadow:
+        inset 1px 1px 4px rgba(var(--dit-rgb), 0.4),
+        inset 0 0 30px rgba(var(--dit-rgb), 0.2),
+        -2px -2px 12px rgba(var(--background-main-rgb), 0.8),
+        -4px -4px 30px rgba(var(--background-main-rgb), 0.8),
+        8px 8px 24px rgba(var(--background-overlay-hover-rgb), 0.8);
 
       color: var(--dit);
 
@@ -173,7 +201,17 @@
     &--dah {
       flex: 1;
 
-      background: rgba(var(--dah-rgb), 0.2);
+      background: rgba(var(--dah-rgb), 0.9);
+      background: linear-gradient(
+        rgba(var(--dah-rgb), 0.1),
+        rgba(var(--dah-rgb), 0.2)
+      );
+      box-shadow:
+        inset 1px 1px 4px rgba(var(--dah-rgb), 0.4),
+        inset 0 0 30px rgba(var(--dah-rgb), 0.2),
+        -2px -2px 12px rgba(var(--background-main-rgb), 0.8),
+        -4px -4px 30px rgba(var(--background-main-rgb), 0.8),
+        8px 8px 24px rgba(var(--background-overlay-hover-rgb), 0.8);
 
       color: var(--dah);
 
@@ -197,23 +235,22 @@
 
 .key-selector-modal-mask {
   position: fixed;
-  z-index: 1;
+  z-index: 90;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
 
-  background: linear-gradient(
-    to bottom,
-    rgba(var(--background-main-rgb), 0.2) 0%,
-    rgba(var(--background-main-rgb), 0.6) 70%,
-    rgba(var(--background-main-rgb), 0.8) 100%
+  background: rgba(var(--background-main-rgb), 0.9);
+  background: radial-gradient(
+    circle at 20% 20%,
+    rgba(var(--background-main-rgb), 1),
+    rgba(var(--background-overlay-rgb), 1)
   );
-  backdrop-filter: blur(10px);
 }
 .key-selector-modal {
   position: fixed;
-  z-index: 20;
+  z-index: 91;
   bottom: 0;
   left: 0;
   right: 0;

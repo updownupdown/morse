@@ -21,20 +21,23 @@ $theme-colors: (
     color.channel($hex, "green", $space: rgb),
     color.channel($hex, "blue", $space: rgb);
 }
-
-@function hoverColor($color) {
-  @return color.scale($color, $lightness: 25%);
+@function accentLightColor($color) {
+  @return color.scale($color, $lightness: 40%, $saturation: 30%);
 }
-
+@function hoverColor($color) {
+  @return color.scale($color, $lightness: 15%, $saturation: 60%);
+}
+@function bgLightColor($color) {
+  @return color.scale($color, $lightness: 15%, $saturation: 7%);
+}
 @function bgOverlayColor($color) {
   @return color.scale($color, $lightness: -35%);
 }
 @function bgOverlayHoverColor($color) {
   @return color.scale($color, $lightness: -70%);
 }
-
 @function textColor($color) {
-  @return color.scale($color, $lightness: 85%);
+  @return color.scale($color, $lightness: 85%, $saturation: 20%);
 }
 
 :root {
@@ -156,11 +159,15 @@ $themes: (
         --#{$var}-rgb: #{hexToRGB($color)};
 
         @if ($var == "accent-btn" or $var == "accent-input") {
+          --#{$var}-light: #{accentLightColor($color)};
+          --#{$var}-light-rgb: #{hexToRGB(accentLightColor($color))};
           --#{$var}-hover: #{hoverColor($color)};
           --#{$var}-hover-rgb: #{hexToRGB(hoverColor($color))};
         }
 
         @if ($var == "background-main") {
+          --background-light: #{bgLightColor($color)};
+          --background-light-rgb: #{hexToRGB(bgLightColor($color))};
           --background-overlay: #{bgOverlayColor($color)};
           --background-overlay-rgb: #{hexToRGB(bgOverlayColor($color))};
           --background-overlay-hover: #{bgOverlayHoverColor($color)};

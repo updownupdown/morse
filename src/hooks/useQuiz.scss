@@ -35,7 +35,16 @@
       min-height: 76px;
 
       border-radius: var(--box-radius);
+
       background: var(--background-overlay);
+      background: linear-gradient(
+        rgba(var(--background-overlay-rgb), 0.5),
+        rgba(var(--background-overlay-hover-rgb), 0.5)
+      );
+      box-shadow:
+        inset 0 0 20px rgba(var(--black-rgb), 0.8),
+        inset -1px -1px 1.5px rgba(var(--accent-input-light-rgb), 0.4),
+        0 0 10px rgba(var(--background-light-rgb), 0.4);
 
       .btn {
         flex-grow: unset;
@@ -63,7 +72,8 @@
         padding-bottom: 2px;
 
         span {
-          color: var(--accent-input);
+          color: var(--accent-btn);
+          text-shadow: 0 0 8px rgba(var(--accent-btn-rgb), 0.4);
 
           &:first-child {
             font-size: 30px;

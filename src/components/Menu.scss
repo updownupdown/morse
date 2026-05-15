@@ -77,13 +77,20 @@ $half-width-btn: calc((100% - $btn-gap) / 2);
     width: $half-width-btn;
     gap: 12px;
 
-    border-radius: 8px;
-    background: var(--background-overlay);
+    border-radius: 32px;
+
+    background: rgba(var(--background-overlay-rgb), 0.2);
+    box-shadow:
+      inset 0 1px 1px rgba(var(--text-rgb), 0.2),
+      inset 4px 6px 30px rgba(var(--background-light-rgb), 0.5),
+      -4px -4px 12px rgba(var(--background-light-rgb), 0.1),
+      8px 8px 12px rgba(var(--background-overlay-hover-rgb), 0.4);
 
     svg {
       width: 48px;
       height: 48px;
       fill: var(--accent-input);
+      filter: drop-shadow(0 0 3px rgba(var(--accent-input-rgb), 0.3));
     }
     span {
       display: flex;
@@ -92,6 +99,7 @@ $half-width-btn: calc((100% - $btn-gap) / 2);
       font-size: 18px;
       font-weight: 700;
       color: rgba(var(--text-rgb), 0.9);
+      text-shadow: 0 0 3px rgba(var(--text-rgb), 0.3);
       text-transform: uppercase;
     }
 
@@ -110,13 +118,18 @@ $half-width-btn: calc((100% - $btn-gap) / 2);
     }
 
     &:hover {
-      background: var(--background-overlay-hover);
+      background: rgba(var(--background-light-rgb), 0.3);
+      box-shadow:
+        inset 0 1px 3px rgba(var(--accent-btn-rgb), 0.6),
+        inset 4px 6px 30px rgba(var(--accent-btn-rgb), 0.5),
+        -4px -4px 12px rgba(var(--background-light-rgb), 0.1),
+        8px 8px 12px rgba(var(--background-overlay-hover-rgb), 0.4);
 
       svg {
-        fill: var(--accent-btn);
+        fill: var(--accent-btn-hover);
       }
       span {
-        color: var(--accent-btn);
+        color: var(--accent-btn-hover);
       }
     }
   }

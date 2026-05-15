@@ -34,20 +34,36 @@
       padding: 0 $gap-width;
 
       border-radius: 4px;
-      background: rgba(var(--text-rgb), 0.1);
+
+      background: rgba(var(--background-overlay-rgb), 0.2);
+      box-shadow:
+        inset 0 1px 1px rgba(var(--text-rgb), 0.2),
+        inset 1px 1px 30px rgba(var(--background-light-rgb), 0.4),
+        -4px -4px 12px rgba(var(--background-light-rgb), 0.1),
+        8px 8px 12px rgba(var(--background-overlay-hover-rgb), 0.4);
 
       &__letter {
         font-size: 22px;
         text-align: center;
         font-weight: 700;
+        color: rgba(var(--white-rgb), 0.7);
       }
       .morse-char {
         min-height: calc(var(--dit-sm) * 2);
       }
 
       &:hover {
-        color: rgba(var(--text-rgb), 0.9);
-        background: rgba(var(--text-rgb), 0.3);
+        .key__letter {
+          color: rgba(var(--white-rgb), 1);
+        }
+
+        background: rgba(var(--background-light-rgb), 0.7);
+
+        box-shadow:
+          inset 0 1px 1px rgba(var(--text-rgb), 0.2),
+          inset 4px 6px 30px rgba(var(--background-light-rgb), 0.7),
+          -2px -2px 6px rgba(var(--background-light-rgb), 0.2),
+          4px 4px 6px rgba(var(--background-overlay-hover-rgb), 0.6);
       }
     }
 

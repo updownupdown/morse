@@ -88,6 +88,8 @@ function App() {
         <div
           className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(settings[Setting.Hints])}`}
         >
+          {selectedMenu !== Menus.None && <div className="modal-mask" />}
+
           <div className="app-center">
             {selectedMenu === Menus.Menu && <Menu />}
             {selectedMenu === Menus.Settings && <SettingsModal />}
