@@ -28,7 +28,7 @@ $theme-colors: (
   @return color.scale($color, $lightness: 15%, $saturation: 60%);
 }
 @function bgLightColor($color) {
-  @return color.scale($color, $lightness: 15%, $saturation: 7%);
+  @return color.scale($color, $lightness: 15%);
 }
 @function bgOverlayColor($color) {
   @return color.scale($color, $lightness: -40%);
@@ -54,18 +54,18 @@ $themes: (
       "background-main": #3c4d52,
       "accent-btn": #b1e2a8,
       "accent-input": #74cfe4,
-      "dit": #ffff4e,
-      "dah": #74c6d8,
+      "dit": #ccf58a,
+      "dah": #68afbe,
       "status-green": #74c6d8,
       "status-red": #fb755d,
     ),
   "antique"
     (
-      "background-main": #4d5050,
-      "accent-btn": #95e6e0,
-      "accent-input": #f1bd81,
-      "dit": #f8b067,
-      "dah": #b884e2,
+      "background-main": #52504c,
+      "accent-btn": #b4d1d1,
+      "accent-input": #f7cfa0,
+      "dit": #f7cfa0,
+      "dah": #b4d1d1,
       "status-green": #5fc2a4,
       "status-red": #f3a992,
     ),
@@ -81,9 +81,9 @@ $themes: (
     ),
   "autumn"
     (
-      "background-main": #554f4c,
-      "accent-btn": #dba555,
-      "accent-input": #addf96,
+      "background-main": #55514c,
+      "accent-btn": #df925f,
+      "accent-input": #dfee9f,
       "dit": #b2e0bc,
       "dah": #da8c55,
       "status-green": #90daac,
@@ -93,7 +93,7 @@ $themes: (
     (
       "background-main": #2b3358,
       "accent-btn": #cfe66c,
-      "accent-input": #ff6dca,
+      "accent-input": #fd64c5,
       "dit": #e2ff61,
       "dah": #ff6dca,
       "status-green": #3fddbb,
@@ -101,11 +101,11 @@ $themes: (
     ),
   "hifi"
     (
-      "background-main": #45494b,
-      "accent-btn": #e2d59a,
-      "accent-input": #69f8f1,
-      "dit": #6dfcfc,
-      "dah": #e7da9c,
+      "background-main": #454a4b,
+      "accent-btn": #eedc8c,
+      "accent-input": #95e6e0,
+      "dit": #95e6e0,
+      "dah": #f1bd81,
       "status-green": #79d3ad,
       "status-red": #f78778,
     ),
@@ -124,8 +124,8 @@ $themes: (
       "background-main": #504450,
       "accent-btn": #ffb34a,
       "accent-input": #d2ec95,
-      "dit": #d4f48a,
-      "dah": #ffb34a,
+      "dit": #d2ec95,
+      "dah": #d89f4f,
       "status-green": #62e9c1,
       "status-red": #fd646b,
     ),
@@ -139,21 +139,21 @@ $themes: (
       "status-green": #7edaa7,
       "status-red": #7edaa7,
     ),
-  "robot"
+  "amethyst"
     (
       "background-main": #2f3e4d,
-      "accent-btn": #ff8b4b,
-      "accent-input": #77d8db,
+      "accent-btn": #72e3e7,
+      "accent-input": #d466ff,
       "dit": #77d8db,
-      "dah": #ff8b4b,
+      "dah": #d466ff,
       "status-green": #3fddae,
       "status-red": #f56033,
     ),
   "coral"
     (
       "background-main": #3e5358,
-      "accent-btn": #ee7a8d,
-      "accent-input": #70dfe7,
+      "accent-btn": #ee6d82,
+      "accent-input": #8ae9f0,
       "dit": #5de4ee,
       "dah": #cc7685,
       "status-green": #4fcca6,

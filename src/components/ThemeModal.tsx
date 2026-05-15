@@ -13,7 +13,7 @@ export enum Themes {
   Tropical = "Tropical",
   Eggplant = "Eggplant",
   Console = "Console",
-  Robot = "Robot",
+  Amethyst = "Amethyst",
   Coral = "Coral",
   Galaxy = "Galaxy",
 }

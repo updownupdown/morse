@@ -145,8 +145,8 @@
         inset 1px 1px 4px rgba(var(--accent-btn-light-rgb), 1),
         inset 0 0 20px rgba(var(--accent-btn-light-rgb), 1),
         -2px -2px 12px rgba(var(--accent-btn-light-rgb), 0.3),
-        -4px -4px 30px rgba(var(--accent-btn-light-rgb), 0.3),
-        8px 8px 24px rgba(var(--black-rgb), 0.8);
+        -4px -4px 30px rgba(var(--accent-btn-light-rgb), 0.2),
+        4px 4px 20px rgba(var(--black-rgb), 0.6);
 
       font-size: 16px;
       font-weight: 500;
@@ -155,13 +155,13 @@
       &:not(:disabled) {
         &.morse-key--pressed,
         &:active {
-          opacity: 0.8;
+          opacity: 0.6;
           box-shadow:
             inset 1px 1px 1px rgba(var(--accent-btn-light-rgb), 0.5),
             inset 0 0 2px rgba(var(--accent-btn-light-rgb), 0.2),
             -2px -2px 12px rgba(var(--accent-btn-light-rgb), 0.3),
-            -4px -4px 20px rgba(var(--accent-btn-light-rgb), 0.2),
-            8px 8px 14px rgba(var(--black-rgb), 0.2);
+            -2px -2px 12px rgba(var(--accent-btn-light-rgb), 0.1),
+            2px 2px 10px rgba(var(--black-rgb), 0.2);
         }
       }
     }
@@ -178,8 +178,8 @@
         inset 1px 1px 4px rgba(var(--dit-rgb), 0.4),
         inset 0 0 30px rgba(var(--dit-rgb), 0.2),
         -2px -2px 12px rgba(var(--background-main-rgb), 0.8),
-        -4px -4px 30px rgba(var(--background-main-rgb), 0.8),
-        8px 8px 24px rgba(var(--background-overlay-hover-rgb), 0.8);
+        -4px -4px 20px rgba(var(--background-main-rgb), 0.6),
+        4px 4px 20px rgba(var(--background-overlay-hover-rgb), 0.6);
 
       color: var(--dit);
 
@@ -194,7 +194,13 @@
       &:not(:disabled) {
         &.morse-key--pressed,
         &:active {
-          background: rgba(var(--dit-rgb), 0.4);
+          opacity: 0.6;
+          box-shadow:
+            inset 1px 1px 1px rgba(var(--dit-rgb), 0.5),
+            inset 0 0 2px rgba(var(--dit-rgb), 0.2),
+            -2px -2px 12px rgba(var(--dit-rgb), 0.3),
+            -2px -2px 12px rgba(var(--dit-rgb), 0.1),
+            2px 2px 10px rgba(var(--black-rgb), 0.2);
         }
       }
     }
@@ -210,8 +216,8 @@
         inset 1px 1px 4px rgba(var(--dah-rgb), 0.4),
         inset 0 0 30px rgba(var(--dah-rgb), 0.2),
         -2px -2px 12px rgba(var(--background-main-rgb), 0.8),
-        -4px -4px 30px rgba(var(--background-main-rgb), 0.8),
-        8px 8px 24px rgba(var(--background-overlay-hover-rgb), 0.8);
+        -4px -4px 20px rgba(var(--background-main-rgb), 0.6),
+        4px 4px 20px rgba(var(--background-overlay-hover-rgb), 0.6);
 
       color: var(--dah);
 
@@ -226,7 +232,13 @@
       &:not(:disabled) {
         &.morse-key--pressed,
         &:active {
-          background: rgba(var(--dah-rgb), 0.5);
+          opacity: 0.6;
+          box-shadow:
+            inset 1px 1px 1px rgba(var(--dah-rgb), 0.5),
+            inset 0 0 2px rgba(var(--dah-rgb), 0.2),
+            -2px -2px 12px rgba(var(--dah-rgb), 0.3),
+            -2px -2px 12px rgba(var(--dah-rgb), 0.1),
+            2px 2px 10px rgba(var(--black-rgb), 0.2);
         }
       }
     }
