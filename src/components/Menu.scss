@@ -18,7 +18,7 @@
   margin-top: -30px;
 
   h3 {
-    color: rgba(var(--text-rgb), 1);
+    color: rgba(var(--text-rgb), 0.6);
 
     &,
     span {
@@ -37,14 +37,16 @@
   span,
   a {
     font-size: 12px;
-    font-weight: 400;
+    font-weight: 300;
   }
 
   span {
     color: rgba(var(--text-rgb), 0.5);
   }
   a {
-    color: rgba(var(--text-rgb), 0.8);
+    transition: 0.2s ease all;
+    color: var(--accent-input);
+    font-weight: 450;
 
     &:hover {
       color: var(--accent-input-hover);

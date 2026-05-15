@@ -183,12 +183,12 @@
 
       border-radius: calc($height / 2);
 
-      background: rgba(var(--background-light-rgb), 1);
+      background: rgba(var(--background-light-rgb), 0.8);
       box-shadow:
         -2px -2px 4px rgba(var(--background-light-rgb), 0.4),
         -5px -5px 15px rgba(var(--background-light-rgb), 0.4),
-        2px 2px 4px rgba(var(--black-rgb), 0.1),
-        4px 4px 10px rgba(var(--black-rgb), 0.15);
+        2px 2px 4px rgba(var(--black-rgb), 0.08),
+        4px 4px 10px rgba(var(--black-rgb), 0.1);
 
       &__plate {
         transition: $transition;
@@ -203,17 +203,29 @@
 
         background: rgba(var(--text-rgb), 0.5);
         box-shadow:
-          1px 2px 6px rgba(var(--black-rgb), 0.2),
+          0 0 0 1px rgba(var(--black-rgb), 0.1),
+          0 1px 3px rgba(var(--black-rgb), 0.2),
           2px 4px 8px rgba(var(--black-rgb), 0.2);
       }
 
-      // &--off {}
+      &:hover {
+        background: rgba(var(--background-light-rgb), 1);
+
+        .setting-toggle__plate {
+          background: rgba(var(--text-rgb), 0.8);
+        }
+      }
+
       &--on {
         background: rgba(var(--accent-btn-rgb), 1);
 
         .setting-toggle__plate {
           left: calc(100% - $height + $padding);
           background: rgba(var(--white-rgb), 1);
+        }
+
+        &:hover {
+          background: rgba(var(--accent-btn-rgb), 0.8);
         }
       }
     }

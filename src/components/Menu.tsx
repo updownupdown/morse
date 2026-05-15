@@ -39,7 +39,7 @@ export const MenuLinks = () => {
           Morse<span>Play</span>
         </h3>
         <span>
-          by James Carmichael |{" "}
+          by James Carmichael&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
           <a href="https://github.com/updownupdown/morse" target="_blank">
             GitHub
           </a>

@@ -56,10 +56,12 @@
         width: 32px;
         height: 32px;
         fill: rgba(var(--text-rgb), 0.6);
+        filter: drop-shadow(0 0 5px rgba(var(--background-light-rgb), 1));
       }
 
       &:hover svg {
         fill: var(--accent-btn-hover);
+        filter: drop-shadow(0 0 5px rgba(var(--accent-btn-rgb), 0.4));
       }
     }
   }

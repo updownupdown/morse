@@ -20,6 +20,7 @@ $header-icon-size: 28px;
     font-weight: 400;
     color: rgba(var(--text-rgb), 0.6);
     text-transform: uppercase;
+    text-shadow: 0 0 5px rgba(var(--background-light-rgb), 1);
   }
 
   .header-btn {
@@ -31,14 +32,13 @@ $header-icon-size: 28px;
       width: $header-icon-size;
       height: $header-icon-size;
       fill: rgba(var(--text-rgb), 0.6);
+      filter: drop-shadow(0 0 5px rgba(var(--background-light-rgb), 1));
     }
 
     &:hover {
-      span {
-        fill: var(--accent-btn-hover);
-      }
       svg {
         fill: var(--accent-btn-hover);
+        filter: drop-shadow(0 0 5px rgba(var(--accent-btn-rgb), 0.4));
       }
     }
   }
@@ -92,12 +92,12 @@ $header-icon-size: 28px;
       text-transform: uppercase;
 
       &:first-child {
-        font-size: 12px;
-        font-weight: 300;
+        font-size: 11px;
+        font-weight: 250;
         color: rgba(var(--white-rgb), 0.4);
       }
       &:last-child {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
         color: rgba(var(--white-rgb), 0.8);
       }
@@ -130,10 +130,12 @@ $header-icon-size: 28px;
         background: unset;
 
         span {
-          color: var(--accent-btn-light);
+          color: var(--status-red);
+          text-shadow: 0 0 3px rgba(var(--status-red-rgb), 0.4);
         }
         svg {
-          fill: var(--accent-btn-light);
+          fill: var(--status-red);
+          filter: drop-shadow(0 0 3px rgba(var(--status-red-rgb), 0.4));
         }
       }
     }
@@ -171,21 +173,27 @@ $header-icon-size: 28px;
     height: 100%;
     padding: 0 4px;
 
+    border-radius: 12px;
+    background: var(--background-overlay);
+
+    box-shadow: inset 1px 1px 28px
+      rgba(var(--background-overlay-hover-rgb), 0.5);
+
     div {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
 
       span {
         &:first-child {
           font-size: 20px;
-          font-weight: 400;
+          font-weight: 650;
           color: rgba(var(--accent-input-rgb), 1);
         }
         &:last-child {
-          font-size: 12px;
-          font-weight: 450;
-          color: rgba(var(--white-rgb), 0.7);
+          font-size: 11px;
+          font-weight: 400;
+          color: rgba(var(--white-rgb), 0.6);
         }
       }
     }
