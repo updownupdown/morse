@@ -362,6 +362,13 @@ button {
     }
 
     &--stop {
+      span {
+        text-shadow: 0 0 3px rgba(var(--status-red-rgb), 0.4);
+      }
+      svg {
+        filter: drop-shadow(0 0 3px rgba(var(--status-red-rgb), 0.4));
+      }
+
       &:not(:disabled) {
         &,
         &:hover,
@@ -369,8 +376,8 @@ button {
           background: rgba(var(--status-red-rgb), 0.1);
 
           box-shadow:
-            inset 0 1px 1px rgba(var(--status-red-rgb), 0.2),
-            inset 0 -1px 1px 1px rgba(var(--status-red-rgb), 0.05),
+            inset 0 1px 1px rgba(var(--status-red-rgb), 0.5),
+            inset 0 -1px 1px 1px rgba(var(--status-red-rgb), 0.1),
             inset 4px 6px 30px rgba(var(--status-red-rgb), 0.3),
             -4px -4px 12px rgba(var(--status-red-rgb), 0.1),
             5px 5px 12px rgba(var(--background-overlay-hover-rgb), 0.1);
