@@ -14,7 +14,7 @@
 
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 24px;
     padding: 10px var(--side-padding) 30px;
 
     &__toggles {
@@ -130,13 +130,14 @@
 
       .reset-btn {
         margin-right: 4px;
-        color: var(--accent-input);
+        color: var(--accent-btn);
+        font-weight: 300;
 
         &:not(:disabled):hover {
-          color: var(--accent-input-hover);
+          color: var(--accent-btn-light);
         }
         &:disabled {
-          color: rgba(var(--text-rgb), 0.3);
+          color: rgba(var(--white-rgb), 0.4);
         }
       }
     }
@@ -183,13 +184,6 @@
 
       border-radius: calc($height / 2);
 
-      background: rgba(var(--background-light-rgb), 0.8);
-      box-shadow:
-        -2px -2px 4px rgba(var(--background-light-rgb), 0.4),
-        -5px -5px 15px rgba(var(--background-light-rgb), 0.4),
-        2px 2px 4px rgba(var(--black-rgb), 0.08),
-        4px 4px 10px rgba(var(--black-rgb), 0.1);
-
       &__plate {
         transition: $transition;
         position: absolute;
@@ -201,23 +195,40 @@
 
         border-radius: 50%;
 
-        background: rgba(var(--text-rgb), 0.5);
         box-shadow:
-          0 0 0 1px rgba(var(--black-rgb), 0.1),
           0 1px 3px rgba(var(--black-rgb), 0.2),
           2px 4px 8px rgba(var(--black-rgb), 0.2);
       }
 
-      &:hover {
-        background: rgba(var(--background-light-rgb), 1);
+      &--off {
+        background: rgba(var(--background-light-rgb), 0.6);
+
+        box-shadow:
+          inset 0 0 4px rgba(var(--background-light-rgb), 1),
+          inset 0 0 8px rgba(var(--background-light-rgb), 1),
+          -4px -4px 10px rgba(var(--background-light-rgb), 0.5),
+          4px 4px 10px rgba(var(--black-rgb), 0.18);
 
         .setting-toggle__plate {
-          background: rgba(var(--text-rgb), 0.8);
+          background: rgba(var(--text-rgb), 0.5);
+        }
+
+        &:hover {
+          background: rgba(var(--background-light-rgb), 1);
+
+          .setting-toggle__plate {
+            background: rgba(var(--text-rgb), 0.8);
+          }
         }
       }
-
       &--on {
-        background: rgba(var(--accent-btn-rgb), 1);
+        background: rgba(var(--accent-btn-hover-rgb), 0.8);
+
+        box-shadow:
+          inset 0 0 4px rgba(var(--accent-btn-light-rgb), 1),
+          inset 0 0 8px rgba(var(--accent-btn-light-rgb), 1),
+          -4px -4px 10px rgba(var(--background-light-rgb), 0.5),
+          4px 4px 10px rgba(var(--black-rgb), 0.18);
 
         .setting-toggle__plate {
           left: calc(100% - $height + $padding);
@@ -225,13 +236,14 @@
         }
 
         &:hover {
-          background: rgba(var(--accent-btn-rgb), 0.8);
+          background: rgba(var(--accent-btn-hover-rgb), 1);
         }
       }
     }
   }
 
-  &--hints {
+  &--hints,
+  &--autoplay {
     .setting__left {
       flex-direction: row;
 

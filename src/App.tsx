@@ -35,7 +35,7 @@ function App() {
     Modes.Home,
   );
   const [settings, setSettings] = useLocalStorage(
-    "settingsv5",
+    "settingsv6",
     defaultSettings,
   );
 

@@ -49,35 +49,62 @@ export const Header = () => {
       </button>
 
       {/* Stats (progress) */}
-      {stats && (
-        <div
-          className={clsx(
-            "quiz-stats",
-            phase === "guess" && "quiz-stats--visible",
-          )}
-        >
-          <div className="quiz-progress-text">
-            <span>{selectedMode === Modes.Send ? "Sending" : "Receiving"}</span>
-            <span>{quizSource}</span>
-          </div>
-          <div
-            className="quiz-stats-progress"
-            style={{
-              width: `${phase === "guess" ? (stats.charsDone / stats.charsTotal) * 100 : 0}%`,
-            }}
-          />
+      <div
+        className={clsx(
+          "quiz-stats",
+          (phase === "guess" || phase === "practice") && "quiz-stats--visible",
+        )}
+      >
+        <>
+          {stats && (
+            <>
+              <div className="quiz-progress-text">
+                <span>
+                  {selectedMode === Modes.Send ? "Sending" : "Receiving"}
+                </span>
+                <span>{quizSource}</span>
+              </div>
+              <div
+                className="quiz-stats-progress"
+                style={{
+                  width: `${phase === "guess" ? (stats.charsDone / stats.charsTotal) * 100 : 0}%`,
+                }}
+              />
 
-          <button
-            className="btn btn--outlined"
-            onClick={() => {
-              setPhase("standby");
-            }}
-          >
-            <StopIcon />
-            <span>Stop</span>
-          </button>
-        </div>
-      )}
+              <button
+                className="btn btn--outlined"
+                onClick={() => {
+                  setPhase("standby");
+                }}
+              >
+                <StopIcon />
+                <span>Stop</span>
+              </button>
+            </>
+          )}
+
+          {phase === "practice" && (
+            <>
+              <div className="quiz-progress-text">
+                <span>
+                  {selectedMode === Modes.Send ? "Sending" : "Receiving"}
+                </span>
+                <span>{quizSource}</span>
+              </div>
+
+              <button
+                className="btn btn--outlined"
+                onClick={() => {
+                  setPhase("standby");
+                }}
+              >
+                <StopIcon />
+                <span>Stop</span>
+              </button>
+            </>
+          )}
+        </>
+      </div>
 
       {/* Stats (results) */}
       {stats && (

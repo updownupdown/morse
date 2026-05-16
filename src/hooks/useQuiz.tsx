@@ -1,6 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { defaultStats, useWordSets } from "../data/DataSources";
-import { Modes, MorseContext, Setting } from "../context/MorseContext";
+import {
+  AutoPlay,
+  Modes,
+  MorseContext,
+  Setting,
+} from "../context/MorseContext";
 import { calculateWPM } from "../utils/utils";
 import {
   alphaToMorse,
@@ -78,6 +83,18 @@ export const useQuiz = () => {
     timerRef.current = Date.now();
   }, [phase, audioInitialized]);
 
+  useEffect(() => {
+    if (
+      phase === "guess" &&
+      isPlaying === undefined &&
+      selectedMode === Modes.Receive &&
+      wordIndex !== undefined &&
+      settings[Setting.AutoPlay] == AutoPlay.Word
+    ) {
+      playMorse(alphaToMorse(wordSet[wordIndex]));
+    }
+  }, [wordIndex, phase]);
+
   // Process guess
   useEffect(() => {
     if (
@@ -153,7 +170,7 @@ export const useQuiz = () => {
         isPlaying === undefined &&
         selectedMode === Modes.Receive &&
         wordIndex !== undefined &&
-        settings[Setting.AutoPlayLetter]
+        settings[Setting.AutoPlay] == AutoPlay.Letter
       ) {
         playMorse(alphaToMorse(wordSet[wordIndex][letterIndex]));
       }

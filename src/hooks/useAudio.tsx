@@ -19,7 +19,7 @@ const fadeDurationInSec = {
 };
 export const initCode = "init";
 
-export type IsPlaying = "symbol" | "charOrWord" | undefined;
+export type IsPlaying = "symbol" | "char" | "word" | undefined;
 
 export function useAudio() {
   const { settings } = useContext(MorseContext);
@@ -238,7 +238,9 @@ export function useAudio() {
       return;
     }
 
-    setIsPlaying(morse.length > 1 ? "charOrWord" : "symbol");
+    setIsPlaying(
+      morse.length > 6 ? "word" : morse.length > 1 ? "char" : "symbol",
+    );
 
     for (let i = 0; i < morse.length; i++) {
       if (cancelPlaybackRef.current) break;

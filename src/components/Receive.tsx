@@ -25,7 +25,7 @@ export const Receive = () => {
 
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
-  const { stats, setGuess, word, letterIndex, guess } = useQuiz();
+  const { setGuess, word, letterIndex, guess } = useQuiz();
 
   const [source, setSource] = useLocalStorage<Sources>(
     "receiveSource",
@@ -47,19 +47,13 @@ export const Receive = () => {
     });
   }, [quizQty]);
 
-  const [lastPlayBtnPressed, setLastPlayBtnPressed] = useState<
-    "word" | "letter"
-  >("letter");
-
-  const wordBtnIsStop = () => isPlaying && lastPlayBtnPressed === "word";
-  const letterBtnIsStop = () => isPlaying && lastPlayBtnPressed === "letter";
+  const isPlayingWord = () => isPlaying === "word";
+  const isPlayingChar = () => isPlaying === "char";
 
   function playPauseWord() {
     if (word === undefined) return;
 
-    setLastPlayBtnPressed("word");
-
-    if (wordBtnIsStop()) {
+    if (isPlayingWord()) {
       stopMorse();
     } else {
       playMorse(alphaToMorse(word));
@@ -69,9 +63,7 @@ export const Receive = () => {
   function playPauseLetter() {
     if (word === undefined || letterIndex === undefined) return;
 
-    setLastPlayBtnPressed("letter");
-
-    if (letterBtnIsStop()) {
+    if (isPlayingChar()) {
       stopMorse();
     } else {
       playMorse(alphaToMorse(word[letterIndex]));
@@ -83,10 +75,10 @@ export const Receive = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
 
-      if (e.key === " " && !letterBtnIsStop()) {
+      if (e.key === " " && !isPlayingChar()) {
         playPauseWord();
         e.preventDefault();
-      } else if (e.code === "ArrowRight" && !wordBtnIsStop()) {
+      } else if (e.code === "ArrowRight" && !isPlayingWord()) {
         playPauseLetter();
         e.preventDefault();
       } else if (/^[a-z]$/i.test(e.key)) {
@@ -106,7 +98,7 @@ export const Receive = () => {
     <div
       className={clsx(
         "quiz quiz--receive",
-        wordBtnIsStop() && "quiz--playing-word",
+        isPlayingWord() && "quiz--playing-word",
       )}
     >
       <div className="quiz__content">
@@ -131,25 +123,25 @@ export const Receive = () => {
               <button
                 className={clsx(
                   "btn  btn--outlined",
-                  wordBtnIsStop() && "btn--stop",
+                  isPlayingWord() && "btn--stop",
                 )}
                 onClick={playPauseWord}
-                disabled={letterBtnIsStop()}
+                disabled={isPlayingChar()}
               >
-                {wordBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
-                <span>{wordBtnIsStop() ? "Stop" : "Word"}</span>
+                {isPlayingWord() ? <StopIcon /> : <SpeakerIcon />}
+                <span>{isPlayingWord() ? "Stop" : "Word"}</span>
               </button>
 
               <button
                 className={clsx(
                   "btn btn--outlined",
-                  letterBtnIsStop() && "btn--stop",
+                  isPlayingChar() && "btn--stop",
                 )}
                 onClick={playPauseLetter}
-                disabled={wordBtnIsStop()}
+                disabled={isPlayingWord()}
               >
-                {letterBtnIsStop() ? <StopIcon /> : <SpeakerIcon />}
-                <span>{letterBtnIsStop() ? "Stop" : "Letter"}</span>
+                {isPlayingChar() ? <StopIcon /> : <SpeakerIcon />}
+                <span>{isPlayingChar() ? "Stop" : "Letter"}</span>
               </button>
             </div>
           </>

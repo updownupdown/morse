@@ -14,6 +14,12 @@ export enum Hints {
   Off = "Off",
 }
 
+export enum AutoPlay {
+  Letter = "Letter",
+  Word = "Word",
+  Off = "Off",
+}
+
 export enum KeyTypes {
   Straight = "Straight",
   IambicA = "Iambic A",
@@ -21,7 +27,7 @@ export enum KeyTypes {
   Ultimatic = "Ultimatic",
 }
 
-type SettingsValues = typeof Hints | typeof KeyTypes;
+type SettingsValues = typeof Hints | typeof KeyTypes | typeof AutoPlay;
 
 export const KeyTypesNames: Record<KeyTypes, string> = {
   [KeyTypes.Straight]: "Straight Key",
@@ -37,7 +43,7 @@ export enum Setting {
   Farnsworth = "Farnsworth",
   Frequency = "Frequency",
   Volume = "Volume",
-  AutoPlayLetter = "AutoPlayLetter", // on receive
+  AutoPlay = "AutoPlay", // on receive
   AutoWordBreak = "AutoWordBreak", // off by default, for free play only?
   Theme = "Theme",
 }
@@ -51,7 +57,7 @@ export type Settings = {
   // Other
   [Setting.KeyType]: KeyTypes;
   [Setting.Hints]: Hints;
-  [Setting.AutoPlayLetter]: boolean;
+  [Setting.AutoPlay]: AutoPlay;
   [Setting.AutoWordBreak]: boolean;
   [Setting.Theme]: Themes;
 };
@@ -65,7 +71,7 @@ export const defaultSettings: Settings = {
   // Other
   [Setting.KeyType]: KeyTypes.Straight,
   [Setting.Hints]: Hints.On,
-  [Setting.AutoPlayLetter]: true,
+  [Setting.AutoPlay]: AutoPlay.Letter,
   [Setting.AutoWordBreak]: false,
   [Setting.Theme]: Themes.Teal,
 };
@@ -85,18 +91,14 @@ export const settingsSpecs: Record<
 > = {
   [Setting.Theme]: {
     title: "Themes",
-    // values: Hints,
-  },
-  // Toggles
-  [Setting.AutoPlayLetter]: {
-    title: "Auto-play next letter",
-    hint: 'Used in "Receive" mode',
   },
   [Setting.AutoWordBreak]: {
     title: "Auto-add wordbreaks",
-    hint: 'Used in "Send > Practice" mode',
   },
-  // Buttons
+  [Setting.AutoPlay]: {
+    title: "Auto-play",
+    values: AutoPlay,
+  },
   [Setting.Hints]: {
     title: "Hints",
     values: Hints,

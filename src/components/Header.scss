@@ -47,7 +47,7 @@ $header-icon-size: 28px;
 .quiz-stats {
   $top-bottom-padding: 8px;
 
-  transition: 1s ease all;
+  transition: 0.6s ease all;
   opacity: 0;
   position: absolute;
   height: calc(var(--header-height) - $top-bottom-padding * 2);
@@ -66,12 +66,12 @@ $header-icon-size: 28px;
   background: var(--background-overlay);
 
   box-shadow:
-    inset 0 0 1px 1px rgba(var(--accent-btn-rgb), 0.2),
-    inset 1px 1px 28px rgba(var(--background-light-rgb), 0.2),
-    -4px -4px 16px rgba(var(--background-light-rgb), 0.2),
+    inset 0 0 0 1px rgba(var(--background-light-rgb), 0.5),
+    inset 1px 1px 12px rgba(var(--background-light-rgb), 0.4),
     -2px -2px 8px rgba(var(--background-light-rgb), 0.3),
+    -4px -4px 16px rgba(var(--background-light-rgb), 0.2),
     2px 2px 8px rgba(var(--black-rgb), 0.2),
-    6px 6px 20px rgba(var(--black-rgb), 0.2);
+    6px 6px 24px rgba(var(--black-rgb), 0.2);
 
   &--visible {
     margin-top: 0;
@@ -174,10 +174,14 @@ $header-icon-size: 28px;
     padding: 0 4px;
 
     border-radius: 12px;
+
     background: var(--background-overlay);
 
-    box-shadow: inset 1px 1px 28px
-      rgba(var(--background-overlay-hover-rgb), 0.5);
+    box-shadow:
+      -2px -2px 8px rgba(var(--background-light-rgb), 0.3),
+      -4px -4px 16px rgba(var(--background-light-rgb), 0.2),
+      2px 2px 8px rgba(var(--black-rgb), 0.2),
+      6px 6px 24px rgba(var(--black-rgb), 0.2);
 
     div {
       display: flex;

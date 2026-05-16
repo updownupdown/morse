@@ -222,8 +222,6 @@ export const SettingsModal = () => {
     <Modal title="Settings">
       <div className="settings">
         <div className="settings__content">
-          <SettingButtons setting={Setting.Hints} />
-
           <div className="settings__content__theme">
             <span className="setting">
               <span className="setting-title">
@@ -242,10 +240,13 @@ export const SettingsModal = () => {
             </button>
           </div>
 
-          <div className="settings__content__toggles">
-            <SettingToggle setting={Setting.AutoPlayLetter} />
-            <SettingToggle setting={Setting.AutoWordBreak} />
-          </div>
+          <SettingButtons setting={Setting.Hints} />
+          <SettingButtons setting={Setting.AutoPlay} />
+
+          <SettingSlider setting={Setting.UnitTime} />
+          <SettingSlider setting={Setting.Farnsworth} />
+          <SettingSlider setting={Setting.Frequency} />
+          <SettingSlider setting={Setting.Volume} />
 
           <div className="settings__content__wpm">
             <div className="settings__content__wpm__text">
@@ -281,11 +282,6 @@ export const SettingsModal = () => {
               <span>{isPlaying ? "Stop" : "Sample"}</span>
             </button>
           </div>
-
-          <SettingSlider setting={Setting.UnitTime} />
-          <SettingSlider setting={Setting.Farnsworth} />
-          <SettingSlider setting={Setting.Frequency} />
-          <SettingSlider setting={Setting.Volume} />
 
           <SettingButtons setting={Setting.KeyType} />
 

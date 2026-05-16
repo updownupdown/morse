@@ -10,6 +10,7 @@ import { BackspaceIcon } from "../icons/BackspaceIcon";
 import { SlashIcon } from "../icons/SlashIcon";
 import clsx from "clsx";
 import { useAudioContext } from "../context/AudioContext";
+import { SettingToggle } from "./SettingsModal";
 
 interface PracticeProps {
   practiceWord: string;
@@ -22,11 +23,12 @@ export const Practice = ({
   setPracticeWord,
   addPracticeCharacter,
 }: PracticeProps) => {
-  const { setPhase, settings } = useContext(MorseContext);
+  const { settings } = useContext(MorseContext);
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
   const [isWordEmpty, setIsWordEmpty] = useState(true);
   const [isPlayingWord, setIsPlayingWord] = useState(false);
+  const [isPlayingSymbol, setIsPlayingSymbol] = useState(false);
   const addWordBreakAfterTimeoutRef = useRef(false);
 
   useEffect(() => {
@@ -53,7 +55,6 @@ export const Practice = ({
 
   async function startWordbreak() {
     await cancelWorkbreak();
-    // setShowWordbreakProgress(true);
     setTimeout(() => setShowWordbreakProgress(true), 10);
     addWordBreakAfterTimeoutRef.current = true;
 
@@ -67,17 +68,19 @@ export const Practice = ({
 
   useEffect(() => {
     // Update isPlayingWord for "stop" button states
-    setIsPlayingWord(isPlaying === "charOrWord");
+    setIsPlayingWord(isPlaying === "word");
+    setIsPlayingSymbol(isPlaying === "symbol");
 
     // Auto-add wordbreak?
     const autoWordbreak = settings[Setting.AutoWordBreak];
     if (!autoWordbreak) return;
 
-    if (isPlaying === "charOrWord") {
+    if (isPlaying === "symbol") {
       // When playing a character or word, cancel wordbreak
       cancelWorkbreak();
-    } else if (isPlaying === "symbol") {
+    } else if (isPlaying === undefined && isPlayingSymbol) {
       // When playing a symbol, start a new timeout (which also cancels the previous)
+      setIsPlayingSymbol(false);
       startWordbreak();
     }
   }, [isPlaying, settings]);
@@ -155,16 +158,8 @@ export const Practice = ({
 
   return (
     <div className="practice">
-      <div className="practice__stop">
-        <button
-          className="btn btn--flex btn--outlined"
-          onClick={() => {
-            setPhase("standby");
-          }}
-        >
-          <span>Leave Practice</span>
-        </button>
-      </div>
+      <SettingToggle setting={Setting.AutoWordBreak} />
+
       <div className="practice__word">
         <Word word={practiceWord} />
       </div>
