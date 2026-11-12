@@ -1,4 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useProgress } from "../context/ProgressContext";
+import { DeleteIcon } from "../icons/DeleteIcon";
 import {
   defaultSettings,
   Menus,
@@ -217,6 +219,8 @@ export const SettingToggle = ({ setting }: SettingButtonsProps) => {
 export const SettingsModal = () => {
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
   const { setSettings, settings, setSelectedMenu } = useContext(MorseContext);
+  const { resetProgress } = useProgress();
+  const [confirmReset, setConfirmReset] = useState(false);
 
   return (
     <Modal title="Settings">
@@ -276,6 +280,27 @@ export const SettingsModal = () => {
             >
               <ResetIcon />
               <span>Reset all settings</span>
+            </button>
+
+            {/* Two taps, as it can't be undone */}
+            <button
+              className={clsx(
+                "btn btn--flex btn--outlined",
+                confirmReset && "btn--stop",
+              )}
+              onClick={() => {
+                if (confirmReset) {
+                  resetProgress();
+                  setConfirmReset(false);
+                } else {
+                  setConfirmReset(true);
+                }
+              }}
+            >
+              <DeleteIcon />
+              <span>
+                {confirmReset ? "Tap again to erase progress" : "Reset progress"}
+              </span>
             </button>
           </div>
         </div>

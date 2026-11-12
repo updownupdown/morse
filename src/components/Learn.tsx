@@ -6,6 +6,9 @@ import { useAudioContext } from "../context/AudioContext";
 import { MorseContext } from "../context/MorseContext";
 import { IProsign, prosigns } from "../data/prosigns";
 import { MorseChar } from "./MorseChar";
+import { useProgress } from "../context/ProgressContext";
+import { charMastery, knownCount } from "../progress/progress";
+import { letters } from "../data/chars";
 
 enum Categories {
   Letters = "ABC",
@@ -24,6 +27,9 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
   const { playMorse } = useAudioContext();
 
   const [isPlayingThis, setIsPlayingThis] = useState(false);
+  const { progress } = useProgress();
+  const sendLevel = charMastery(progress, "send", text);
+  const receiveLevel = charMastery(progress, "receive", text);
 
   useEffect(() => {
     if (!disabled) {
@@ -43,6 +49,14 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
       <div className="symbol__text">{text}</div>
       <div className="symbol__morse">
         <MorseChar morse={morse} size="md" />
+      </div>
+      {/* How well it's known: sending on the left, receiving on the right */}
+      <div
+        className="symbol__mastery"
+        aria-label={`Sending: ${sendLevel}. Receiving: ${receiveLevel}.`}
+      >
+        <span className={`pip pip--${sendLevel}`} />
+        <span className={`pip pip--${receiveLevel}`} />
       </div>
     </button>
   );
@@ -122,6 +136,7 @@ const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
 
 export const Learn = () => {
   const { isPlaying } = useAudioContext();
+  const { progress } = useProgress();
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
 
   let regex: RegExp;
@@ -163,6 +178,20 @@ export const Learn = () => {
 
       <div className="learn__content">
         <span className="learn__content__instructions">Tap symbol to play</span>
+
+        {selectedCategory !== Categories.Misc && (
+          <div className="learn-legend">
+            <span>
+              {knownCount(progress, letters)} of {letters.length} letters known
+            </span>
+            <span className="learn-legend__key">
+              <span className="pip pip--new" /> New
+              <span className="pip pip--learning" /> Learning
+              <span className="pip pip--known" /> Known
+            </span>
+            <span>Left dot: sending. Right dot: receiving.</span>
+          </div>
+        )}
 
         {selectedCategory !== Categories.Misc && (
           <div className="learn__content__symbols">

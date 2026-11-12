@@ -73,7 +73,9 @@
         aspect-ratio: 0.7;
       }
 
-      &:nth-child(2) {
+      // The ASDF row sits half a key in
+      .keyboard:not(.keyboard--compact) &:nth-child(2),
+      .keyboard--compact &:nth-child(3) {
         margin-left: calc($key-width * -0.3);
       }
     }
@@ -81,6 +83,39 @@
       .key {
         width: $key-width-special;
         aspect-ratio: 1;
+      }
+    }
+    // Four rows (digits above the letters): shorter keys
+    .keyboard--compact & {
+      .key {
+        aspect-ratio: 0.85;
+      }
+    }
+    .keyboard--custom.keyboard--special-chars & {
+      .key {
+        max-width: 64px;
+      }
+    }
+
+    .key {
+      &:disabled {
+        opacity: 0.5;
+      }
+      // States used by the word games
+      &--hit {
+        background: rgba(var(--accent-btn-rgb), 0.35);
+        .key__letter {
+          color: var(--accent-btn);
+        }
+      }
+      &--near {
+        background: rgba(var(--dit-rgb), 0.25);
+        .key__letter {
+          color: var(--dit);
+        }
+      }
+      &--miss {
+        opacity: 0.35;
       }
     }
   }

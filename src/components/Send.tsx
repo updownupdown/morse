@@ -5,8 +5,18 @@ import {
   defaultSourceQty,
   maxSourceQty,
   sendSources,
+  sourceLabels,
   Sources,
+  sourceUnits,
 } from "../data/DataSources";
+import clsx from "clsx";
+import { useProgress } from "../context/ProgressContext";
+import {
+  lessonChars,
+  lessonPassAccuracy,
+  minLesson,
+  nextLessonChar,
+} from "../progress/progress";
 import { Modes, MorseContext } from "../context/MorseContext";
 import { conditionalPluralize, formatForCSSClass } from "../utils/utils";
 import { initCode } from "../hooks/useAudio";
@@ -23,7 +33,7 @@ export const Send = () => {
   const { setQuizSource, quizQty, setQuizQty, phase, setPhase } =
     useContext(MorseContext);
   const { playMorse } = useAudioContext();
-  const { setGuess, word, letterIndex, guess } = useQuiz();
+  const { setGuess, word, letterIndex, guess, unlocked } = useQuiz();
 
   const [practiceWord, setPracticeWord] = useLocalStorage("practiceWord", "");
   const practiceWordRef = useRef(practiceWord);
@@ -75,6 +85,7 @@ export const Send = () => {
           setSource={setSource}
           maxQty={maxSourceQty}
           setQuizQty={setQuizQty}
+          unlocked={unlocked}
         />
 
         {phase === "practice" && (
@@ -129,6 +140,8 @@ interface QuizSelectProps {
   sources: Sources[];
   setSource: (source: Sources) => void;
   maxQty: Record<Sources, number>;
+  // The character just unlocked by passing a lesson
+  unlocked?: string;
 }
 
 export const QuizSelect = ({
@@ -140,8 +153,13 @@ export const QuizSelect = ({
   setSource,
   maxQty,
   sources,
+  unlocked,
 }: QuizSelectProps) => {
   const { selectedMode, setSelectedMode } = useContext(MorseContext);
+  const { progress } = useProgress();
+  const lessonLevel =
+    progress.lesson[selectedMode === Modes.Receive ? "receive" : "send"];
+  const nextChar = nextLessonChar(lessonLevel);
 
   const holdTimeoutRef = useRef<number | null>(null);
   const holdIntervalRef = useRef<number | null>(null);
@@ -213,7 +231,7 @@ export const QuizSelect = ({
         </button>
       </div>
 
-      <div className="button-menu button-menu--vertical">
+      <div className="button-menu button-menu--vertical button-menu--vertical-wrap quiz-sources">
         {Object.values(sources).map((s) => {
           return (
             <button
@@ -224,11 +242,39 @@ export const QuizSelect = ({
                 setSource(s);
               }}
             >
-              {s}
+              {s === Sources.Lesson
+                ? `Lesson ${lessonLevel - minLesson + 1}`
+                : (sourceLabels[s] ?? s)}
             </button>
           );
         })}
       </div>
+
+      {source === Sources.Lesson && (
+        <div className="quiz-lesson">
+          {unlocked ? (
+            <span className="quiz-lesson__unlocked">
+              Passed! New character: <b>{unlocked}</b>
+            </span>
+          ) : (
+            <span>
+              {nextChar
+                ? `Score ${lessonPassAccuracy}% to unlock the next character`
+                : "Every character unlocked"}
+            </span>
+          )}
+          <div className="quiz-lesson__chars">
+            {lessonChars(lessonLevel).map((char, i, all) => (
+              <span
+                key={char}
+                className={clsx(i === all.length - 1 && "newest")}
+              >
+                {char}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <span className="quiz__content__qty">
         <button
@@ -250,7 +296,7 @@ export const QuizSelect = ({
 
         <div className="quiz__content__qty__desc">
           <span>{quizQty}</span>
-          <span>{conditionalPluralize(source, quizQty)}</span>
+          <span>{conditionalPluralize(sourceUnits[source], quizQty)}</span>
         </div>
 
         <button

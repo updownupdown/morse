@@ -5,6 +5,8 @@ import {
   Modes,
   MorseContext,
   defaultSettings,
+  normalizeSettings,
+  Hints,
   Setting,
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
@@ -25,6 +27,7 @@ import { Sources, Stats } from "./data/DataSources";
 import { Phase } from "./hooks/useQuiz";
 import { formatForCSSClass } from "./utils/utils";
 import { AudioProvider } from "./context/AudioContext";
+import { ProgressProvider } from "./context/ProgressContext";
 
 function App() {
   const [storedPracticeMode, setStoredPracticeMode] = useLocalStorage<
@@ -44,7 +47,11 @@ function App() {
   const [settings, setSettings] = useLocalStorage(
     "settingsv6",
     defaultSettings,
+    normalizeSettings,
   );
+  const [autoHints, setAutoHints] = useState(Hints.On);
+  const shownHints =
+    settings[Setting.Hints] === Hints.Auto ? autoHints : settings[Setting.Hints];
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
 
@@ -107,11 +114,14 @@ function App() {
         setStats,
         phase,
         setPhase,
+        autoHints,
+        setAutoHints,
       }}
     >
+      <ProgressProvider>
       <AudioProvider>
         <div
-          className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(settings[Setting.Hints])}`}
+          className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(shownHints)}`}
         >
           {selectedMenu !== Menus.None && <div className="modal-mask" />}
 
@@ -137,6 +147,7 @@ function App() {
           </div>
         </div>
       </AudioProvider>
+      </ProgressProvider>
     </MorseContext.Provider>
   );
 }

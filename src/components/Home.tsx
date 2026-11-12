@@ -3,6 +3,9 @@ import "./Home.scss";
 import { ModeIcons, Modes, MorseContext } from "../context/MorseContext";
 import { modeToHash } from "../hooks/useHashRoute";
 import { ArrowRightIcon } from "../icons/ArrowRightIcon";
+import { useProgress } from "../context/ProgressContext";
+import { knownCount, streak } from "../progress/progress";
+import { letters } from "../data/chars";
 
 export type HomeLink = {
   mode: Modes;
@@ -51,6 +54,9 @@ export const HomeTile = ({ mode, title, desc }: HomeLink) => {
 export const Home = () => {
   const { setSelectedMode, lastPracticeMode, hasPracticed } =
     useContext(MorseContext);
+  const { progress } = useProgress();
+  const known = knownCount(progress, letters);
+  const days = streak(progress.days);
 
   return (
     <div className="home">
@@ -59,9 +65,21 @@ export const Home = () => {
         onClick={() => setSelectedMode(lastPracticeMode)}
       >
         <span className="home-continue__text">
-          <span>{hasPracticed ? "Pick up where you left off" : "New here?"}</span>
           <span>
-            {hasPracticed ? `Continue: ${lastPracticeMode}` : "Start sending"}
+            {hasPracticed
+              ? days > 1
+                ? `${days}-day streak. Keep it going`
+                : "Pick up where you left off"
+              : "New here? Start with two letters"}
+          </span>
+          <span>
+            {hasPracticed ? `Continue: ${lastPracticeMode}` : "Lesson 1"}
+          </span>
+          <span className="home-continue__meter">
+            <div style={{ width: `${(known / letters.length) * 100}%` }} />
+          </span>
+          <span>
+            {known} of {letters.length} letters known
           </span>
         </span>
         <ArrowRightIcon />

@@ -9,6 +9,8 @@ import { Sources, Stats } from "../data/DataSources";
 import { Phase } from "../hooks/useQuiz";
 
 export enum Hints {
+  // Shown for new characters, delayed while learning, hidden once known
+  Auto = "Auto",
   On = "On",
   Delayed = "Delayed",
   Off = "Off",
@@ -70,11 +72,33 @@ export const defaultSettings: Settings = {
   [Setting.Volume]: 30,
   // Other
   [Setting.KeyType]: KeyTypes.Straight,
-  [Setting.Hints]: Hints.On,
+  [Setting.Hints]: Hints.Auto,
   [Setting.AutoPlay]: AutoPlay.Letter,
   [Setting.AutoWordBreak]: false,
   [Setting.Theme]: Themes.Teal,
 };
+
+// Settings saved by an older version keep their values; anything added
+// since (or no longer valid) falls back to its default
+export function normalizeSettings(stored: unknown): Settings {
+  const saved = (stored ?? {}) as Record<string, unknown>;
+  const settings: Record<string, unknown> = { ...defaultSettings };
+
+  (Object.keys(defaultSettings) as Setting[]).forEach((key) => {
+    const value = saved[key];
+    const specs = settingsSpecs[key];
+
+    if (typeof value !== typeof defaultSettings[key]) return;
+    if (specs.values && !Object.values(specs.values).includes(value as never))
+      return;
+    if (key === Setting.Theme && !Object.values(Themes).includes(value as Themes))
+      return;
+
+    settings[key] = value;
+  });
+
+  return settings as Settings;
+}
 
 export const settingsSpecs: Record<
   Setting,
@@ -102,6 +126,12 @@ export const settingsSpecs: Record<
   [Setting.Hints]: {
     title: "Hints",
     values: Hints,
+    hints: {
+      [Hints.Auto]: "Fade out as you learn each character",
+      [Hints.On]: "Always shown",
+      [Hints.Delayed]: "Shown after a few seconds",
+      [Hints.Off]: "Never shown",
+    },
   },
   [Setting.KeyType]: {
     title: "Key",
@@ -190,6 +220,9 @@ interface ContextProps {
   setStats: (stats: Stats | undefined) => void;
   phase: Phase;
   setPhase: (phase: Phase) => void;
+  // With hints on Auto: the level that suits the character being asked
+  autoHints: Hints;
+  setAutoHints: (hints: Hints) => void;
 }
 
 export const MorseContext = createContext<ContextProps>({
@@ -204,6 +237,8 @@ export const MorseContext = createContext<ContextProps>({
   hasPracticed: false,
   phase: "standby",
   setPhase: () => {},
+  autoHints: Hints.On,
+  setAutoHints: () => {},
   quizSource: undefined,
   setQuizSource: () => {},
   quizQty: undefined,

@@ -1,7 +1,10 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { defaultStats, useWordSets } from "../data/DataSources";
+import { defaultStats, getWordSet, Sources } from "../data/DataSources";
+import { useProgress } from "../context/ProgressContext";
+import { charMastery, Skill } from "../progress/progress";
 import {
   AutoPlay,
+  Hints,
   Modes,
   MorseContext,
   Setting,
@@ -36,7 +39,13 @@ export const useQuiz = () => {
   } = useContext(MorseContext);
   const { playMorse, stopMorse, audioInitialized, isPlaying } =
     useAudioContext();
-  const { getWordSet } = useWordSets();
+  const { progress, record, completeLesson } = useProgress();
+  const skill: Skill = selectedMode === Modes.Receive ? "receive" : "send";
+
+  // The character a finished lesson round unlocked, if it was passed
+  const [unlocked, setUnlocked] = useState<string | undefined>(undefined);
+  // Whether the character being asked has already been missed
+  const missedRef = useRef(false);
 
   const [wordSet, setWordSet] = useState<string[]>([]);
   const [word, setWord] = useState<string | undefined>(undefined);
@@ -72,7 +81,11 @@ export const useQuiz = () => {
       return;
     }
 
-    const newWordSet = getWordSet(quizSource, quizQty);
+    const newWordSet = getWordSet(quizSource, quizQty, skill, progress);
+    if (newWordSet.length === 0) return;
+
+    setUnlocked(undefined);
+    missedRef.current = false;
 
     let charsTotal = 0;
     newWordSet.forEach((word) => {
@@ -122,6 +135,14 @@ export const useQuiz = () => {
     // Update stats
     const updatedStats = { ...stats };
 
+    // Each character is logged once: right first time, or not
+    if (isCorrect) {
+      record(skill, guess, !missedRef.current);
+      missedRef.current = false;
+    } else {
+      missedRef.current = true;
+    }
+
     if (isCorrect) {
       updatedStats.correct += 1;
       updatedStats.charsDone += 1;
@@ -162,6 +183,9 @@ export const useQuiz = () => {
     } else if (letterIndex === word.length) {
       if (wordIndex === wordSet.length - 1) {
         // Finished all words!
+        if (quizSource === Sources.Lesson && stats) {
+          setUnlocked(completeLesson(skill, stats.accuracy));
+        }
         setPhase("stats");
       } else if (wordIndex !== undefined) {
         // Advance to next word
@@ -185,7 +209,29 @@ export const useQuiz = () => {
     }
   }, [letterIndex]);
 
+  // Hints on Auto follow how well the current character is known
+  const { setAutoHints } = useContext(MorseContext);
+  const currentChar =
+    phase === "guess" && word !== undefined && letterIndex !== undefined
+      ? word[letterIndex]
+      : undefined;
+  const currentMastery =
+    currentChar && currentChar !== " "
+      ? charMastery(progress, skill, currentChar)
+      : undefined;
+
+  useEffect(() => {
+    setAutoHints(
+      currentMastery === "known"
+        ? Hints.Off
+        : currentMastery === "learning"
+          ? Hints.Delayed
+          : Hints.On,
+    );
+  }, [currentMastery]);
+
   return {
+    unlocked,
     setPhase,
     stats,
     guess,
