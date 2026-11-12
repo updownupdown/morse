@@ -5,7 +5,14 @@ import { words } from "../data/words";
 import { MorseKeys } from "../components/MorseKeys";
 import { MorseChar } from "../components/MorseChar";
 import { useProgress } from "../context/ProgressContext";
-import { charsForLevel, GameStats, Lives, pick, Stat } from "./common";
+import {
+  charsForLevel,
+  GameStats,
+  Lives,
+  pick,
+  Stat,
+  usePaused,
+} from "./common";
 import { GameProps } from "./types";
 
 type Drop = {
@@ -46,6 +53,10 @@ export const Rain = ({ level, onEnd }: GameProps) => {
 
   const stage = Math.floor(score / 10);
 
+  const paused = usePaused();
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+
   useEffect(() => {
     let frame = 0;
     let last = performance.now();
@@ -55,6 +66,11 @@ export const Rain = ({ level, onEnd }: GameProps) => {
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
       if (overRef.current) return;
+
+      if (pausedRef.current) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
 
       const currentStage = Math.floor(scoreRef.current / 10);
       const { fall, gap } = pace(level, currentStage);

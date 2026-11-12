@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Menus, MorseContext } from "../context/MorseContext";
 import { letters } from "../data/chars";
 
 export const LV3: [string, string][] = [
@@ -56,17 +57,32 @@ export const Lives = ({ lives, max }: { lives: number; max: number }) => (
   </span>
 );
 
+// A game's clock stops while Settings is open over it
+export function usePaused() {
+  const { selectedMenu } = useContext(MorseContext);
+  return selectedMenu !== Menus.None;
+}
+
 // Counts down from `seconds`; calls onDone once at zero
 export function useCountdown(seconds: number, onDone: () => void) {
   const [left, setLeft] = useState(seconds);
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
 
+  const paused = usePaused();
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+
   useEffect(() => {
-    const endsAt = performance.now() + seconds * 1000;
+    let remaining = seconds;
+    let last = performance.now();
 
     const timer = window.setInterval(() => {
-      const remaining = Math.max(0, (endsAt - performance.now()) / 1000);
+      const now = performance.now();
+      if (!pausedRef.current) {
+        remaining = Math.max(0, remaining - (now - last) / 1000);
+      }
+      last = now;
       setLeft(remaining);
 
       if (remaining === 0) {
