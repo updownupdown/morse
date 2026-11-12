@@ -1,7 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { MorseContext, Setting } from "../context/MorseContext";
-import { unitLengths } from "../data/alphaToMorse";
 import { clamp } from "../utils/utils";
+import { buildSchedule } from "../morse/timing";
 
 // Singleton AudioContext instance
 let singletonAudioContext: AudioContext | null = null;
@@ -13,273 +13,248 @@ function getAudioContext() {
 }
 
 const maxPressTime = 1200; // ms
+// Tones fade in and out to avoid clicks
 const fadeDurationInSec = {
   min: 0.005, // 5 ms
-  max: 0.02, // 50 ms
+  max: 0.02, // 20 ms
 };
+// Small lead time so the first tone isn't clipped
+const scheduleLeadInSec = 0.03;
+const silence = 0.0001;
+
 export const initCode = "init";
 
 export type IsPlaying = "symbol" | "char" | "word" | undefined;
 
+export type PlayOptions = {
+  // Override the settings for this message only
+  unitTime?: number;
+  farnsworth?: number;
+  frequency?: number;
+};
+
+type Voice = { osc: OscillatorNode; gain: GainNode };
+
+function classifyPlayback(morse: string): IsPlaying {
+  const chars = morse.trim().split(/[ /]+/).filter(Boolean);
+  if (chars.length > 1) return "word";
+  return morse.trim().length > 1 ? "char" : "symbol";
+}
+
 export function useAudio() {
   const { settings } = useContext(MorseContext);
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
 
   const [audioInitialized, setAudioInitialized] = useState(false);
   const [isPlaying, setIsPlaying] = useState<IsPlaying>(undefined);
-  const isPlayingRef = useRef(isPlaying);
-  isPlayingRef.current = isPlaying;
 
-  const cancelPlaybackRef = useRef(false);
-  // ctxRef used for type compatibility, but always points to singleton
-  const ctxRef = useRef<AudioContext | null>(null);
+  // Scheduled playback (a whole message on the audio clock)
+  const playbackRef = useRef<{
+    voice: Voice;
+    timer: number;
+    finish: () => void;
+  } | null>(null);
 
+  // Held key (straight key)
   const [isPressed, setIsPressed] = useState(false);
   const pressTimeoutRef = useRef<number | null>(null);
+  const pressVoiceRef = useRef<Voice | null>(null);
 
-  // Store oscillator and gain node for press signal
-  const pressOscRef = useRef<OscillatorNode | null>(null);
-  const pressGainRef = useRef<GainNode | null>(null);
+  function fadeDuration(unitTime: number) {
+    return clamp(
+      unitTime / 4 / 1000,
+      fadeDurationInSec.min,
+      fadeDurationInSec.max,
+    );
+  }
 
+  function createVoice(ctx: AudioContext, frequency: number): Voice {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = frequency;
+    gain.gain.value = silence;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.onended = () => {
+      gain.disconnect();
+      osc.disconnect();
+    };
+
+    return { osc, gain };
+  }
+
+  // Fades a voice out from wherever it is now, then stops it
+  function releaseVoice(ctx: AudioContext, voice: Voice, fade: number) {
+    const now = ctx.currentTime;
+    const { gain, osc } = voice;
+
+    try {
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(Math.max(gain.gain.value, silence), now);
+      gain.gain.exponentialRampToValueAtTime(silence, now + fade);
+      osc.stop(now + fade + 0.005);
+    } catch {}
+  }
+
+  function resume(ctx: AudioContext) {
+    if (ctx.state === "suspended") {
+      // Required by browsers; only succeeds after a user gesture
+      ctx.resume().catch(() => {});
+    }
+    setAudioInitialized(true);
+  }
+
+  // ========== Held key =========== //
   function startPress() {
-    stopMorse();
+    stopPlayback();
+
+    if (pressVoiceRef.current) return; // Already sounding
 
     const ctx = getAudioContext();
-    ctxRef.current = ctx;
+    resume(ctx);
 
-    if (pressOscRef.current) {
-      // Already running
-      return;
-    }
-
-    setIsPlaying("symbol");
-
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-
-    o.type = "sine";
-    o.frequency.value = settings[Setting.Frequency];
-    o.connect(g);
-    g.connect(ctx.destination);
-
+    const { Frequency, Volume, UnitTime } = settingsRef.current;
+    const voice = createVoice(ctx, Frequency);
     const now = ctx.currentTime;
 
-    // Fade in
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(
-      settings[Setting.Volume] / 100,
-      now + adjustedFadeDuration,
+    voice.gain.gain.setValueAtTime(silence, now);
+    voice.gain.gain.exponentialRampToValueAtTime(
+      Math.max(Volume / 100, silence),
+      now + fadeDuration(UnitTime),
     );
+    voice.osc.start();
 
-    o.start();
-
-    pressOscRef.current = o;
-    pressGainRef.current = g;
+    pressVoiceRef.current = voice;
+    setIsPlaying("symbol");
   }
 
   function stopPress() {
+    const voice = pressVoiceRef.current;
+    if (!voice) return;
+
+    releaseVoice(
+      getAudioContext(),
+      voice,
+      fadeDuration(settingsRef.current.UnitTime),
+    );
+    pressVoiceRef.current = null;
     setIsPlaying(undefined);
-
-    const o = pressOscRef.current;
-    const g = pressGainRef.current;
-
-    if (o && g && ctxRef.current) {
-      const adjustedFadeDuration = clamp(
-        settings[Setting.UnitTime] / 4,
-        fadeDurationInSec.min,
-        fadeDurationInSec.max,
-      );
-
-      const ctx = ctxRef.current;
-      const now = ctx.currentTime;
-      // Fade out
-      g.gain.cancelScheduledValues(now);
-      g.gain.setValueAtTime(g.gain.value, now);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + adjustedFadeDuration);
-      o.stop(now + adjustedFadeDuration);
-      o.onended = () => {
-        g.disconnect();
-        o.disconnect();
-      };
-    }
-
-    pressOscRef.current = null;
-    pressGainRef.current = null;
   }
 
-  const adjustedFadeDuration = clamp(
-    settings[Setting.UnitTime] / 4 / 1000,
-    fadeDurationInSec.min,
-    fadeDurationInSec.max,
-  );
-
   useEffect(() => {
+    if (pressTimeoutRef.current) {
+      clearTimeout(pressTimeoutRef.current);
+      pressTimeoutRef.current = null;
+    }
+
     if (isPressed) {
       startPress();
 
-      if (pressTimeoutRef.current) {
-        clearTimeout(pressTimeoutRef.current);
-      }
-
-      pressTimeoutRef.current = setTimeout(() => {
+      pressTimeoutRef.current = window.setTimeout(() => {
         setIsPressed(false);
       }, maxPressTime);
     } else {
       stopPress();
-
-      if (pressTimeoutRef.current) {
-        clearTimeout(pressTimeoutRef.current);
-        pressTimeoutRef.current = null;
-      }
     }
   }, [isPressed]);
 
-  async function playBeep(durationInMs: number, frequency: number) {
-    if (cancelPlaybackRef.current) {
-      return;
-    }
+  // ========== Scheduled playback =========== //
+  function stopPlayback() {
+    const playback = playbackRef.current;
+    if (!playback) return;
+
+    playbackRef.current = null;
+    clearTimeout(playback.timer);
+    releaseVoice(
+      getAudioContext(),
+      playback.voice,
+      fadeDuration(settingsRef.current.UnitTime),
+    );
+    playback.finish();
+  }
+
+  const stopMorse = useCallback(() => {
+    stopPress();
+    stopPlayback();
+    setIsPlaying(undefined);
+  }, []);
+
+  // Resolves when the message has finished playing, or was stopped
+  const playMorse = useCallback((morse: string, options: PlayOptions = {}) => {
+    stopPress();
+    stopPlayback();
 
     const ctx = getAudioContext();
-    ctxRef.current = ctx;
+    resume(ctx);
 
-    // Ensure AudioContext is resumed (required by browsers after user gesture)
-    if (ctx.state === "suspended") {
-      try {
-        await ctx.resume();
-      } catch (e) {
-        // ignore
-      }
-    }
-
-    if (!audioInitialized) {
-      setAudioInitialized(true);
-    }
-
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-
-    o.type = "sine";
-    o.frequency.value = frequency;
-    o.connect(g);
-    g.connect(ctx.destination);
-
-    const now = ctx.currentTime;
-    const beepDurationInSec = (durationInMs - adjustedFadeDuration * 2) / 1000; // in sec
-
-    // Start
-    g.gain.setValueAtTime(0.001, now);
-    // Fade in
-    g.gain.exponentialRampToValueAtTime(
-      settings[Setting.Volume] / 100,
-      now + adjustedFadeDuration,
-    );
-    // Sustain
-    g.gain.setValueAtTime(
-      settings[Setting.Volume] / 100,
-      now + adjustedFadeDuration + beepDurationInSec,
-    );
-    // Fade out
-    g.gain.exponentialRampToValueAtTime(
-      0.0001,
-      now + beepDurationInSec + adjustedFadeDuration * 2,
-    );
-
-    o.start();
-    o.stop(now + beepDurationInSec + adjustedFadeDuration * 2);
-
-    return await new Promise<void>((resolve) => {
-      const checkCancel = () => {
-        if (cancelPlaybackRef.current) {
-          try {
-            o.stop();
-          } catch {}
-          try {
-            g.disconnect();
-          } catch {}
-          try {
-            o.disconnect();
-          } catch {}
-          resolve();
-        } else {
-          requestAnimationFrame(checkCancel);
-        }
-      };
-      checkCancel();
-      o.onended = () => {
-        g.disconnect();
-        o.disconnect();
-        resolve();
-      };
-    });
-  }
-
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  function stopMorse() {
-    return new Promise((resolve) => {
-      stopPress();
-      cancelPlaybackRef.current = true;
-      setIsPlaying(undefined);
-
-      setTimeout(resolve, 10);
-    });
-  }
-
-  async function playMorse(morse: string) {
-    await stopMorse();
-
-    // Always reset cancel flag before starting
-    cancelPlaybackRef.current = false;
-
-    // This must be at/near the top of the function, to allow initializing the audio instantly
     if (morse === initCode) {
-      await playBeep(1, 1);
-      return;
+      // Only here to unlock audio from a user gesture
+      return Promise.resolve();
     }
 
-    setIsPlaying(
-      morse.length > 6 ? "word" : morse.length > 1 ? "char" : "symbol",
-    );
+    const current = settingsRef.current;
+    const unitTime = options.unitTime ?? current.UnitTime;
+    const farnsworth = options.farnsworth ?? current.Farnsworth;
+    const frequency = options.frequency ?? current.Frequency;
+    const volume = Math.max(current.Volume / 100, silence);
 
-    for (let i = 0; i < morse.length; i++) {
-      if (cancelPlaybackRef.current) break;
-      const symbol = morse[i];
-
-      if (symbol === ".") {
-        await playBeep(settings[Setting.UnitTime], settings[Setting.Frequency]);
-      } else if (symbol === "-") {
-        await playBeep(
-          settings[Setting.UnitTime] * unitLengths["-"],
-          settings[Setting.Frequency],
-        );
-      } else if (symbol === " ") {
-        await sleep(
-          settings[Setting.UnitTime] *
-            unitLengths[" "] *
-            settings[Setting.Farnsworth],
-        );
-      } else if (symbol === "/") {
-        await sleep(
-          settings[Setting.UnitTime] *
-            unitLengths["/"] *
-            settings[Setting.Farnsworth],
-        );
-      }
-
-      // Add space after dot/dash except after last symbol
-      if (
-        (symbol === "." || symbol === "-") &&
-        i < morse.length - 1 &&
-        (morse[i + 1] === "." || morse[i + 1] === "-")
-      ) {
-        if (cancelPlaybackRef.current) break;
-        await new Promise((res) => setTimeout(res, settings[Setting.UnitTime]));
-      }
+    const schedule = buildSchedule(morse, unitTime, farnsworth);
+    if (schedule.tones.length === 0) {
+      setIsPlaying(undefined);
+      return Promise.resolve();
     }
 
-    setIsPlaying(undefined);
-  }
+    // One oscillator for the whole message; the gain envelope, scheduled
+    // on the audio clock, shapes it into dits and dahs. Timing is then
+    // sample-accurate, however busy the main thread is.
+    const voice = createVoice(ctx, frequency);
+    const fade = fadeDuration(unitTime);
+    // A single keyed element should sound at once; a message can afford
+    // a short lead so its first tone is never clipped
+    const startAt =
+      ctx.currentTime +
+      (schedule.tones.length === 1 ? 0.005 : scheduleLeadInSec);
+
+    voice.gain.gain.setValueAtTime(silence, ctx.currentTime);
+    schedule.tones.forEach((tone) => {
+      const on = startAt + tone.start / 1000;
+      const off = on + tone.duration / 1000;
+      // Keep very short tones audible at high speeds
+      const edge = Math.min(fade, tone.duration / 1000 / 3);
+
+      voice.gain.gain.setValueAtTime(silence, on);
+      voice.gain.gain.exponentialRampToValueAtTime(volume, on + edge);
+      voice.gain.gain.setValueAtTime(volume, off - edge);
+      voice.gain.gain.exponentialRampToValueAtTime(silence, off);
+    });
+
+    const endAt = startAt + schedule.duration / 1000;
+    voice.osc.start(startAt);
+    voice.osc.stop(endAt + 0.01);
+
+    setIsPlaying(classifyPlayback(morse));
+
+    return new Promise<void>((resolve) => {
+      const timer = window.setTimeout(
+        () => {
+          if (playbackRef.current?.voice === voice) {
+            playbackRef.current = null;
+            setIsPlaying(undefined);
+          }
+          resolve();
+        },
+        (endAt - ctx.currentTime) * 1000,
+      );
+
+      playbackRef.current = { voice, timer, finish: resolve };
+    });
+  }, []);
+
+  // Stop everything if the provider unmounts
+  useEffect(() => stopMorse, []);
 
   return {
     playMorse,

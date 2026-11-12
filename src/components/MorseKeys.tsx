@@ -11,12 +11,12 @@ import { maxCodeLength } from "../data/alphaToMorse";
 import { MorseChar } from "./MorseChar";
 import { useStraightKey } from "../hooks/useStraightKey";
 import { useIambicKeys } from "../hooks/useIambicKeys";
+import { KeyInputProps } from "../hooks/useCharQueue";
 import { SettingButtons } from "./SettingsModal";
 import clsx from "clsx";
 
-interface Props {
+interface Props extends KeyInputProps {
   hint?: string;
-  setGuess: (char: string) => void;
 }
 
 function capturePointer(e: React.PointerEvent<HTMLButtonElement>) {
@@ -25,7 +25,7 @@ function capturePointer(e: React.PointerEvent<HTMLButtonElement>) {
   } catch {}
 }
 
-export const MorseKeys = ({ hint, setGuess }: Props) => {
+export const MorseKeys = ({ hint, ...keyInput }: Props) => {
   const { settings, selectedMenu, phase } = useContext(MorseContext);
 
   const [selectKeyType, setSelectKeyType] = useState(false);
@@ -38,9 +38,7 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
     MorseProgress: StraightMorseProgress,
     queue: straightQueue,
     isPressed: straightIsPressed,
-  } = useStraightKey({
-    setGuess,
-  });
+  } = useStraightKey(keyInput);
 
   // Iambic keys
   const {
@@ -49,9 +47,7 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
     onKeyUp: iambicOnKeyUp,
     queue: iambicQueue,
     pressState: iambicPressState,
-  } = useIambicKeys({
-    setGuess,
-  });
+  } = useIambicKeys(keyInput);
 
   return (
     <div

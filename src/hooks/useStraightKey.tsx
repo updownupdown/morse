@@ -1,54 +1,22 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { KeyTypes, MorseContext, Setting } from "../context/MorseContext";
-import {
-  alphaToMorse,
-  alphaToMorseDict,
-  maxCodeLength,
-  unitLengths,
-} from "../data/alphaToMorse";
+import { maxCodeLength } from "../data/alphaToMorse";
+import { PressClassifier } from "../morse/decoder";
+import { KeyInputProps, useCharQueue } from "./useCharQueue";
 import { inProgressChar, MorseChar } from "../components/MorseChar";
 import { useAudioContext } from "../context/AudioContext";
 
-interface Props {
-  setGuess: (char: string) => void;
-}
-
-export const useStraightKey = ({ setGuess }: Props) => {
+export const useStraightKey = (props: KeyInputProps) => {
   // ========== MAIN =========== //
   const { settings } = useContext(MorseContext);
 
   // ========== QUEUE LOGIC =========== //
-  const [queue, setQueue] = useState("");
-  const queueRef = useRef(queue);
-  queueRef.current = queue;
+  const { queue, pushSymbol, startCharBreakTimeout, stopCharBreakTimeout } =
+    useCharQueue(props);
 
-  // Character break
-  const charBreakTimeoutRef = useRef<number>(null);
-  const charBreakDuration =
-    settings[Setting.UnitTime] * unitLengths["autoCharBreak"];
-
-  const startCharBreakTimeout = () => {
-    stopCharBreakTimeout();
-
-    charBreakTimeoutRef.current = setTimeout(() => {
-      // Character over! Send character.
-      const match =
-        queueRef.current.length !== 0 &&
-        Object.keys(alphaToMorseDict).find(
-          (key) => alphaToMorse(key) === queueRef.current,
-        );
-
-      match && setGuess(match);
-
-      setQueue("");
-    }, charBreakDuration);
-  };
-
-  const stopCharBreakTimeout = () => {
-    if (charBreakTimeoutRef.current) {
-      clearTimeout(charBreakTimeoutRef.current);
-    }
-  };
+  // Tells dits from dahs, following the sender's own rhythm
+  const classifierRef = useRef(new PressClassifier(settings[Setting.UnitTime]));
+  classifierRef.current.setUnit(settings[Setting.UnitTime]);
 
   // ========== PRESS LOGIC =========== //
   const { setIsPressed, isPressed } = useAudioContext();
@@ -56,9 +24,6 @@ export const useStraightKey = ({ setGuess }: Props) => {
   const pressStartRef = useRef(pressStart);
   pressStartRef.current = pressStart;
 
-  const [pressDuration, setPressDuration] = useState<number | undefined>(
-    undefined,
-  );
 
   useEffect(() => {
     if (pressStart === null) {
@@ -68,41 +33,21 @@ export const useStraightKey = ({ setGuess }: Props) => {
     }
   }, [pressStart]);
 
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (charBreakTimeoutRef.current) {
-        clearTimeout(charBreakTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Presses
-  useEffect(() => {
-    if (pressDuration === undefined) return;
-
-    if (pressDuration < settings[Setting.UnitTime] * 2) {
-      setQueue((prev) => prev + ".");
-    } else {
-      setQueue((prev) => prev + "-");
-    }
-  }, [pressDuration, settings]);
-
   // Presses
   function onPressDown() {
     if (isPressed || queue.length === maxCodeLength) return;
 
     setIsPressed(true);
-    setPressStart(Date.now());
+    setPressStart(performance.now());
   }
   function onPressUp() {
     setIsPressed(false);
 
     if (pressStartRef.current !== null) {
-      const duration = Date.now() - pressStartRef.current;
-      setPressDuration(duration);
-    } else {
-      setPressDuration(undefined);
+      const duration = performance.now() - pressStartRef.current;
+      // Cleared at once: pointer-up and lost-capture can both fire
+      pressStartRef.current = null;
+      pushSymbol(classifierRef.current.classify(duration));
     }
 
     setPressStart(null);
