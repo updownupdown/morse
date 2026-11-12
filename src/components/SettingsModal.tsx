@@ -18,6 +18,7 @@ import { PlusIcon } from "../icons/PlusIcon";
 import { MinusIcon } from "../icons/MinusIcon";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
+import { canVibrate } from "../morse/signal";
 import { PaletteIcon } from "../icons/PaletteIcon";
 import { calculateWPM, formatForCSSClass } from "../utils/utils";
 import { useAudioContext } from "../context/AudioContext";
@@ -82,6 +83,7 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
       <div className="setting__right">
         <button
           className="btn btn--small"
+          aria-label={`Increase ${specs.title}`}
           onClick={() => {
             setThisSetting(currentValue + specs.step!);
           }}
@@ -91,6 +93,7 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
         </button>
         <button
           className="btn btn--small"
+          aria-label={`Decrease ${specs.title}`}
           onClick={() => {
             setThisSetting(currentValue - specs.step!);
           }}
@@ -194,6 +197,8 @@ export const SettingToggle = ({ setting }: SettingButtonsProps) => {
   return (
     <button
       className="setting setting--toggle"
+      role="switch"
+      aria-checked={currentValue}
       onClick={() => {
         setThisSetting(!currentValue);
       }}
@@ -270,6 +275,9 @@ export const SettingsModal = () => {
           </div>
 
           <SettingButtons setting={Setting.KeyType} />
+
+          {canVibrate() && <SettingToggle setting={Setting.Vibrate} />}
+          <SettingToggle setting={Setting.Flash} />
 
           <div className="settings__content__buttons">
             <button

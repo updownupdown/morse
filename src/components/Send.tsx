@@ -281,6 +281,7 @@ export const QuizSelect = ({
       <span className="quiz__content__qty">
         <button
           className="btn btn--outlined"
+          aria-label="Fewer"
           onClick={() => incrementQuizQty(false)}
           onMouseDown={() => startHoldIncrement(false)}
           onTouchStart={() => startHoldIncrement(false)}
@@ -303,6 +304,7 @@ export const QuizSelect = ({
 
         <button
           className="btn btn--outlined"
+          aria-label="More"
           onClick={() => incrementQuizQty(true)}
           onMouseDown={() => startHoldIncrement(true)}
           onTouchStart={() => startHoldIncrement(true)}

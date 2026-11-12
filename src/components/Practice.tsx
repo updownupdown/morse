@@ -180,6 +180,7 @@ export const Practice = ({
             isPlayingWord && "btn--stop",
           )}
           onClick={playPause}
+          aria-label={isPlayingWord ? "Stop" : "Play back"}
           disabled={isWordEmpty}
         >
           {isPlayingWord ? <StopIcon /> : <SpeakerIcon />}
@@ -189,6 +190,7 @@ export const Practice = ({
         <button
           className="btn btn--flex btn--outlined"
           onClick={deleteAll}
+          aria-label="Delete all"
           disabled={deleteAllIsDisabled}
         >
           <DeleteIcon />
@@ -198,6 +200,7 @@ export const Practice = ({
         <button
           className="btn btn--flex btn--outlined"
           onClick={backspaceChar}
+          aria-label="Delete last character"
           disabled={backspaceIsDisabled}
         >
           <BackspaceIcon />
@@ -207,6 +210,7 @@ export const Practice = ({
         <button
           className="btn btn--flex btn--outlined btn--auto-wordbreak"
           onClick={addSlash}
+          aria-label="Add word break"
           disabled={addSlashDisabled}
         >
           <SlashIcon />

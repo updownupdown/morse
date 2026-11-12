@@ -11,7 +11,8 @@ import {
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
 import { SettingsModal } from "./components/SettingsModal";
-import { TabBar, practiceModes } from "./components/TabBar";
+import { TabBar, isSessionPhase, practiceModes } from "./components/TabBar";
+import { useWakeLock } from "./hooks/useWakeLock";
 import { useHashRoute } from "./hooks/useHashRoute";
 import { Learn } from "./components/Learn";
 import { Receive } from "./components/Receive";
@@ -81,6 +82,9 @@ function App() {
     }
   }, [selectedMode, route.param]);
 
+  // The screen stays on through a session or game
+  useWakeLock(isSessionPhase(phase));
+
   useEffect(() => {
     // Update theme-color meta tag on init
     updateMetaThemeColor();
@@ -132,6 +136,9 @@ function App() {
           className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(shownHints)}`}
         >
           {selectedMenu !== Menus.None && <div className="modal-mask" />}
+          {settings[Setting.Flash] && (
+            <div className="signal-light" aria-hidden="true" />
+          )}
 
           <div className="app-center">
             {selectedMenu === Menus.Settings && <SettingsModal />}

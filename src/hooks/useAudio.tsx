@@ -2,6 +2,12 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { MorseContext, Setting } from "../context/MorseContext";
 import { clamp } from "../utils/utils";
 import { buildSchedule } from "../morse/timing";
+import {
+  flashSchedule,
+  setLight,
+  vibrate,
+  vibrateSchedule,
+} from "../morse/signal";
 
 // Singleton AudioContext instance
 let singletonAudioContext: AudioContext | null = null;
@@ -54,6 +60,8 @@ export function useAudio() {
     voice: Voice;
     timer: number;
     finish: () => void;
+    // Stops the vibration and light that go with it
+    quiet: () => void;
   } | null>(null);
 
   // Held key (straight key)
@@ -126,6 +134,8 @@ export function useAudio() {
       now + fadeDuration(UnitTime),
     );
     voice.osc.start();
+    if (settingsRef.current.Vibrate) vibrate(maxPressTime);
+    if (settingsRef.current.Flash) setLight(true);
 
     pressVoiceRef.current = voice;
     setIsPlaying("symbol");
@@ -141,6 +151,8 @@ export function useAudio() {
       fadeDuration(settingsRef.current.UnitTime),
     );
     pressVoiceRef.current = null;
+    if (settingsRef.current.Vibrate) vibrate(0);
+    setLight(false);
     setIsPlaying(undefined);
   }
 
@@ -168,6 +180,7 @@ export function useAudio() {
 
     playbackRef.current = null;
     clearTimeout(playback.timer);
+    playback.quiet();
     releaseVoice(
       getAudioContext(),
       playback.voice,
@@ -235,6 +248,17 @@ export function useAudio() {
     voice.osc.start(startAt);
     voice.osc.stop(endAt + 0.01);
 
+    const leadMs = (startAt - ctx.currentTime) * 1000;
+    const stopFlash = current.Flash
+      ? flashSchedule(schedule, leadMs)
+      : undefined;
+    if (current.Vibrate) vibrateSchedule(schedule);
+
+    const quiet = () => {
+      stopFlash?.();
+      if (current.Vibrate) vibrate(0);
+    };
+
     setIsPlaying(classifyPlayback(morse));
 
     return new Promise<void>((resolve) => {
@@ -249,7 +273,7 @@ export function useAudio() {
         (endAt - ctx.currentTime) * 1000,
       );
 
-      playbackRef.current = { voice, timer, finish: resolve };
+      playbackRef.current = { voice, timer, finish: resolve, quiet };
     });
   }, []);
 

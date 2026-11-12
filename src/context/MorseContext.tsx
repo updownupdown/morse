@@ -50,6 +50,8 @@ export enum Setting {
   AutoPlay = "AutoPlay", // on receive
   AutoWordBreak = "AutoWordBreak", // off by default, for free play only?
   Theme = "Theme",
+  Vibrate = "Vibrate",
+  Flash = "Flash",
 }
 
 export type Settings = {
@@ -64,6 +66,8 @@ export type Settings = {
   [Setting.AutoPlay]: AutoPlay;
   [Setting.AutoWordBreak]: boolean;
   [Setting.Theme]: Themes;
+  [Setting.Vibrate]: boolean;
+  [Setting.Flash]: boolean;
 };
 
 export const defaultSettings: Settings = {
@@ -78,6 +82,8 @@ export const defaultSettings: Settings = {
   [Setting.AutoPlay]: AutoPlay.Letter,
   [Setting.AutoWordBreak]: false,
   [Setting.Theme]: Themes.Teal,
+  [Setting.Vibrate]: false,
+  [Setting.Flash]: false,
 };
 
 // Settings saved by an older version keep their values; anything added
@@ -120,6 +126,14 @@ export const settingsSpecs: Record<
   },
   [Setting.AutoWordBreak]: {
     title: "Auto-add wordbreaks",
+  },
+  [Setting.Vibrate]: {
+    title: "Vibrate",
+    hint: "Feel the code, on phones that support it",
+  },
+  [Setting.Flash]: {
+    title: "Flash",
+    hint: "A light on screen follows the code",
   },
   [Setting.AutoPlay]: {
     title: "Auto-play",
@@ -183,6 +197,8 @@ export enum Menus {
   Shortcuts = "Shortcuts",
   Info = "Info",
   Theme = "Theme",
+  Vibrate = "Vibrate",
+  Flash = "Flash",
 }
 
 export enum Modes {
