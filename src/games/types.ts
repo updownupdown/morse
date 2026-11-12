@@ -4,6 +4,8 @@ export type GameResult = {
   score: number;
   // One line shown under the score, e.g. "Longest run: SOS"
   summary?: string;
+  // Set when the game was lost: shown in place of the score
+  lost?: string;
 };
 
 export type GameProps = {

@@ -4,15 +4,17 @@ import { alphaToMorse } from "../data/alphaToMorse";
 import { Keyboard } from "../components/Keyboard";
 import { useAudioContext } from "../context/AudioContext";
 import { useProgress } from "../context/ProgressContext";
-import { GameStats, Stat, useFlash } from "./common";
+import {
+  GameStats,
+  Stars,
+  starsFor,
+  Stat,
+  useFlash,
+  useTyping,
+} from "./common";
 import { GameProps } from "./types";
 import { interceptCases } from "./interceptCases";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
-
-// Stars for a mission by the mistakes made in it
-export function starsFor(mistakes: number) {
-  return mistakes === 0 ? 3 : mistakes <= 3 ? 2 : 1;
-}
 
 export const Intercept = ({ level, onEnd }: GameProps) => {
   const { playMorse, stopMorse } = useAudioContext();
@@ -88,30 +90,10 @@ export const Intercept = ({ level, onEnd }: GameProps) => {
     setSolved(false);
   }
 
-  // Typing on a real keyboard
-  const handlersRef = useRef({ onGuess, replay, next, solved });
-  handlersRef.current = { onGuess, replay, next, solved };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
-      const handlers = handlersRef.current;
-
-      if (e.key === "Enter" && handlers.solved) {
-        handlers.next();
-        e.preventDefault();
-      } else if (e.key === " ") {
-        handlers.replay();
-        e.preventDefault();
-      } else if (/^[a-z0-9]$/i.test(e.key)) {
-        handlers.onGuess(e.key.toUpperCase());
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  useTyping(onGuess, {
+    Enter: () => solved && next(),
+    " ": replay,
+  });
 
   return (
     <div className="game game--intercept">
@@ -165,10 +147,7 @@ export const Intercept = ({ level, onEnd }: GameProps) => {
         {solved ? (
           <>
             <p className="intercept-debrief">
-              <span aria-label={`${starsFor(mistakes)} of 3 stars`}>
-                {"★".repeat(starsFor(mistakes))}
-                {"☆".repeat(3 - starsFor(mistakes))}
-              </span>
+              <Stars count={starsFor(mistakes)} />
               {mission.debrief}
             </p>
             <button className="btn btn--large" onClick={next}>

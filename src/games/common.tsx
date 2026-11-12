@@ -112,3 +112,68 @@ export function useFlash() {
 
   return [flash, trigger] as const;
 }
+
+// A word as a row of blanks that fill in; `shown` says which are visible
+export const Slots = ({
+  word,
+  shown,
+  current,
+}: {
+  word: string;
+  shown: (index: number) => boolean;
+  current?: number;
+}) => (
+  <span className="slots" aria-label={`${word.length} letters`}>
+    {word.split("").map((char, i) => (
+      <span
+        key={i}
+        className={
+          "slot" +
+          (shown(i) ? " slot--done" : "") +
+          (i === current ? " slot--current" : "")
+        }
+      >
+        {shown(i) ? char : ""}
+      </span>
+    ))}
+  </span>
+);
+
+// Letters and digits typed on a real keyboard, plus named keys
+export function useTyping(
+  onChar: (char: string) => void,
+  keys: Record<string, () => void> = {},
+) {
+  const handlersRef = useRef({ onChar, keys });
+  handlersRef.current = { onChar, keys };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
+      const { onChar, keys } = handlersRef.current;
+
+      if (keys[e.key]) {
+        keys[e.key]();
+        e.preventDefault();
+      } else if (/^[a-z0-9]$/i.test(e.key)) {
+        onChar(e.key.toUpperCase());
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+}
+
+// Stars for a round, by the slips made in it
+export function starsFor(mistakes: number) {
+  return mistakes === 0 ? 3 : mistakes <= 3 ? 2 : 1;
+}
+
+export const Stars = ({ count }: { count: number }) => (
+  <span className="stars" aria-label={`${count} of 3 stars`}>
+    {"★".repeat(count)}
+    {"☆".repeat(3 - count)}
+  </span>
+);

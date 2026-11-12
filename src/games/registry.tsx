@@ -5,6 +5,12 @@ import { TimeAttack } from "./TimeAttack";
 import { Echo } from "./Echo";
 import { Intercept } from "./Intercept";
 import { interceptCases } from "./interceptCases";
+import { SoundAlikes } from "./SoundAlikes";
+import { SteadyHand } from "./SteadyHand";
+import { Mordle } from "./Mordle";
+import { Snowman } from "./Snowman";
+import { Memory } from "./Memory";
+import { Trivia } from "./Trivia";
 
 const rain: GameDef = {
   id: "rain",
@@ -77,9 +83,126 @@ const intercept: GameDef = {
   component: Intercept,
 };
 
+const soundAlikes: GameDef = {
+  id: "sound-alikes",
+  name: "Sound-alikes",
+  desc: "Tell apart the letters that are easy to confuse by ear.",
+  trains: "Receiving",
+  levels: LV3,
+  help: [
+    "A code plays. Pick which of the similar letters it was.",
+    "Their codes are shown once you've answered, so you can compare.",
+    "Easy offers pairs, such as E and I. Medium offers larger groups. Hard mixes in numbers.",
+    "Each game is twenty rounds.",
+  ],
+  scoreUnit: "right",
+  component: SoundAlikes,
+};
+
+const steadyHand: GameDef = {
+  id: "steady-hand",
+  name: "Steady Hand",
+  desc: "Key a phrase and be scored on rhythm, not speed.",
+  trains: "Sending",
+  levels: [
+    ["easy", "Short"],
+    ["medium", "Words"],
+    ["hard", "Phrases"],
+  ],
+  levelName: "Length",
+  help: [
+    "Key the phrase on the single key: hold it, or use the full stop or space bar.",
+    "A dah should last three dits. Gaps are one dit inside a letter, three between letters and seven between words.",
+    "Your presses are drawn against the ideal, with a score out of 100.",
+    "Go at any pace. Only evenness and proportion count.",
+  ],
+  scoreUnit: "out of 100",
+  component: SteadyHand,
+};
+
+const mordle: GameDef = {
+  id: "mordle",
+  name: "Mordle",
+  desc: "Find the hidden word in six guesses, keyed in Morse.",
+  trains: "Sending",
+  levels: [
+    ["5", "5 letters"],
+    ["4", "4 letters"],
+  ],
+  levelName: "Word length",
+  help: [
+    "Key a word letter by letter, then press Guess.",
+    "A filled square is the right letter in the right place. An outlined one is in the word, but elsewhere. A dim one is not in the word.",
+    "You have six guesses. Fewer is better.",
+  ],
+  scoreUnit: "guesses",
+  lowerIsBetter: true,
+  component: Mordle,
+};
+
+const snowman: GameDef = {
+  id: "snowman",
+  name: "Snowman",
+  desc: "Guess words a letter at a time before the snowman melts.",
+  trains: "Both",
+  levels: LV3,
+  help: [
+    "Key a letter to guess it. A wrong letter melts part of the snowman.",
+    "Solve a word to win a part back and move on to the next.",
+    "Hear a letter plays the code of a missing letter, twice per word: copy it, then key it.",
+    "Words get longer on Medium and Hard.",
+  ],
+  scoreUnit: "words",
+  component: Snowman,
+};
+
+const memory: GameDef = {
+  id: "memory",
+  name: "Memory",
+  desc: "Turn over cards to pair each letter with its code.",
+  trains: "Receiving",
+  levels: [
+    ["easy", "6 pairs"],
+    ["medium", "8 pairs"],
+    ["hard", "By ear"],
+  ],
+  help: [
+    "Turn over two cards. A letter and its code make a pair.",
+    "Code cards play as they turn.",
+    "By ear hides the dits and dahs, so you match on sound alone.",
+    "Fewer moves is better.",
+  ],
+  scoreUnit: "moves",
+  lowerIsBetter: true,
+  component: Memory,
+};
+
+const trivia: GameDef = {
+  id: "trivia",
+  name: "Trivia and Riddles",
+  desc: "Answer in Morse. Five questions a round.",
+  trains: "Sending",
+  levels: [
+    ["trivia", "Trivia"],
+    ["riddles", "Riddles"],
+  ],
+  levelName: "Questions",
+  help: [
+    "Read the question and key its one-word answer, letter by letter.",
+    "Show a letter reveals the next letter and its code, at the cost of a star.",
+    "Each answer is worth up to three stars.",
+  ],
+  scoreUnit: "stars",
+  component: Trivia,
+};
+
 export const gameGroups: GameGroup[] = [
-  { title: "Quick fire", games: [rain, timeAttack, echo] },
-  { title: "Stories and puzzles", games: [intercept] },
+  { title: "Quick fire", games: [rain, timeAttack, echo, soundAlikes] },
+  { title: "Skill", games: [steadyHand, memory] },
+  {
+    title: "Words and stories",
+    games: [intercept, mordle, snowman, trivia],
+  },
 ];
 
 export const games: GameDef[] = gameGroups.flatMap((group) => group.games);

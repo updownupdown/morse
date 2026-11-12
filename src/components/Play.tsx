@@ -106,7 +106,8 @@ const GameShell = ({ game }: { game: GameDef }) => {
   function end(gameResult: GameResult) {
     stopMorse();
     setIsNewBest(
-      gameResult.score > 0 &&
+      !gameResult.lost &&
+        gameResult.score > 0 &&
         submitBest(bestKey(game, level), gameResult.score, game.lowerIsBetter),
     );
     setResult(gameResult);
@@ -165,8 +166,14 @@ const GameShell = ({ game }: { game: GameDef }) => {
 
         {state === "over" && result ? (
           <div className="game-result">
-            <span className="game-result__score">{result.score}</span>
-            <span className="game-result__unit">{game.scoreUnit}</span>
+            {result.lost ? (
+              <span className="game-result__lost">{result.lost}</span>
+            ) : (
+              <>
+                <span className="game-result__score">{result.score}</span>
+                <span className="game-result__unit">{game.scoreUnit}</span>
+              </>
+            )}
             {result.summary && <p>{result.summary}</p>}
             <p className={clsx(isNewBest && "game-result__best")}>
               {isNewBest
