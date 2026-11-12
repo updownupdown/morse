@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { MenuIcon } from "../icons/MenuIcon";
+import { TabBar } from "./TabBar";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import "./Header.scss";
 import { Menus, Modes, MorseContext } from "../context/MorseContext";
@@ -29,17 +29,24 @@ export const Header = () => {
 
   return (
     <div className="header">
+      {/* Balances the settings button, so the title stays centred */}
+      <div className="header-spacer" />
+
+      <h1 className="header-title">
+        {selectedMode === Modes.Home ? (
+          <>
+            Morse<b>Play</b>
+          </>
+        ) : (
+          selectedMode
+        )}
+      </h1>
+
+      <TabBar placement="top" />
+
       <button
         className="header-btn"
-        onClick={() => setSelectedMenu(Menus.Menu)}
-      >
-        <MenuIcon />
-      </button>
-
-      <span>{selectedMode}</span>
-
-      <button
-        className="header-btn"
+        aria-label="Settings"
         onClick={() => {
           playMorse(initCode);
           setSelectedMenu(Menus.Settings);

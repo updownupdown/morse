@@ -9,12 +9,13 @@ import {
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
 import { SettingsModal } from "./components/SettingsModal";
-import { Menu } from "./components/Menu";
+import { TabBar, practiceModes } from "./components/TabBar";
+import { useHashRoute } from "./hooks/useHashRoute";
 import { Learn } from "./components/Learn";
 import { Receive } from "./components/Receive";
 import { Translate } from "./components/Translate";
 import { Send } from "./components/Send";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { updateMetaThemeColor } from "./components/ThemeModal";
 import { Home } from "./components/Home";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
@@ -26,13 +27,19 @@ import { formatForCSSClass } from "./utils/utils";
 import { AudioProvider } from "./context/AudioContext";
 
 function App() {
-  const [lastSelectedMode, setLastSelectedMode] = useLocalStorage(
-    "lastSelectedMode",
-    Modes.Home,
-  );
-  const [selectedMode, setSelectedMode] = useLocalStorage(
-    "selectedMode",
-    Modes.Home,
+  const [storedPracticeMode, setStoredPracticeMode] = useLocalStorage<
+    Modes | null
+  >("lastPracticeMode", null);
+  const lastPracticeMode =
+    storedPracticeMode !== null && practiceModes.includes(storedPracticeMode)
+      ? storedPracticeMode
+      : Modes.Send;
+
+  const [route, setRoute] = useHashRoute(lastPracticeMode);
+  const selectedMode = route.mode;
+  const setSelectedMode = useCallback(
+    (mode: Modes, param?: string) => setRoute({ mode, param }),
+    [setRoute],
   );
   const [settings, setSettings] = useLocalStorage(
     "settingsv6",
@@ -46,9 +53,19 @@ function App() {
   const [stats, setStats] = useState<Stats | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>("standby");
 
-  // Reset stats on mode change
+  // On mode change (including the browser's back/forward buttons):
+  // end any running session, reset stats, and remember the practice mode
   useEffect(() => {
     setStats(undefined);
+    setPhase("standby");
+    setSelectedMenu(Menus.None);
+
+    if (
+      practiceModes.includes(selectedMode) &&
+      selectedMode !== storedPracticeMode
+    ) {
+      setStoredPracticeMode(selectedMode);
+    }
   }, [selectedMode]);
 
   useEffect(() => {
@@ -78,9 +95,10 @@ function App() {
         selectedMenu,
         setSelectedMenu,
         selectedMode,
+        routeParam: route.param,
         setSelectedMode,
-        lastSelectedMode,
-        setLastSelectedMode,
+        lastPracticeMode,
+        hasPracticed: storedPracticeMode !== null,
         quizSource,
         setQuizSource,
         quizQty,
@@ -98,13 +116,12 @@ function App() {
           {selectedMenu !== Menus.None && <div className="modal-mask" />}
 
           <div className="app-center">
-            {selectedMenu === Menus.Menu && <Menu />}
             {selectedMenu === Menus.Settings && <SettingsModal />}
             {selectedMenu === Menus.Shortcuts && <KeyboardShortcuts />}
             {selectedMenu === Menus.Info && <InfoModal />}
             {selectedMenu === Menus.Theme && <ThemeModal />}
 
-            {selectedMode !== Modes.Home && <Header />}
+            <Header />
 
             <div className="main">
               <div className="main__content">
@@ -115,6 +132,8 @@ function App() {
                 {selectedMode === Modes.Translate && <Translate />}
               </div>
             </div>
+
+            <TabBar placement="bottom" />
           </div>
         </div>
       </AudioProvider>

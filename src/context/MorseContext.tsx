@@ -1,10 +1,10 @@
 import React, { createContext } from "react";
 import { ReceiveIcon } from "../icons/ReceiveIcon";
-import { SendIcon } from "../icons/SendIcon";
+import { HomeIcon } from "../icons/HomeIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
-import { Themes } from "../components/ThemeModal";
+import { Themes } from "../data/themes";
 import { Sources, Stats } from "../data/DataSources";
 import { Phase } from "../hooks/useQuiz";
 
@@ -147,7 +147,6 @@ export const settingsSpecs: Record<
 
 export enum Menus {
   None = "None",
-  Menu = "Menu",
   Settings = "Settings",
   Shortcuts = "Shortcuts",
   Info = "Info",
@@ -163,7 +162,7 @@ export enum Modes {
 }
 
 export const ModeIcons: Record<Modes, React.ReactNode> = {
-  [Modes.Home]: <SendIcon />,
+  [Modes.Home]: <HomeIcon />,
   [Modes.Send]: <MorseMachineIcon />,
   [Modes.Receive]: <ReceiveIcon />,
   [Modes.Learn]: <DictionaryIcon />,
@@ -176,9 +175,13 @@ interface ContextProps {
   selectedMenu: Menus;
   setSelectedMenu: (menu: Menus) => void;
   selectedMode: Modes;
-  setSelectedMode: (mode: Modes) => void;
-  lastSelectedMode: Modes;
-  setLastSelectedMode: (mode: Modes) => void;
+  // The rest of the address after the screen's own path (e.g. a game's id)
+  routeParam: string | undefined;
+  setSelectedMode: (mode: Modes, param?: string) => void;
+  // Whichever of Send/Receive was used last; where the Practice tab leads
+  lastPracticeMode: Modes;
+  // False until the first visit to Send or Receive
+  hasPracticed: boolean;
   quizSource: Sources | undefined;
   setQuizSource: (source: Sources) => void;
   quizQty: number | undefined;
@@ -195,9 +198,10 @@ export const MorseContext = createContext<ContextProps>({
   selectedMenu: Menus.None,
   setSelectedMenu: () => {},
   selectedMode: Modes.Home,
+  routeParam: undefined,
   setSelectedMode: () => {},
-  lastSelectedMode: Modes.Home,
-  setLastSelectedMode: () => {},
+  lastPracticeMode: Modes.Send,
+  hasPracticed: false,
   phase: "standby",
   setPhase: () => {},
   quizSource: undefined,

@@ -2,21 +2,7 @@ import { useContext } from "react";
 import { Menus, MorseContext, Setting } from "../context/MorseContext";
 import "./ThemeModal.scss";
 import { Modal } from "./Modal";
-
-export enum Themes {
-  Teal = "Teal",
-  Antique = "Antique",
-  Rose = "Rose",
-  Autumn = "Autumn",
-  Neon = "Neon",
-  HiFi = "Hi-Fi",
-  Tropical = "Tropical",
-  Eggplant = "Eggplant",
-  Console = "Console",
-  Amethyst = "Amethyst",
-  Coral = "Coral",
-  Galaxy = "Galaxy",
-}
+import { Themes } from "../data/themes";
 
 export function updateMetaThemeColor() {
   // Delay setting the theme-color, or the outdated value will be used
@@ -36,7 +22,7 @@ export const ThemeModal = () => {
   const { settings, setSettings, setSelectedMenu } = useContext(MorseContext);
 
   return (
-    <Modal title="Themes">
+    <Modal title="Settings">
       <div className="themes">
         <div className="button-menu button-menu--vertical  button-menu--vertical-wrap">
           {Object.values(Themes).map((theme) => (

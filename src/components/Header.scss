@@ -1,3 +1,5 @@
+@use "../css/media.scss";
+
 $header-icon-size: 28px;
 
 .header {
@@ -13,7 +15,12 @@ $header-icon-size: 28px;
   padding: 0 var(--side-padding);
   flex-shrink: 0;
 
-  span {
+  .header-spacer {
+    width: $header-icon-size;
+    flex-shrink: 0;
+  }
+
+  .header-title {
     flex: 1;
     text-align: center;
     font-size: 18px;
@@ -21,6 +28,16 @@ $header-icon-size: 28px;
     color: rgba(var(--text-rgb), 0.6);
     text-transform: uppercase;
     text-shadow: 0 0 5px rgba(var(--background-light-rgb), 1);
+
+    b {
+      font-weight: 650;
+      color: var(--accent-btn);
+    }
+
+    // The tabs take the title's place on wider screens
+    @media #{media.$query-md} {
+      display: none;
+    }
   }
 
   .header-btn {

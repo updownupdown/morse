@@ -222,24 +222,6 @@ export const SettingsModal = () => {
     <Modal title="Settings">
       <div className="settings">
         <div className="settings__content">
-          <div className="settings__content__theme">
-            <span className="setting">
-              <span className="setting-title">
-                <span>Theme</span>
-              </span>
-            </span>
-
-            <button
-              className="btn btn--outlined"
-              onClick={() => {
-                setSelectedMenu(Menus.Theme);
-              }}
-            >
-              <PaletteIcon />
-              <span>{settings[Setting.Theme]}</span>
-            </button>
-          </div>
-
           <SettingButtons setting={Setting.Hints} />
           <SettingButtons setting={Setting.AutoPlay} />
 

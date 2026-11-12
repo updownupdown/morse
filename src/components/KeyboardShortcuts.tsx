@@ -4,7 +4,7 @@ import "./KeyboardShortcuts.scss";
 
 export const KeyboardShortcuts = () => {
   return (
-    <Modal title="Keyboard Shortcuts">
+    <Modal title="Settings">
       <div className="kb-shortcuts">
         <span className="kb-category">Keys</span>
 
