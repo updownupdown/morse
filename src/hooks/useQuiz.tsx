@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { defaultStats, useWordSets } from "../data/DataSources";
 import {
   AutoPlay,
@@ -43,6 +43,14 @@ export const useQuiz = () => {
   const [letterIndex, setLetterIndex] = useState<number | undefined>(undefined);
   const [wordIndex, setWordIndex] = useState<number | undefined>(undefined);
   const [guess, setGuess] = useState<string | undefined>(undefined);
+  // Counts every guess made, so that repeating the same wrong letter
+  // is still processed (the guess value alone wouldn't change)
+  const [guessCount, setGuessCount] = useState(0);
+
+  const submitGuess = useCallback((char: string) => {
+    setGuess(char);
+    setGuessCount((count) => count + 1);
+  }, []);
 
   const timerRef = useRef<number>(null);
 
@@ -142,7 +150,7 @@ export const useQuiz = () => {
       100;
 
     setStats(updatedStats);
-  }, [guess]);
+  }, [guessCount]);
 
   // Status change: check if complete
   useEffect(() => {
@@ -184,6 +192,6 @@ export const useQuiz = () => {
     setQuizSource,
     word,
     letterIndex,
-    setGuess,
+    setGuess: submitGuess,
   };
 };

@@ -163,7 +163,7 @@ export function useAudio() {
     g.connect(ctx.destination);
 
     const now = ctx.currentTime;
-    let beepDurationInSec = (durationInMs - adjustedFadeDuration * 2) / 1000; // in sec
+    const beepDurationInSec = (durationInMs - adjustedFadeDuration * 2) / 1000; // in sec
 
     // Start
     g.gain.setValueAtTime(0.001, now);

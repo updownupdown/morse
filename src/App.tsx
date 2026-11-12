@@ -56,10 +56,17 @@ function App() {
     updateMetaThemeColor();
 
     // Prevent context menu for long presses
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    // (but leave it alone in text fields, where it's needed for paste)
+    const preventContextMenu = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("textarea, input")) return;
+      e.preventDefault();
+    };
+
+    document.addEventListener("contextmenu", preventContextMenu);
 
     return () => {
-      document.removeEventListener("contextmenu", (e) => e.preventDefault());
+      document.removeEventListener("contextmenu", preventContextMenu);
     };
   }, []);
 

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Receive.scss";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
@@ -70,9 +70,26 @@ export const Receive = () => {
     }
   }
 
-  // Keyboard support
+  // Keyboard support. The listener is registered once, so it reads the
+  // latest handlers through a ref rather than the first render's closure.
+  const keyHandlersRef = useRef({
+    playPauseWord,
+    playPauseLetter,
+    isPlayingWord,
+    isPlayingChar,
+  });
+  keyHandlersRef.current = {
+    playPauseWord,
+    playPauseLetter,
+    isPlayingWord,
+    isPlayingChar,
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const { playPauseWord, playPauseLetter, isPlayingWord, isPlayingChar } =
+        keyHandlersRef.current;
+
       if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
 
       if (e.key === " " && !isPlayingChar()) {

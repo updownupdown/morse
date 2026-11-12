@@ -4,7 +4,7 @@ import "./Learn.scss";
 import clsx from "clsx";
 import { useAudioContext } from "../context/AudioContext";
 import { MorseContext } from "../context/MorseContext";
-import { prosigns } from "../data/prosigns";
+import { IProsign, prosigns } from "../data/prosigns";
 import { MorseChar } from "./MorseChar";
 
 enum Categories {
@@ -76,46 +76,46 @@ type ProsignDictionaryProps = {
   disabled: boolean;
 };
 
-const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
+const Prosign = ({ sign, disabled }: { sign: IProsign; disabled: boolean }) => {
   const { playMorse } = useAudioContext();
+  const [isPlayingThis, setIsPlayingThis] = useState(false);
+
+  useEffect(() => {
+    if (!disabled) {
+      setIsPlayingThis(false);
+    }
+  }, [disabled]);
 
   return (
+    <button
+      className={clsx("prosign", isPlayingThis && "prosign--is-playing")}
+      onClick={() => {
+        setIsPlayingThis(true);
+        playMorse(sign.code);
+      }}
+      disabled={disabled}
+    >
+      <div className="prosign__top">
+        <div className="prosign__top__sign">{parseProsign(sign.prosign)}</div>
+
+        <div className="prosign__top__voice">{sign.voice}</div>
+      </div>
+
+      <div className="prosign__code">
+        <MorseChar morse={sign.code} size="lg" />
+      </div>
+
+      <div className="prosign__details">{sign.details}</div>
+    </button>
+  );
+};
+
+const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
+  return (
     <div className="prosigns">
-      {prosigns.map((sign) => {
-        const [isPlayingThis, setIsPlayingThis] = useState(false);
-
-        useEffect(() => {
-          if (!disabled) {
-            setIsPlayingThis(false);
-          }
-        }, [disabled]);
-
-        return (
-          <button
-            key={sign.prosign}
-            className={clsx("prosign", isPlayingThis && "prosign--is-playing")}
-            onClick={() => {
-              setIsPlayingThis(true);
-              playMorse(sign.code);
-            }}
-            disabled={disabled}
-          >
-            <div className="prosign__top">
-              <div className="prosign__top__sign">
-                {parseProsign(sign.prosign)}
-              </div>
-
-              <div className="prosign__top__voice">{sign.voice}</div>
-            </div>
-
-            <div className="prosign__code">
-              <MorseChar morse={sign.code} size="lg" />
-            </div>
-
-            <div className="prosign__details">{sign.details}</div>
-          </button>
-        );
-      })}
+      {prosigns.map((sign) => (
+        <Prosign key={sign.prosign} sign={sign} disabled={disabled} />
+      ))}
     </div>
   );
 };
