@@ -163,3 +163,70 @@
     }
   }
 }
+
+// Two columns, so longer lists of sources still fit a phone
+.quiz-sources.button-menu {
+  .btn-menu-item {
+    flex-direction: row;
+    height: 42px;
+    padding: 0 6px;
+    font-size: 14px;
+    white-space: nowrap;
+
+    // An odd one out spans the row
+    &:last-child:nth-child(odd) {
+      width: 100%;
+    }
+  }
+}
+
+.quiz-lesson {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: var(--max-quiz-settings-width);
+  padding: 4px 0;
+
+  font-size: 13px;
+  color: rgba(var(--text-rgb), 0.6);
+  text-align: center;
+
+  &__unlocked {
+    color: var(--accent-btn);
+
+    b {
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+
+  &__chars {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 24px;
+
+      border-radius: 4px;
+      background: rgba(var(--background-overlay-rgb), 0.5);
+
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(var(--text-rgb), 0.8);
+
+      &.newest {
+        background: rgba(var(--accent-btn-rgb), 0.25);
+        color: var(--accent-btn);
+      }
+    }
+  }
+}

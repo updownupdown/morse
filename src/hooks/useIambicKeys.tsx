@@ -1,11 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { KeyTypes, MorseContext, Setting } from "../context/MorseContext";
-import {
-  alphaToMorse,
-  alphaToMorseDict,
-  maxCodeLength,
-  unitLengths,
-} from "../data/alphaToMorse";
+import { maxCodeLength } from "../data/alphaToMorse";
+import { KeyInputProps, useCharQueue } from "./useCharQueue";
 import { MorseChar } from "../components/MorseChar";
 import { useAudioContext } from "../context/AudioContext";
 
@@ -21,11 +17,7 @@ function getOtherKeyType(keyType: KeyType) {
   return keyType === "dit" ? "dah" : "dit";
 }
 
-type IambicKeysProps = {
-  setGuess: (char: string) => void;
-};
-
-export const useIambicKeys = ({ setGuess }: IambicKeysProps) => {
+export const useIambicKeys = (props: KeyInputProps) => {
   // ========== MAIN =========== //
   const { settings, selectedMenu } = useContext(MorseContext);
   const { isPlaying, playMorse } = useAudioContext();
@@ -33,37 +25,13 @@ export const useIambicKeys = ({ setGuess }: IambicKeysProps) => {
   isPlayingRef.current = isPlaying;
 
   // ========== QUEUE LOGIC =========== //
-  const [queue, setQueue] = useState("");
-  const queueRef = useRef(queue);
-  queueRef.current = queue;
-
-  // Character break
-  const charBreakTimeoutRef = useRef<number>(null);
-  const charBreakDuration =
-    settings[Setting.UnitTime] * unitLengths["autoCharBreak"];
-
-  const startCharBreakTimeout = () => {
-    stopCharBreakTimeout();
-
-    charBreakTimeoutRef.current = setTimeout(() => {
-      // Character over! Send character.
-      const match =
-        queueRef.current.length !== 0 &&
-        Object.keys(alphaToMorseDict).find(
-          (key) => alphaToMorse(key) === queueRef.current,
-        );
-
-      match && setGuess(match);
-
-      setQueue("");
-    }, charBreakDuration);
-  };
-
-  const stopCharBreakTimeout = () => {
-    if (charBreakTimeoutRef.current) {
-      clearTimeout(charBreakTimeoutRef.current);
-    }
-  };
+  const {
+    queue,
+    queueRef,
+    pushSymbol,
+    startCharBreakTimeout,
+    stopCharBreakTimeout,
+  } = useCharQueue(props);
 
   const MorseQueue = () => {
     return queueRef.current.length !== 0 ? (
@@ -294,7 +262,7 @@ export const useIambicKeys = ({ setGuess }: IambicKeysProps) => {
     }
 
     if (play) {
-      setQueue((prev) => prev + (play === "dit" ? "." : "-"));
+      pushSymbol(play === "dit" ? "." : "-");
     }
 
     setPlayNow(play);

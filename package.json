@@ -4,37 +4,17 @@
   "homepage": "https://updownupdown.github.io/morse",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^25.6.0",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "clsx": "^2.1.1",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "sass": "^1.99.0",
-    "web-vitals": "^5.2.0"
+    "react-dom": "^19.2.5"
   },
   "scripts": {
     "dev": "vite --open",
     "tsc": "tsc",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "rules": {
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": 0,
-      "react-hooks/exhaustive-deps": "off"
-    }
+    "lint": "eslint src",
+    "test": "vitest run",
+    "preview": "vite preview"
   },
   "browserslist": {
     "production": [
@@ -49,9 +29,18 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "gh-pages": "^6.3.0",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "sass": "^1.99.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.10"
+    "typescript-eslint": "^8.72.2",
+    "vite": "^8.0.10",
+    "vitest": "^5.1.0"
   }
 }

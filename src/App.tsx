@@ -5,16 +5,22 @@ import {
   Modes,
   MorseContext,
   defaultSettings,
+  normalizeSettings,
+  Hints,
   Setting,
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
 import { SettingsModal } from "./components/SettingsModal";
-import { Menu } from "./components/Menu";
+import { TabBar, isSessionPhase, practiceModes } from "./components/TabBar";
+import { useWakeLock } from "./hooks/useWakeLock";
+import { useHashRoute } from "./hooks/useHashRoute";
 import { Learn } from "./components/Learn";
 import { Receive } from "./components/Receive";
 import { Translate } from "./components/Translate";
 import { Send } from "./components/Send";
-import { useEffect, useState } from "react";
+import { OnAir } from "./components/OnAir";
+import { Play } from "./components/Play";
+import { useCallback, useEffect, useState } from "react";
 import { updateMetaThemeColor } from "./components/ThemeModal";
 import { Home } from "./components/Home";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
@@ -24,20 +30,34 @@ import { Sources, Stats } from "./data/DataSources";
 import { Phase } from "./hooks/useQuiz";
 import { formatForCSSClass } from "./utils/utils";
 import { AudioProvider } from "./context/AudioContext";
+import { ProgressProvider } from "./context/ProgressContext";
 
 function App() {
-  const [lastSelectedMode, setLastSelectedMode] = useLocalStorage(
-    "lastSelectedMode",
-    Modes.Home,
-  );
-  const [selectedMode, setSelectedMode] = useLocalStorage(
-    "selectedMode",
-    Modes.Home,
+  const [storedPracticeMode, setStoredPracticeMode] = useLocalStorage<
+    Modes | null
+  >("lastPracticeMode", null);
+  const lastPracticeMode =
+    storedPracticeMode !== null && practiceModes.includes(storedPracticeMode)
+      ? storedPracticeMode
+      : Modes.Send;
+
+  const [route, setRoute] = useHashRoute(lastPracticeMode);
+  const selectedMode = route.mode;
+  const setSelectedMode = useCallback(
+    (mode: Modes, param?: string) => setRoute({ mode, param }),
+    [setRoute],
   );
   const [settings, setSettings] = useLocalStorage(
     "settingsv6",
     defaultSettings,
+    normalizeSettings,
   );
+  const [autoHints, setAutoHints] = useState(Hints.On);
+  const [sessionLabel, setSessionLabel] = useState<
+    [string, string] | undefined
+  >(undefined);
+  const shownHints =
+    settings[Setting.Hints] === Hints.Auto ? autoHints : settings[Setting.Hints];
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
 
@@ -46,20 +66,41 @@ function App() {
   const [stats, setStats] = useState<Stats | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>("standby");
 
-  // Reset stats on mode change
+  // On mode change (including the browser's back/forward buttons):
+  // end any running session, reset stats, and remember the practice mode
   useEffect(() => {
     setStats(undefined);
-  }, [selectedMode]);
+    setPhase("standby");
+    setSessionLabel(undefined);
+    setSelectedMenu(Menus.None);
+
+    if (
+      practiceModes.includes(selectedMode) &&
+      selectedMode !== storedPracticeMode
+    ) {
+      setStoredPracticeMode(selectedMode);
+    }
+  }, [selectedMode, route.param]);
+
+  // The screen stays on through a session or game
+  useWakeLock(isSessionPhase(phase));
 
   useEffect(() => {
     // Update theme-color meta tag on init
     updateMetaThemeColor();
 
     // Prevent context menu for long presses
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    // (but leave it alone in text fields, where it's needed for paste)
+    const preventContextMenu = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("textarea, input")) return;
+      e.preventDefault();
+    };
+
+    document.addEventListener("contextmenu", preventContextMenu);
 
     return () => {
-      document.removeEventListener("contextmenu", (e) => e.preventDefault());
+      document.removeEventListener("contextmenu", preventContextMenu);
     };
   }, []);
 
@@ -71,9 +112,10 @@ function App() {
         selectedMenu,
         setSelectedMenu,
         selectedMode,
+        routeParam: route.param,
         setSelectedMode,
-        lastSelectedMode,
-        setLastSelectedMode,
+        lastPracticeMode,
+        hasPracticed: storedPracticeMode !== null,
         quizSource,
         setQuizSource,
         quizQty,
@@ -82,35 +124,47 @@ function App() {
         setStats,
         phase,
         setPhase,
+        autoHints,
+        setAutoHints,
+        sessionLabel,
+        setSessionLabel,
       }}
     >
+      <ProgressProvider>
       <AudioProvider>
         <div
-          className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(settings[Setting.Hints])}`}
+          className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(shownHints)}`}
         >
           {selectedMenu !== Menus.None && <div className="modal-mask" />}
+          {settings[Setting.Flash] && (
+            <div className="signal-light" aria-hidden="true" />
+          )}
 
           <div className="app-center">
-            {selectedMenu === Menus.Menu && <Menu />}
             {selectedMenu === Menus.Settings && <SettingsModal />}
             {selectedMenu === Menus.Shortcuts && <KeyboardShortcuts />}
             {selectedMenu === Menus.Info && <InfoModal />}
             {selectedMenu === Menus.Theme && <ThemeModal />}
 
-            {selectedMode !== Modes.Home && <Header />}
+            <Header />
 
             <div className="main">
               <div className="main__content">
                 {selectedMode === Modes.Home && <Home />}
                 {selectedMode === Modes.Send && <Send />}
                 {selectedMode === Modes.Receive && <Receive />}
+                {selectedMode === Modes.OnAir && <OnAir />}
                 {selectedMode === Modes.Learn && <Learn />}
+                {selectedMode === Modes.Play && <Play />}
                 {selectedMode === Modes.Translate && <Translate />}
               </div>
             </div>
+
+            <TabBar placement="bottom" />
           </div>
         </div>
       </AudioProvider>
+      </ProgressProvider>
     </MorseContext.Provider>
   );
 }

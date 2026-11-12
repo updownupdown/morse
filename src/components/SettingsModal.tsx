@@ -1,4 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useProgress } from "../context/ProgressContext";
+import { DeleteIcon } from "../icons/DeleteIcon";
 import {
   defaultSettings,
   Menus,
@@ -16,6 +18,7 @@ import { PlusIcon } from "../icons/PlusIcon";
 import { MinusIcon } from "../icons/MinusIcon";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
+import { canVibrate } from "../morse/signal";
 import { PaletteIcon } from "../icons/PaletteIcon";
 import { calculateWPM, formatForCSSClass } from "../utils/utils";
 import { useAudioContext } from "../context/AudioContext";
@@ -80,6 +83,7 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
       <div className="setting__right">
         <button
           className="btn btn--small"
+          aria-label={`Increase ${specs.title}`}
           onClick={() => {
             setThisSetting(currentValue + specs.step!);
           }}
@@ -89,6 +93,7 @@ export const SettingSlider = ({ setting }: SettingSliderProps) => {
         </button>
         <button
           className="btn btn--small"
+          aria-label={`Decrease ${specs.title}`}
           onClick={() => {
             setThisSetting(currentValue - specs.step!);
           }}
@@ -192,6 +197,8 @@ export const SettingToggle = ({ setting }: SettingButtonsProps) => {
   return (
     <button
       className="setting setting--toggle"
+      role="switch"
+      aria-checked={currentValue}
       onClick={() => {
         setThisSetting(!currentValue);
       }}
@@ -217,29 +224,13 @@ export const SettingToggle = ({ setting }: SettingButtonsProps) => {
 export const SettingsModal = () => {
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
   const { setSettings, settings, setSelectedMenu } = useContext(MorseContext);
+  const { resetProgress } = useProgress();
+  const [confirmReset, setConfirmReset] = useState(false);
 
   return (
     <Modal title="Settings">
       <div className="settings">
         <div className="settings__content">
-          <div className="settings__content__theme">
-            <span className="setting">
-              <span className="setting-title">
-                <span>Theme</span>
-              </span>
-            </span>
-
-            <button
-              className="btn btn--outlined"
-              onClick={() => {
-                setSelectedMenu(Menus.Theme);
-              }}
-            >
-              <PaletteIcon />
-              <span>{settings[Setting.Theme]}</span>
-            </button>
-          </div>
-
           <SettingButtons setting={Setting.Hints} />
           <SettingButtons setting={Setting.AutoPlay} />
 
@@ -285,6 +276,9 @@ export const SettingsModal = () => {
 
           <SettingButtons setting={Setting.KeyType} />
 
+          {canVibrate() && <SettingToggle setting={Setting.Vibrate} />}
+          <SettingToggle setting={Setting.Flash} />
+
           <div className="settings__content__buttons">
             <button
               className="btn btn--flex btn--outlined"
@@ -294,6 +288,27 @@ export const SettingsModal = () => {
             >
               <ResetIcon />
               <span>Reset all settings</span>
+            </button>
+
+            {/* Two taps, as it can't be undone */}
+            <button
+              className={clsx(
+                "btn btn--flex btn--outlined",
+                confirmReset && "btn--stop",
+              )}
+              onClick={() => {
+                if (confirmReset) {
+                  resetProgress();
+                  setConfirmReset(false);
+                } else {
+                  setConfirmReset(true);
+                }
+              }}
+            >
+              <DeleteIcon />
+              <span>
+                {confirmReset ? "Tap again to erase progress" : "Reset progress"}
+              </span>
             </button>
           </div>
         </div>

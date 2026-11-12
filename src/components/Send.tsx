@@ -5,8 +5,18 @@ import {
   defaultSourceQty,
   maxSourceQty,
   sendSources,
+  sourceLabels,
   Sources,
+  sourceUnits,
 } from "../data/DataSources";
+import clsx from "clsx";
+import { useProgress } from "../context/ProgressContext";
+import {
+  lessonChars,
+  lessonPassAccuracy,
+  minLesson,
+  nextLessonChar,
+} from "../progress/progress";
 import { Modes, MorseContext } from "../context/MorseContext";
 import { conditionalPluralize, formatForCSSClass } from "../utils/utils";
 import { initCode } from "../hooks/useAudio";
@@ -18,12 +28,13 @@ import { PlusIcon } from "../icons/PlusIcon";
 import { MinusIcon } from "../icons/MinusIcon";
 import { Practice } from "./Practice";
 import { useAudioContext } from "../context/AudioContext";
+import { practiceModes } from "./TabBar";
 
 export const Send = () => {
   const { setQuizSource, quizQty, setQuizQty, phase, setPhase } =
     useContext(MorseContext);
   const { playMorse } = useAudioContext();
-  const { setGuess, word, letterIndex, guess } = useQuiz();
+  const { setGuess, word, letterIndex, guess, unlocked } = useQuiz();
 
   const [practiceWord, setPracticeWord] = useLocalStorage("practiceWord", "");
   const practiceWordRef = useRef(practiceWord);
@@ -75,6 +86,7 @@ export const Send = () => {
           setSource={setSource}
           maxQty={maxSourceQty}
           setQuizQty={setQuizQty}
+          unlocked={unlocked}
         />
 
         {phase === "practice" && (
@@ -120,6 +132,26 @@ export const Send = () => {
   );
 };
 
+// Switches between the practice modes
+export const PracticeTabs = () => {
+  const { selectedMode, setSelectedMode } = useContext(MorseContext);
+
+  return (
+    <div className="button-menu practice-tabs">
+      {practiceModes.map((mode) => (
+        <button
+          key={mode}
+          className={`btn-menu-item btn-menu-item--${selectedMode === mode ? "selected" : "not-selected"}`}
+          onClick={() => setSelectedMode(mode)}
+          disabled={selectedMode === mode}
+        >
+          {mode}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 interface QuizSelectProps {
   setPhase: (phase: Phase) => void;
   setQuizQty: (qty: number) => void;
@@ -129,6 +161,8 @@ interface QuizSelectProps {
   sources: Sources[];
   setSource: (source: Sources) => void;
   maxQty: Record<Sources, number>;
+  // The character just unlocked by passing a lesson
+  unlocked?: string;
 }
 
 export const QuizSelect = ({
@@ -140,8 +174,13 @@ export const QuizSelect = ({
   setSource,
   maxQty,
   sources,
+  unlocked,
 }: QuizSelectProps) => {
   const { selectedMode, setSelectedMode } = useContext(MorseContext);
+  const { progress } = useProgress();
+  const lessonLevel =
+    progress.lesson[selectedMode === Modes.Receive ? "receive" : "send"];
+  const nextChar = nextLessonChar(lessonLevel);
 
   const holdTimeoutRef = useRef<number | null>(null);
   const holdIntervalRef = useRef<number | null>(null);
@@ -192,28 +231,9 @@ export const QuizSelect = ({
 
   return (
     <>
-      <div className="button-menu">
-        <button
-          className={`btn-menu-item btn-menu-item--${selectedMode === Modes.Send ? "selected" : "not-selected"}`}
-          onClick={() => {
-            setSelectedMode(Modes.Send);
-          }}
-          disabled={selectedMode === Modes.Send}
-        >
-          Send
-        </button>
-        <button
-          className={`btn-menu-item btn-menu-item--${selectedMode === Modes.Receive ? "selected" : "not-selected"}`}
-          onClick={() => {
-            setSelectedMode(Modes.Receive);
-          }}
-          disabled={selectedMode === Modes.Receive}
-        >
-          Receive
-        </button>
-      </div>
+      <PracticeTabs />
 
-      <div className="button-menu button-menu--vertical">
+      <div className="button-menu button-menu--vertical button-menu--vertical-wrap quiz-sources">
         {Object.values(sources).map((s) => {
           return (
             <button
@@ -224,15 +244,44 @@ export const QuizSelect = ({
                 setSource(s);
               }}
             >
-              {s}
+              {s === Sources.Lesson
+                ? `Lesson ${lessonLevel - minLesson + 1}`
+                : (sourceLabels[s] ?? s)}
             </button>
           );
         })}
       </div>
 
+      {source === Sources.Lesson && (
+        <div className="quiz-lesson">
+          {unlocked ? (
+            <span className="quiz-lesson__unlocked">
+              Passed! New character: <b>{unlocked}</b>
+            </span>
+          ) : (
+            <span>
+              {nextChar
+                ? `Score ${lessonPassAccuracy}% to unlock the next character`
+                : "Every character unlocked"}
+            </span>
+          )}
+          <div className="quiz-lesson__chars">
+            {lessonChars(lessonLevel).map((char, i, all) => (
+              <span
+                key={char}
+                className={clsx(i === all.length - 1 && "newest")}
+              >
+                {char}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <span className="quiz__content__qty">
         <button
           className="btn btn--outlined"
+          aria-label="Fewer"
           onClick={() => incrementQuizQty(false)}
           onMouseDown={() => startHoldIncrement(false)}
           onTouchStart={() => startHoldIncrement(false)}
@@ -250,11 +299,12 @@ export const QuizSelect = ({
 
         <div className="quiz__content__qty__desc">
           <span>{quizQty}</span>
-          <span>{conditionalPluralize(source, quizQty)}</span>
+          <span>{conditionalPluralize(sourceUnits[source], quizQty)}</span>
         </div>
 
         <button
           className="btn btn--outlined"
+          aria-label="More"
           onClick={() => incrementQuizQty(true)}
           onMouseDown={() => startHoldIncrement(true)}
           onTouchStart={() => startHoldIncrement(true)}

@@ -26,14 +26,10 @@ export const Practice = ({
   const { settings } = useContext(MorseContext);
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
-  const [isWordEmpty, setIsWordEmpty] = useState(true);
+  const isWordEmpty = practiceWord.length === 0;
   const [isPlayingWord, setIsPlayingWord] = useState(false);
   const [isPlayingSymbol, setIsPlayingSymbol] = useState(false);
   const addWordBreakAfterTimeoutRef = useRef(false);
-
-  useEffect(() => {
-    setIsWordEmpty(practiceWord.length === 0);
-  }, [practiceWord]);
 
   const timeoutRef = useRef<number | null>(null);
   const wordbreakDelay =
@@ -126,9 +122,21 @@ export const Practice = ({
     }
   }
 
-  // Keyboard support
+  // Keyboard support. The listener is registered once, so it reads the
+  // latest handlers through a ref rather than the first render's closure.
+  const keyHandlersRef = useRef({
+    backspaceChar,
+    deleteAll,
+    addSlash,
+    playPause,
+  });
+  keyHandlersRef.current = { backspaceChar, deleteAll, addSlash, playPause };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const { backspaceChar, deleteAll, addSlash, playPause } =
+        keyHandlersRef.current;
+
       if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
 
       if (e.key === "Backspace") {
@@ -172,6 +180,7 @@ export const Practice = ({
             isPlayingWord && "btn--stop",
           )}
           onClick={playPause}
+          aria-label={isPlayingWord ? "Stop" : "Play back"}
           disabled={isWordEmpty}
         >
           {isPlayingWord ? <StopIcon /> : <SpeakerIcon />}
@@ -181,6 +190,7 @@ export const Practice = ({
         <button
           className="btn btn--flex btn--outlined"
           onClick={deleteAll}
+          aria-label="Delete all"
           disabled={deleteAllIsDisabled}
         >
           <DeleteIcon />
@@ -190,6 +200,7 @@ export const Practice = ({
         <button
           className="btn btn--flex btn--outlined"
           onClick={backspaceChar}
+          aria-label="Delete last character"
           disabled={backspaceIsDisabled}
         >
           <BackspaceIcon />
@@ -199,6 +210,7 @@ export const Practice = ({
         <button
           className="btn btn--flex btn--outlined btn--auto-wordbreak"
           onClick={addSlash}
+          aria-label="Add word break"
           disabled={addSlashDisabled}
         >
           <SlashIcon />

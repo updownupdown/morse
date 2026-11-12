@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { MenuIcon } from "../icons/MenuIcon";
+import { TabBar } from "./TabBar";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import "./Header.scss";
 import { Menus, Modes, MorseContext } from "../context/MorseContext";
@@ -17,9 +17,15 @@ export const Header = () => {
     phase,
     setPhase,
     stats,
+    sessionLabel,
   } = useContext(MorseContext);
 
   const { playMorse, stopMorse } = useAudioContext();
+
+  const label = sessionLabel ?? [
+    selectedMode === Modes.Send ? "Sending" : "Receiving",
+    quizSource ?? "",
+  ];
 
   useEffect(() => {
     if (selectedMenu !== undefined) {
@@ -29,17 +35,24 @@ export const Header = () => {
 
   return (
     <div className="header">
+      {/* Balances the settings button, so the title stays centred */}
+      <div className="header-spacer" />
+
+      <h1 className="header-title">
+        {selectedMode === Modes.Home ? (
+          <>
+            Morse<b>Play</b>
+          </>
+        ) : (
+          selectedMode
+        )}
+      </h1>
+
+      <TabBar placement="top" />
+
       <button
         className="header-btn"
-        onClick={() => setSelectedMenu(Menus.Menu)}
-      >
-        <MenuIcon />
-      </button>
-
-      <span>{selectedMode}</span>
-
-      <button
-        className="header-btn"
+        aria-label="Settings"
         onClick={() => {
           playMorse(initCode);
           setSelectedMenu(Menus.Settings);
@@ -59,15 +72,13 @@ export const Header = () => {
           {stats && (
             <>
               <div className="quiz-progress-text">
-                <span>
-                  {selectedMode === Modes.Send ? "Sending" : "Receiving"}
-                </span>
-                <span>{quizSource}</span>
+                <span>{label[0]}</span>
+                <span>{label[1]}</span>
               </div>
               <div
                 className="quiz-stats-progress"
                 style={{
-                  width: `${phase === "guess" ? (stats.charsDone / stats.charsTotal) * 100 : 0}%`,
+                  width: `${phase === "guess" && stats.charsTotal > 0 ? Math.min(stats.charsDone / stats.charsTotal, 1) * 100 : 0}%`,
                 }}
               />
 
@@ -86,10 +97,8 @@ export const Header = () => {
           {phase === "practice" && (
             <>
               <div className="quiz-progress-text">
-                <span>
-                  {selectedMode === Modes.Send ? "Sending" : "Receiving"}
-                </span>
-                <span>{quizSource}</span>
+                <span>{label[0]}</span>
+                <span>{label[1]}</span>
               </div>
 
               <button

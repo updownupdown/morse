@@ -242,7 +242,7 @@
     }
   }
 
-  &--hints,
+  // Hints has four options and a description: stacked, like the key type
   &--autoplay {
     .setting__left {
       flex-direction: row;
@@ -260,4 +260,10 @@
       }
     }
   }
+}
+
+.settings__content__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }

@@ -1,8 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Keyboard } from "./Keyboard";
 import "./Receive.scss";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
-import { alphaToMorse } from "../data/alphaToMorse";
+import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
+import { useProgress } from "../context/ProgressContext";
+import { lessonChars } from "../progress/progress";
 import { initCode } from "../hooks/useAudio";
 import { MorseContext } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
@@ -25,7 +27,8 @@ export const Receive = () => {
 
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
-  const { setGuess, word, letterIndex, guess } = useQuiz();
+  const { setGuess, word, letterIndex, guess, unlocked } = useQuiz();
+  const { progress } = useProgress();
 
   const [source, setSource] = useLocalStorage<Sources>(
     "receiveSource",
@@ -70,10 +73,27 @@ export const Receive = () => {
     }
   }
 
-  // Keyboard support
+  // Keyboard support. The listener is registered once, so it reads the
+  // latest handlers through a ref rather than the first render's closure.
+  const keyHandlersRef = useRef({
+    playPauseWord,
+    playPauseLetter,
+    isPlayingWord,
+    isPlayingChar,
+  });
+  keyHandlersRef.current = {
+    playPauseWord,
+    playPauseLetter,
+    isPlayingWord,
+    isPlayingChar,
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
+      const { playPauseWord, playPauseLetter, isPlayingWord, isPlayingChar } =
+        keyHandlersRef.current;
+
+      if (e.altKey || e.metaKey || e.ctrlKey || e.repeat) return;
 
       if (e.key === " " && !isPlayingChar()) {
         playPauseWord();
@@ -81,7 +101,8 @@ export const Receive = () => {
       } else if (e.code === "ArrowRight" && !isPlayingWord()) {
         playPauseLetter();
         e.preventDefault();
-      } else if (/^[a-z]$/i.test(e.key)) {
+      } else if (e.key.length === 1 && e.key !== " " && alphaToMorseDict[e.key.toUpperCase()]) {
+        // Any character with a code: letters, digits and punctuation
         setGuess(e.key.toUpperCase());
         e.preventDefault();
       }
@@ -111,6 +132,7 @@ export const Receive = () => {
           setSource={setSource}
           maxQty={maxSourceQty}
           setQuizQty={setQuizQty}
+          unlocked={unlocked}
         />
 
         {phase === "guess" && (
@@ -164,7 +186,15 @@ export const Receive = () => {
         {phase === "guess" && (
           <Keyboard
             setGuess={setGuess}
-            isSpecialChars={source === Sources.SpecialChars}
+            layout={
+              source === Sources.Lesson
+                ? lessonChars(progress.lesson.receive)
+                : source === Sources.SpecialChars || source === Sources.Numbers
+                  ? "special"
+                  : source === Sources.Abbreviations
+                    ? "alnum"
+                    : "letters"
+            }
           />
         )}
       </div>

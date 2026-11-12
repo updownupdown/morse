@@ -7,7 +7,7 @@ interface DictionaryListing {
 
 export function alphaToMorse(alpha: string) {
   const splitAlpha = alpha.split("");
-  let morse: string[] = [];
+  const morse: string[] = [];
 
   if (splitAlpha.length !== 0) {
     splitAlpha.forEach((char) => {
@@ -37,12 +37,15 @@ export function sanitizeMorse(morse: string) {
 }
 
 export function morseToAlpha(morse: string) {
-  let alpha: string[] = [];
+  const alpha: string[] = [];
 
   const morseWords = sanitizeMorse(morse).split("/");
 
   for (let w = 0; w < morseWords.length; w++) {
-    if (w !== 0 && w !== morseWords.length - 1) {
+    // Word break between words; skip empty leading/trailing segments
+    // (e.g. a trailing "/") so they don't add stray spaces
+    if (morseWords[w].trim() === "") continue;
+    if (alpha.length !== 0) {
       alpha.push(" ");
     }
 

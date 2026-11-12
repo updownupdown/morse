@@ -11,15 +11,21 @@ import { maxCodeLength } from "../data/alphaToMorse";
 import { MorseChar } from "./MorseChar";
 import { useStraightKey } from "../hooks/useStraightKey";
 import { useIambicKeys } from "../hooks/useIambicKeys";
+import { KeyInputProps } from "../hooks/useCharQueue";
 import { SettingButtons } from "./SettingsModal";
 import clsx from "clsx";
 
-interface Props {
+interface Props extends KeyInputProps {
   hint?: string;
-  setGuess: (char: string) => void;
 }
 
-export const MorseKeys = ({ hint, setGuess }: Props) => {
+function capturePointer(e: React.PointerEvent<HTMLButtonElement>) {
+  try {
+    e.currentTarget.setPointerCapture(e.pointerId);
+  } catch {}
+}
+
+export const MorseKeys = ({ hint, ...keyInput }: Props) => {
   const { settings, selectedMenu, phase } = useContext(MorseContext);
 
   const [selectKeyType, setSelectKeyType] = useState(false);
@@ -32,9 +38,7 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
     MorseProgress: StraightMorseProgress,
     queue: straightQueue,
     isPressed: straightIsPressed,
-  } = useStraightKey({
-    setGuess,
-  });
+  } = useStraightKey(keyInput);
 
   // Iambic keys
   const {
@@ -43,9 +47,7 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
     onKeyUp: iambicOnKeyUp,
     queue: iambicQueue,
     pressState: iambicPressState,
-  } = useIambicKeys({
-    setGuess,
-  });
+  } = useIambicKeys(keyInput);
 
   return (
     <div
@@ -93,10 +95,14 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
               "morse-key morse-key--straight",
               straightIsPressed && "morse-key--pressed",
             )}
-            onPointerDown={straightOnKeyDown}
+            onPointerDown={(e) => {
+              // Keep the press alive if the finger drifts off the key
+              capturePointer(e);
+              straightOnKeyDown();
+            }}
             onPointerUp={straightOnKeyUp}
-            onPointerOut={straightOnKeyUp}
-            onPointerLeave={straightOnKeyUp}
+            onPointerCancel={straightOnKeyUp}
+            onLostPointerCapture={straightOnKeyUp}
             disabled={
               straightQueue?.length === maxCodeLength ||
               selectedMenu !== Menus.None
@@ -113,13 +119,10 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
               )}
               onPointerDown={(e) => {
                 e.preventDefault();
+                capturePointer(e);
                 iambicOnKeyDown("dit");
               }}
               onPointerUp={(e) => {
-                e.preventDefault();
-                iambicOnKeyUp("dit");
-              }}
-              onPointerOut={(e) => {
                 e.preventDefault();
                 iambicOnKeyUp("dit");
               }}
@@ -141,13 +144,10 @@ export const MorseKeys = ({ hint, setGuess }: Props) => {
               )}
               onPointerDown={(e) => {
                 e.preventDefault();
+                capturePointer(e);
                 iambicOnKeyDown("dah");
               }}
               onPointerUp={(e) => {
-                e.preventDefault();
-                iambicOnKeyUp("dah");
-              }}
-              onPointerOut={(e) => {
                 e.preventDefault();
                 iambicOnKeyUp("dah");
               }}

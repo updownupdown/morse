@@ -25,7 +25,7 @@ export const InfoModal = () => {
   );
 
   return (
-    <Modal title="Help">
+    <Modal title="Settings">
       <div className="info">
         <div className="info__row">
           <p>

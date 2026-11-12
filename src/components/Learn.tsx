@@ -4,8 +4,11 @@ import "./Learn.scss";
 import clsx from "clsx";
 import { useAudioContext } from "../context/AudioContext";
 import { MorseContext } from "../context/MorseContext";
-import { prosigns } from "../data/prosigns";
+import { IProsign, prosigns } from "../data/prosigns";
 import { MorseChar } from "./MorseChar";
+import { useProgress } from "../context/ProgressContext";
+import { charMastery, knownCount } from "../progress/progress";
+import { letters } from "../data/chars";
 
 enum Categories {
   Letters = "ABC",
@@ -24,6 +27,9 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
   const { playMorse } = useAudioContext();
 
   const [isPlayingThis, setIsPlayingThis] = useState(false);
+  const { progress } = useProgress();
+  const sendLevel = charMastery(progress, "send", text);
+  const receiveLevel = charMastery(progress, "receive", text);
 
   useEffect(() => {
     if (!disabled) {
@@ -43,6 +49,14 @@ export const Symbol = ({ text, morse, disabled }: SymbolProps) => {
       <div className="symbol__text">{text}</div>
       <div className="symbol__morse">
         <MorseChar morse={morse} size="md" />
+      </div>
+      {/* How well it's known: sending on the left, receiving on the right */}
+      <div
+        className="symbol__mastery"
+        aria-label={`Sending: ${sendLevel}. Receiving: ${receiveLevel}.`}
+      >
+        <span className={`pip pip--${sendLevel}`} />
+        <span className={`pip pip--${receiveLevel}`} />
       </div>
     </button>
   );
@@ -76,52 +90,53 @@ type ProsignDictionaryProps = {
   disabled: boolean;
 };
 
-const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
+const Prosign = ({ sign, disabled }: { sign: IProsign; disabled: boolean }) => {
   const { playMorse } = useAudioContext();
+  const [isPlayingThis, setIsPlayingThis] = useState(false);
+
+  useEffect(() => {
+    if (!disabled) {
+      setIsPlayingThis(false);
+    }
+  }, [disabled]);
 
   return (
+    <button
+      className={clsx("prosign", isPlayingThis && "prosign--is-playing")}
+      onClick={() => {
+        setIsPlayingThis(true);
+        playMorse(sign.code);
+      }}
+      disabled={disabled}
+    >
+      <div className="prosign__top">
+        <div className="prosign__top__sign">{parseProsign(sign.prosign)}</div>
+
+        <div className="prosign__top__voice">{sign.voice}</div>
+      </div>
+
+      <div className="prosign__code">
+        <MorseChar morse={sign.code} size="lg" />
+      </div>
+
+      <div className="prosign__details">{sign.details}</div>
+    </button>
+  );
+};
+
+const ProsignDictionary = ({ disabled }: ProsignDictionaryProps) => {
+  return (
     <div className="prosigns">
-      {prosigns.map((sign) => {
-        const [isPlayingThis, setIsPlayingThis] = useState(false);
-
-        useEffect(() => {
-          if (!disabled) {
-            setIsPlayingThis(false);
-          }
-        }, [disabled]);
-
-        return (
-          <button
-            key={sign.prosign}
-            className={clsx("prosign", isPlayingThis && "prosign--is-playing")}
-            onClick={() => {
-              setIsPlayingThis(true);
-              playMorse(sign.code);
-            }}
-            disabled={disabled}
-          >
-            <div className="prosign__top">
-              <div className="prosign__top__sign">
-                {parseProsign(sign.prosign)}
-              </div>
-
-              <div className="prosign__top__voice">{sign.voice}</div>
-            </div>
-
-            <div className="prosign__code">
-              <MorseChar morse={sign.code} size="lg" />
-            </div>
-
-            <div className="prosign__details">{sign.details}</div>
-          </button>
-        );
-      })}
+      {prosigns.map((sign) => (
+        <Prosign key={sign.prosign} sign={sign} disabled={disabled} />
+      ))}
     </div>
   );
 };
 
 export const Learn = () => {
   const { isPlaying } = useAudioContext();
+  const { progress } = useProgress();
   const [selectedCategory, setSelectedCategory] = useState(Categories.Letters);
 
   let regex: RegExp;
@@ -163,6 +178,20 @@ export const Learn = () => {
 
       <div className="learn__content">
         <span className="learn__content__instructions">Tap symbol to play</span>
+
+        {selectedCategory !== Categories.Misc && (
+          <div className="learn-legend">
+            <span>
+              {knownCount(progress, letters)} of {letters.length} letters known
+            </span>
+            <span className="learn-legend__key">
+              <span className="pip pip--new" /> New
+              <span className="pip pip--learning" /> Learning
+              <span className="pip pip--known" /> Known
+            </span>
+            <span>Left dot: sending. Right dot: receiving.</span>
+          </div>
+        )}
 
         {selectedCategory !== Categories.Misc && (
           <div className="learn__content__symbols">
