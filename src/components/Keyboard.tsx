@@ -4,7 +4,12 @@ import clsx from "clsx";
 import { MorseChar } from "./MorseChar";
 
 // A named layout, or just the characters to offer (e.g. a lesson's)
-export type KeyboardLayout = "letters" | "special" | "alnum" | string[];
+export type KeyboardLayout =
+  | "letters"
+  | "special"
+  | "alnum"
+  | "plain"
+  | string[];
 
 interface KeyboardProps {
   setGuess: (key: string) => void;

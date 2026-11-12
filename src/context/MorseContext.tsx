@@ -1,6 +1,7 @@
 import React, { createContext } from "react";
 import { ReceiveIcon } from "../icons/ReceiveIcon";
 import { HomeIcon } from "../icons/HomeIcon";
+import { GamesIcon } from "../icons/GamesIcon";
 import { SendIcon } from "../icons/SendIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
@@ -190,6 +191,7 @@ export enum Modes {
   Receive = "Receive",
   OnAir = "On Air",
   Learn = "Learn",
+  Play = "Play",
   Translate = "Translate",
 }
 
@@ -199,6 +201,7 @@ export const ModeIcons: Record<Modes, React.ReactNode> = {
   [Modes.Receive]: <ReceiveIcon />,
   [Modes.OnAir]: <SendIcon />,
   [Modes.Learn]: <DictionaryIcon />,
+  [Modes.Play]: <GamesIcon />,
   [Modes.Translate]: <TranslateIcon />,
 };
 

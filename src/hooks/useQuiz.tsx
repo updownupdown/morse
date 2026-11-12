@@ -23,7 +23,15 @@ export const quizQtIncrementDuration = {
   subsequent: 150,
 };
 
-export type Phase = "standby" | "prepare" | "guess" | "stats" | "practice";
+// "play" is a game in progress: the tab bar hides, as for a session,
+// but the header's quiz progress stays out of the way
+export type Phase =
+  | "standby"
+  | "prepare"
+  | "guess"
+  | "stats"
+  | "practice"
+  | "play";
 
 export const useQuiz = () => {
   const {

@@ -18,6 +18,7 @@ import { Receive } from "./components/Receive";
 import { Translate } from "./components/Translate";
 import { Send } from "./components/Send";
 import { OnAir } from "./components/OnAir";
+import { Play } from "./components/Play";
 import { useCallback, useEffect, useState } from "react";
 import { updateMetaThemeColor } from "./components/ThemeModal";
 import { Home } from "./components/Home";
@@ -78,7 +79,7 @@ function App() {
     ) {
       setStoredPracticeMode(selectedMode);
     }
-  }, [selectedMode]);
+  }, [selectedMode, route.param]);
 
   useEffect(() => {
     // Update theme-color meta tag on init
@@ -147,6 +148,7 @@ function App() {
                 {selectedMode === Modes.Receive && <Receive />}
                 {selectedMode === Modes.OnAir && <OnAir />}
                 {selectedMode === Modes.Learn && <Learn />}
+                {selectedMode === Modes.Play && <Play />}
                 {selectedMode === Modes.Translate && <Translate />}
               </div>
             </div>

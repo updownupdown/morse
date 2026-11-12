@@ -7,12 +7,13 @@ import { HomeIcon } from "../icons/HomeIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
+import { GamesIcon } from "../icons/GamesIcon";
 
 export const practiceModes = [Modes.Send, Modes.Receive, Modes.OnAir];
 
 // A session is running: the tab bar gets out of the way of the key
 export function isSessionPhase(phase: string) {
-  return ["prepare", "guess", "practice"].includes(phase);
+  return ["prepare", "guess", "practice", "play"].includes(phase);
 }
 
 interface Props {
@@ -27,6 +28,7 @@ export const TabBar = ({ placement }: Props) => {
     { title: "Home", mode: Modes.Home, icon: <HomeIcon /> },
     { title: "Learn", mode: Modes.Learn, icon: <DictionaryIcon /> },
     { title: "Practice", mode: lastPracticeMode, icon: <MorseMachineIcon /> },
+    { title: "Play", mode: Modes.Play, icon: <GamesIcon /> },
     { title: "Translate", mode: Modes.Translate, icon: <TranslateIcon /> },
   ];
 

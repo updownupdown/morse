@@ -20,6 +20,7 @@ const sections: { title: string; links: HomeLink[] }[] = [
       { mode: Modes.Send, title: "Send", desc: "Key words and letters" },
       { mode: Modes.Receive, title: "Receive", desc: "Copy Morse by ear" },
       { mode: Modes.OnAir, title: "On Air", desc: "Hold a conversation" },
+      { mode: Modes.Play, title: "Play", desc: "Games that build speed" },
     ],
   },
   {
