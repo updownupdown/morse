@@ -28,6 +28,7 @@ import { PlusIcon } from "../icons/PlusIcon";
 import { MinusIcon } from "../icons/MinusIcon";
 import { Practice } from "./Practice";
 import { useAudioContext } from "../context/AudioContext";
+import { practiceModes } from "./TabBar";
 
 export const Send = () => {
   const { setQuizSource, quizQty, setQuizQty, phase, setPhase } =
@@ -131,6 +132,26 @@ export const Send = () => {
   );
 };
 
+// Switches between the practice modes
+export const PracticeTabs = () => {
+  const { selectedMode, setSelectedMode } = useContext(MorseContext);
+
+  return (
+    <div className="button-menu practice-tabs">
+      {practiceModes.map((mode) => (
+        <button
+          key={mode}
+          className={`btn-menu-item btn-menu-item--${selectedMode === mode ? "selected" : "not-selected"}`}
+          onClick={() => setSelectedMode(mode)}
+          disabled={selectedMode === mode}
+        >
+          {mode}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 interface QuizSelectProps {
   setPhase: (phase: Phase) => void;
   setQuizQty: (qty: number) => void;
@@ -210,26 +231,7 @@ export const QuizSelect = ({
 
   return (
     <>
-      <div className="button-menu">
-        <button
-          className={`btn-menu-item btn-menu-item--${selectedMode === Modes.Send ? "selected" : "not-selected"}`}
-          onClick={() => {
-            setSelectedMode(Modes.Send);
-          }}
-          disabled={selectedMode === Modes.Send}
-        >
-          Send
-        </button>
-        <button
-          className={`btn-menu-item btn-menu-item--${selectedMode === Modes.Receive ? "selected" : "not-selected"}`}
-          onClick={() => {
-            setSelectedMode(Modes.Receive);
-          }}
-          disabled={selectedMode === Modes.Receive}
-        >
-          Receive
-        </button>
-      </div>
+      <PracticeTabs />
 
       <div className="button-menu button-menu--vertical button-menu--vertical-wrap quiz-sources">
         {Object.values(sources).map((s) => {

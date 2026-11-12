@@ -1,6 +1,7 @@
 import React, { createContext } from "react";
 import { ReceiveIcon } from "../icons/ReceiveIcon";
 import { HomeIcon } from "../icons/HomeIcon";
+import { SendIcon } from "../icons/SendIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
@@ -187,6 +188,7 @@ export enum Modes {
   Home = "Home",
   Send = "Send",
   Receive = "Receive",
+  OnAir = "On Air",
   Learn = "Learn",
   Translate = "Translate",
 }
@@ -195,6 +197,7 @@ export const ModeIcons: Record<Modes, React.ReactNode> = {
   [Modes.Home]: <HomeIcon />,
   [Modes.Send]: <MorseMachineIcon />,
   [Modes.Receive]: <ReceiveIcon />,
+  [Modes.OnAir]: <SendIcon />,
   [Modes.Learn]: <DictionaryIcon />,
   [Modes.Translate]: <TranslateIcon />,
 };
@@ -223,6 +226,10 @@ interface ContextProps {
   // With hints on Auto: the level that suits the character being asked
   autoHints: Hints;
   setAutoHints: (hints: Hints) => void;
+  // What the header shows while a session runs, e.g. ["On Air", "Small talk"].
+  // Falls back to the quiz's own "Sending / Words".
+  sessionLabel: [string, string] | undefined;
+  setSessionLabel: (label: [string, string] | undefined) => void;
 }
 
 export const MorseContext = createContext<ContextProps>({
@@ -239,6 +246,8 @@ export const MorseContext = createContext<ContextProps>({
   setPhase: () => {},
   autoHints: Hints.On,
   setAutoHints: () => {},
+  sessionLabel: undefined,
+  setSessionLabel: () => {},
   quizSource: undefined,
   setQuizSource: () => {},
   quizQty: undefined,

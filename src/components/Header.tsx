@@ -17,9 +17,15 @@ export const Header = () => {
     phase,
     setPhase,
     stats,
+    sessionLabel,
   } = useContext(MorseContext);
 
   const { playMorse, stopMorse } = useAudioContext();
+
+  const label = sessionLabel ?? [
+    selectedMode === Modes.Send ? "Sending" : "Receiving",
+    quizSource ?? "",
+  ];
 
   useEffect(() => {
     if (selectedMenu !== undefined) {
@@ -66,15 +72,13 @@ export const Header = () => {
           {stats && (
             <>
               <div className="quiz-progress-text">
-                <span>
-                  {selectedMode === Modes.Send ? "Sending" : "Receiving"}
-                </span>
-                <span>{quizSource}</span>
+                <span>{label[0]}</span>
+                <span>{label[1]}</span>
               </div>
               <div
                 className="quiz-stats-progress"
                 style={{
-                  width: `${phase === "guess" ? (stats.charsDone / stats.charsTotal) * 100 : 0}%`,
+                  width: `${phase === "guess" && stats.charsTotal > 0 ? Math.min(stats.charsDone / stats.charsTotal, 1) * 100 : 0}%`,
                 }}
               />
 
@@ -93,10 +97,8 @@ export const Header = () => {
           {phase === "practice" && (
             <>
               <div className="quiz-progress-text">
-                <span>
-                  {selectedMode === Modes.Send ? "Sending" : "Receiving"}
-                </span>
-                <span>{quizSource}</span>
+                <span>{label[0]}</span>
+                <span>{label[1]}</span>
               </div>
 
               <button

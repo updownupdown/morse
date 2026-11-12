@@ -8,6 +8,7 @@ export const modeRoutes: Record<Modes, string> = {
   [Modes.Learn]: "learn",
   [Modes.Send]: "practice/send",
   [Modes.Receive]: "practice/receive",
+  [Modes.OnAir]: "practice/on-air",
   [Modes.Translate]: "translate",
 };
 

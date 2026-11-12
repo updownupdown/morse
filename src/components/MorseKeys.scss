@@ -77,12 +77,12 @@
 
         // ========== Send ========== //
         // On
-        .app--hints-on.app--mode-send & {
+        .app--hints-on & {
           animation: 0.3s fade-in linear forwards;
         }
 
         // Delayed
-        .app--hints-delayed.app--mode-send & {
+        .app--hints-delayed & {
           animation: 4s fade-in linear forwards;
           animation-delay: 5s;
         }

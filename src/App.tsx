@@ -17,6 +17,7 @@ import { Learn } from "./components/Learn";
 import { Receive } from "./components/Receive";
 import { Translate } from "./components/Translate";
 import { Send } from "./components/Send";
+import { OnAir } from "./components/OnAir";
 import { useCallback, useEffect, useState } from "react";
 import { updateMetaThemeColor } from "./components/ThemeModal";
 import { Home } from "./components/Home";
@@ -50,6 +51,9 @@ function App() {
     normalizeSettings,
   );
   const [autoHints, setAutoHints] = useState(Hints.On);
+  const [sessionLabel, setSessionLabel] = useState<
+    [string, string] | undefined
+  >(undefined);
   const shownHints =
     settings[Setting.Hints] === Hints.Auto ? autoHints : settings[Setting.Hints];
 
@@ -65,6 +69,7 @@ function App() {
   useEffect(() => {
     setStats(undefined);
     setPhase("standby");
+    setSessionLabel(undefined);
     setSelectedMenu(Menus.None);
 
     if (
@@ -116,6 +121,8 @@ function App() {
         setPhase,
         autoHints,
         setAutoHints,
+        sessionLabel,
+        setSessionLabel,
       }}
     >
       <ProgressProvider>
@@ -138,6 +145,7 @@ function App() {
                 {selectedMode === Modes.Home && <Home />}
                 {selectedMode === Modes.Send && <Send />}
                 {selectedMode === Modes.Receive && <Receive />}
+                {selectedMode === Modes.OnAir && <OnAir />}
                 {selectedMode === Modes.Learn && <Learn />}
                 {selectedMode === Modes.Translate && <Translate />}
               </div>

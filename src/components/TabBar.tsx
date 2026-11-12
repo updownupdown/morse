@@ -8,7 +8,7 @@ import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { MorseMachineIcon } from "../icons/MorseMachineIcon";
 import { TranslateIcon } from "../icons/TranslateIcon";
 
-export const practiceModes = [Modes.Send, Modes.Receive];
+export const practiceModes = [Modes.Send, Modes.Receive, Modes.OnAir];
 
 // A session is running: the tab bar gets out of the way of the key
 export function isSessionPhase(phase: string) {
