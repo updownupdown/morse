@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { alphaToMorse, alphaToMorseDict } from "../data/alphaToMorse";
 import "./Learn.scss";
 import clsx from "clsx";
+import { Tabs } from "./Tabs";
+import { Help } from "./Help";
 import { useAudioContext } from "../context/AudioContext";
 import { MorseContext } from "../context/MorseContext";
 import { IProsign, prosigns } from "../data/prosigns";
@@ -15,6 +17,7 @@ enum Categories {
   Numbers = "123",
   Punctuation = "!@#",
   Misc = "Misc",
+  Help = "Help",
 }
 
 interface SymbolProps {
@@ -156,64 +159,62 @@ export const Learn = () => {
   return (
     <div className="learn">
       <div className="learn__menu">
-        <div className="button-menu">
-          {Object.values(Categories).map((cat) => {
-            return (
-              <button
-                key={cat}
-                className={clsx(
-                  "btn-menu-item",
-                  selectedCategory === cat
-                    ? "btn-menu-item--selected"
-                    : "btn-menu-item--not-selected",
-                )}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </button>
-            );
-          })}
+        <Tabs
+          label="Learn sections"
+          tabs={Object.values(Categories).map((cat) => ({
+            id: cat,
+            label: cat,
+          }))}
+          selected={selectedCategory}
+          onSelect={setSelectedCategory}
+        />
+      </div>
+
+      {selectedCategory === Categories.Help && <Help />}
+
+      {selectedCategory !== Categories.Help && (
+        <div className="learn__content">
+          <span className="learn__content__instructions">
+            Tap symbol to play
+          </span>
+
+          {selectedCategory !== Categories.Misc && (
+            <div className="learn-legend">
+              <span>
+                {knownCount(progress, letters)} of {letters.length} letters
+                known
+              </span>
+              <span className="learn-legend__key">
+                <span className="pip pip--new" /> New
+                <span className="pip pip--learning" /> Learning
+                <span className="pip pip--known" /> Known
+              </span>
+              <span>Left dot: sending. Right dot: receiving.</span>
+            </div>
+          )}
+
+          {selectedCategory !== Categories.Misc && (
+            <div className="learn__content__symbols">
+              {Object.keys(alphaToMorseDict)
+                .filter((key) => key.match(regex))
+                .map((key, val) => {
+                  return (
+                    <Symbol
+                      key={key}
+                      text={key}
+                      morse={alphaToMorse(key)}
+                      disabled={isPlaying !== undefined}
+                    />
+                  );
+                })}
+            </div>
+          )}
+
+          {selectedCategory === Categories.Misc && (
+            <ProsignDictionary disabled={isPlaying !== undefined} />
+          )}
         </div>
-      </div>
-
-      <div className="learn__content">
-        <span className="learn__content__instructions">Tap symbol to play</span>
-
-        {selectedCategory !== Categories.Misc && (
-          <div className="learn-legend">
-            <span>
-              {knownCount(progress, letters)} of {letters.length} letters known
-            </span>
-            <span className="learn-legend__key">
-              <span className="pip pip--new" /> New
-              <span className="pip pip--learning" /> Learning
-              <span className="pip pip--known" /> Known
-            </span>
-            <span>Left dot: sending. Right dot: receiving.</span>
-          </div>
-        )}
-
-        {selectedCategory !== Categories.Misc && (
-          <div className="learn__content__symbols">
-            {Object.keys(alphaToMorseDict)
-              .filter((key) => key.match(regex))
-              .map((key, val) => {
-                return (
-                  <Symbol
-                    key={key}
-                    text={key}
-                    morse={alphaToMorse(key)}
-                    disabled={isPlaying !== undefined}
-                  />
-                );
-              })}
-          </div>
-        )}
-
-        {selectedCategory === Categories.Misc && (
-          <ProsignDictionary disabled={isPlaying !== undefined} />
-        )}
-      </div>
+      )}
     </div>
   );
 };

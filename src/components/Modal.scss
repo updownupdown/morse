@@ -3,31 +3,35 @@
 .modal-mask {
   position: fixed;
   z-index: 99;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(var(--background-main-rgb), 0.9);
+  inset: 0;
+  background: rgba(var(--black-rgb), 0.6);
+  backdrop-filter: blur(4px);
+}
+
+// Full screen, less a margin all around, over a mask
+.modal {
+  position: fixed;
+  z-index: 100;
+  inset: 20px;
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  border-radius: var(--box-radius);
+  background: var(--background-main);
   background: radial-gradient(
     circle at 20% 20%,
     rgba(var(--background-main-rgb), 1),
     rgba(var(--background-overlay-rgb), 1)
   );
-}
+  box-shadow:
+    0 0 0 1px rgba(var(--text-rgb), 0.1),
+    0 10px 40px rgba(var(--black-rgb), 0.5);
 
-.modal {
-  position: absolute;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  // background: rgba(var(--background-main-rgb), 0.9);
-  // backdrop-filter: blur(10px);
+  &:focus {
+    outline: none;
+  }
 
   &__header {
     position: relative;
@@ -70,10 +74,6 @@
     z-index: 2;
     flex-shrink: 0;
     padding: 0 var(--side-padding) 12px;
-
-    .btn-menu-item {
-      padding: 0 6px;
-    }
   }
   &__content {
     position: relative;

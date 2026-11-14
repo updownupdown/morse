@@ -274,8 +274,6 @@ export const SettingsModal = () => {
             </button>
           </div>
 
-          <SettingButtons setting={Setting.KeyType} />
-
           {canVibrate() && <SettingToggle setting={Setting.Vibrate} />}
           <SettingToggle setting={Setting.Flash} />
 
@@ -307,7 +305,9 @@ export const SettingsModal = () => {
             >
               <DeleteIcon />
               <span>
-                {confirmReset ? "Tap again to erase progress" : "Reset progress"}
+                {confirmReset
+                  ? "Tap again to erase progress"
+                  : "Reset progress"}
               </span>
             </button>
           </div>
@@ -316,3 +316,13 @@ export const SettingsModal = () => {
     </Modal>
   );
 };
+
+export const KeySettingsModal = () => (
+  <Modal title="Settings">
+    <div className="settings">
+      <div className="settings__content">
+        <SettingButtons setting={Setting.KeyType} />
+      </div>
+    </div>
+  </Modal>
+);

@@ -10,7 +10,7 @@ import {
   Setting,
 } from "./context/MorseContext";
 import { Header } from "./components/Header";
-import { SettingsModal } from "./components/SettingsModal";
+import { KeySettingsModal, SettingsModal } from "./components/SettingsModal";
 import { TabBar, isSessionPhase, practiceModes } from "./components/TabBar";
 import { useWakeLock } from "./hooks/useWakeLock";
 import { useHashRoute } from "./hooks/useHashRoute";
@@ -24,7 +24,6 @@ import { useCallback, useEffect, useState } from "react";
 import { updateMetaThemeColor } from "./components/ThemeModal";
 import { Home } from "./components/Home";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
-import { InfoModal } from "./components/InfoModal";
 import { ThemeModal } from "./components/ThemeModal";
 import { Sources, Stats } from "./data/DataSources";
 import { Phase } from "./hooks/useQuiz";
@@ -33,9 +32,8 @@ import { AudioProvider } from "./context/AudioContext";
 import { ProgressProvider } from "./context/ProgressContext";
 
 function App() {
-  const [storedPracticeMode, setStoredPracticeMode] = useLocalStorage<
-    Modes | null
-  >("lastPracticeMode", null);
+  const [storedPracticeMode, setStoredPracticeMode] =
+    useLocalStorage<Modes | null>("lastPracticeMode", null);
   const lastPracticeMode =
     storedPracticeMode !== null && practiceModes.includes(storedPracticeMode)
       ? storedPracticeMode
@@ -57,7 +55,9 @@ function App() {
     [string, string] | undefined
   >(undefined);
   const shownHints =
-    settings[Setting.Hints] === Hints.Auto ? autoHints : settings[Setting.Hints];
+    settings[Setting.Hints] === Hints.Auto
+      ? autoHints
+      : settings[Setting.Hints];
 
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
 
@@ -131,39 +131,45 @@ function App() {
       }}
     >
       <ProgressProvider>
-      <AudioProvider>
-        <div
-          className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(shownHints)}`}
-        >
-          {selectedMenu !== Menus.None && <div className="modal-mask" />}
-          {settings[Setting.Flash] && (
-            <div className="signal-light" aria-hidden="true" />
-          )}
+        <AudioProvider>
+          <div
+            className={`app app--theme-${formatForCSSClass(settings[Setting.Theme])} app--mode-${formatForCSSClass(selectedMode)} app--hints-${formatForCSSClass(shownHints)}`}
+          >
+            {selectedMenu !== Menus.None && (
+              <div
+                className="modal-mask"
+                aria-hidden="true"
+                onClick={() => setSelectedMenu(Menus.None)}
+              />
+            )}
+            {settings[Setting.Flash] && (
+              <div className="signal-light" aria-hidden="true" />
+            )}
 
-          <div className="app-center">
-            {selectedMenu === Menus.Settings && <SettingsModal />}
-            {selectedMenu === Menus.Shortcuts && <KeyboardShortcuts />}
-            {selectedMenu === Menus.Info && <InfoModal />}
-            {selectedMenu === Menus.Theme && <ThemeModal />}
+            <div className="app-center">
+              {selectedMenu === Menus.Settings && <SettingsModal />}
+              {selectedMenu === Menus.Shortcuts && <KeyboardShortcuts />}
+              {selectedMenu === Menus.Key && <KeySettingsModal />}
+              {selectedMenu === Menus.Theme && <ThemeModal />}
 
-            <Header />
+              <Header />
 
-            <div className="main">
-              <div className="main__content">
-                {selectedMode === Modes.Home && <Home />}
-                {selectedMode === Modes.Send && <Send />}
-                {selectedMode === Modes.Receive && <Receive />}
-                {selectedMode === Modes.OnAir && <OnAir />}
-                {selectedMode === Modes.Learn && <Learn />}
-                {selectedMode === Modes.Play && <Play />}
-                {selectedMode === Modes.Translate && <Translate />}
+              <div className="main">
+                <div className="main__content">
+                  {selectedMode === Modes.Home && <Home />}
+                  {selectedMode === Modes.Send && <Send />}
+                  {selectedMode === Modes.Receive && <Receive />}
+                  {selectedMode === Modes.OnAir && <OnAir />}
+                  {selectedMode === Modes.Learn && <Learn />}
+                  {selectedMode === Modes.Play && <Play />}
+                  {selectedMode === Modes.Translate && <Translate />}
+                </div>
               </div>
-            </div>
 
-            <TabBar placement="bottom" />
+              <TabBar placement="bottom" />
+            </div>
           </div>
-        </div>
-      </AudioProvider>
+        </AudioProvider>
       </ProgressProvider>
     </MorseContext.Provider>
   );
