@@ -246,6 +246,11 @@
     &--bad {
       color: var(--status-red);
     }
+    // Missed and waiting for another try
+    &--miss {
+      color: var(--status-red);
+      text-decoration-color: var(--status-red);
+    }
   }
 
   &__caret {

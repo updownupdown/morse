@@ -43,6 +43,16 @@ enum Styles {
   Free = "Free",
 }
 
+enum Advances {
+  Always = "Always",
+  Correct = "When correct",
+}
+
+const advanceHints: Record<Advances, string> = {
+  [Advances.Always]: "Wrong characters are marked and you carry on.",
+  [Advances.Correct]: "Wrong characters don't count: try again until it's right.",
+};
+
 enum Reveals {
   Live = "As sent",
   Words = "By word",
@@ -75,6 +85,8 @@ type Bubble = {
   free?: boolean;
   // Copying by ear: characters stay hidden until you've typed them
   conceal?: boolean;
+  // The next character was just missed (when only correct answers advance)
+  miss?: boolean;
 };
 
 type Turn =
@@ -104,6 +116,10 @@ export const OnAir = () => {
   const [reveal, setReveal] = useLocalStorage<Reveals>(
     "onAirReveal",
     Reveals.Live,
+  );
+  const [advance, setAdvance] = useLocalStorage<Advances>(
+    "onAirStreamAdvance",
+    Advances.Always,
   );
   const [scriptId, setScriptId] = useLocalStorage(
     "onAirScript",
@@ -295,22 +311,33 @@ export const OnAir = () => {
 
     if (turnStartRef.current === null) turnStartRef.current = performance.now();
 
-    // Wrong characters are marked and you carry on: nothing blocks
     const isCorrect = char === expected[index];
     record(current.input === "key" ? "send" : "receive", expected[index], isCorrect);
-
-    const marks: Mark[] = [...bubble.marks, isCorrect ? "ok" : "bad"];
-    // Kept current at once, in case two characters land in one frame
-    bubblesRef.current = bubblesRef.current.map((b) =>
-      b.id === bubble.id ? { ...b, marks } : b,
-    );
-    updateBubble(bubble.id, (b) => ({ ...b, marks }));
 
     pushStats(
       isCorrect
         ? { correct: statsRef.current.correct + 1 }
         : { incorrect: statsRef.current.incorrect + 1 },
     );
+
+    // In a stream set to advance only when correct, a wrong character is
+    // counted as a mistake but you stay on it until you get it right.
+    // Otherwise it's marked and you carry on: nothing blocks.
+    const strict = kind !== Kinds.Chat && advance === Advances.Correct;
+    if (strict && !isCorrect) {
+      bubblesRef.current = bubblesRef.current.map((b) =>
+        b.id === bubble.id ? { ...b, miss: true } : b,
+      );
+      updateBubble(bubble.id, (b) => ({ ...b, miss: true }));
+      return;
+    }
+
+    const marks: Mark[] = [...bubble.marks, isCorrect ? "ok" : "bad"];
+    // Kept current at once, in case two characters land in one frame
+    bubblesRef.current = bubblesRef.current.map((b) =>
+      b.id === bubble.id ? { ...b, marks, miss: false } : b,
+    );
+    updateBubble(bubble.id, (b) => ({ ...b, marks, miss: false }));
 
     if (marks.length === expected.length) {
       closeTurnClock(bubble.text);
@@ -569,6 +596,26 @@ export const OnAir = () => {
 
             <p className="on-air__hint">{kindHints[kind]}</p>
 
+            {kind !== Kinds.Chat && (
+              <>
+                <div className="on-air__option">
+                  <span>Advance</span>
+                  <div className="button-menu">
+                    {Object.values(Advances).map((a) => (
+                      <button
+                        key={a}
+                        className={`btn-menu-item btn-menu-item--${advance === a ? "selected" : "not-selected"}`}
+                        onClick={() => setAdvance(a)}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <p className="on-air__hint">{advanceHints[advance]}</p>
+              </>
+            )}
+
             {kind === Kinds.Chat && (
               <>
                 <div className="on-air__script">
@@ -778,6 +825,7 @@ const ChatBubble = ({ bubble, onReveal, onReplay }: ChatBubbleProps) => {
                   className={clsx(
                     mark ? `bubble__char--${mark}` : "bubble__char--todo",
                     index === marks.length && "bubble__char--next",
+                    index === marks.length && bubble.miss && "bubble__char--miss",
                   )}
                 >
                   {mark || !bubble.conceal ? char : "\u00b7"}
