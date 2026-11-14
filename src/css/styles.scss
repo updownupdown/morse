@@ -167,7 +167,6 @@ button {
     span {
       color: rgba(var(--text-rgb), 0.7);
       font-weight: 550;
-      text-transform: uppercase;
     }
     svg {
       width: 24px;
@@ -346,7 +345,6 @@ button {
 
         span {
           font-weight: 800;
-          text-transform: uppercase;
         }
       }
 
@@ -440,7 +438,6 @@ button {
     color: rgba(var(--white-rgb), 0.7);
     font-weight: 400;
     line-height: 1;
-    text-transform: uppercase;
 
     &--selected {
       background: rgba(var(--accent-input-rgb), 0.12);
