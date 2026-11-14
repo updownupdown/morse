@@ -20,6 +20,7 @@ export type GameDef = {
   name: string;
   desc: string;
   trains: "Sending" | "Receiving" | "Both";
+  icon: React.ReactNode;
   // [id, label] pairs; the first is the default
   levels: [string, string][];
   levelName?: string;

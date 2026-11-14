@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import "./OnAir.scss";
 import { Hints, MorseContext, Setting } from "../context/MorseContext";
@@ -27,8 +27,15 @@ import { calculateWPM } from "../utils/utils";
 import { MorseKeys } from "./MorseKeys";
 import { Keyboard } from "./Keyboard";
 import { PracticeTabs } from "./Send";
-import { ArrowLeftIcon } from "../icons/ArrowLeftIcon";
-import { ArrowRightIcon } from "../icons/ArrowRightIcon";
+import {
+  ChatIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "../icons/LineIcons";
+import { SendIcon } from "../icons/SendIcon";
+import { ReceiveIcon } from "../icons/ReceiveIcon";
+import { ChoiceCards, OptionRow, SetupHeading } from "./PracticeSetup";
+import { SessionResults } from "./SessionResults";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 
 enum Kinds {
@@ -63,6 +70,12 @@ const kindHints: Record<Kinds, string> = {
   [Kinds.Chat]: "A station sends, you key your reply, and it answers.",
   [Kinds.StreamSend]: "Key an endless run of words, with no stops between.",
   [Kinds.StreamCopy]: "Sentences play one after another. Type what you hear.",
+};
+
+const kindIcons: Record<Kinds, React.ReactNode> = {
+  [Kinds.Chat]: <ChatIcon />,
+  [Kinds.StreamSend]: <SendIcon />,
+  [Kinds.StreamCopy]: <ReceiveIcon />,
 };
 
 const styleHints: Record<Styles, string> = {
@@ -576,55 +589,50 @@ export const OnAir = () => {
     <div className="quiz on-air">
       <div className="quiz__content">
         {!isRunning && (
-          <>
+          <div className="practice-setup">
             <PracticeTabs />
 
-            <div className="button-menu on-air__kinds">
-              {Object.values(Kinds).map((k) => (
-                <button
-                  key={k}
-                  className={`btn-menu-item btn-menu-item--${kind === k ? "selected" : "not-selected"}`}
-                  onClick={() => {
-                    setPhase("standby");
-                    setKind(k);
-                  }}
-                >
-                  {k}
-                </button>
-              ))}
-            </div>
+            <SessionResults />
 
-            <p className="on-air__hint">{kindHints[kind]}</p>
+            <SetupHeading>Format</SetupHeading>
+
+            <ChoiceCards
+              label="Format"
+              columns={1}
+              selected={kind}
+              onSelect={(k) => {
+                setPhase("standby");
+                setKind(k);
+              }}
+              cards={Object.values(Kinds).map((k) => ({
+                id: k,
+                title: k,
+                desc: kindHints[k],
+                glyph: kindIcons[k],
+              }))}
+            />
 
             {kind !== Kinds.Chat && (
-              <>
-                <div className="on-air__option">
-                  <span>Advance</span>
-                  <div className="button-menu">
-                    {Object.values(Advances).map((a) => (
-                      <button
-                        key={a}
-                        className={`btn-menu-item btn-menu-item--${advance === a ? "selected" : "not-selected"}`}
-                        onClick={() => setAdvance(a)}
-                      >
-                        {a}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <p className="on-air__hint">{advanceHints[advance]}</p>
-              </>
+              <OptionRow
+                label="Advance"
+                options={Object.values(Advances)}
+                selected={advance}
+                onSelect={setAdvance}
+                hint={advanceHints[advance]}
+              />
             )}
 
             {kind === Kinds.Chat && (
               <>
+                <SetupHeading>Conversation</SetupHeading>
+
                 <div className="on-air__script">
                   <button
-                    className="btn btn--outlined"
+                    className="on-air__script__arrow"
                     aria-label="Previous conversation"
                     onClick={() => changeScript(-1)}
                   >
-                    <ArrowLeftIcon />
+                    <ChevronLeftIcon />
                   </button>
                   <div className="on-air__script__text">
                     <span>{script.title}</span>
@@ -636,47 +644,31 @@ export const OnAir = () => {
                     </span>
                   </div>
                   <button
-                    className="btn btn--outlined"
+                    className="on-air__script__arrow"
                     aria-label="Next conversation"
                     onClick={() => changeScript(1)}
                   >
-                    <ArrowRightIcon />
+                    <ChevronRightIcon />
                   </button>
                 </div>
 
-                <div className="on-air__option">
-                  <span>Replies</span>
-                  <div className="button-menu">
-                    {Object.values(Styles).map((s) => (
-                      <button
-                        key={s}
-                        className={`btn-menu-item btn-menu-item--${style === s ? "selected" : "not-selected"}`}
-                        onClick={() => setStyle(s)}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <p className="on-air__hint">{styleHints[style]}</p>
+                <OptionRow
+                  label="Replies"
+                  options={Object.values(Styles)}
+                  selected={style}
+                  onSelect={setStyle}
+                  hint={styleHints[style]}
+                />
 
-                <div className="on-air__option">
-                  <span>Station text</span>
-                  <div className="button-menu">
-                    {Object.values(Reveals).map((r) => (
-                      <button
-                        key={r}
-                        className={`btn-menu-item btn-menu-item--${reveal === r ? "selected" : "not-selected"}`}
-                        onClick={() => setReveal(r)}
-                      >
-                        {r}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <OptionRow
+                  label="Station text"
+                  options={Object.values(Reveals)}
+                  selected={reveal}
+                  onSelect={setReveal}
+                />
               </>
             )}
-          </>
+          </div>
         )}
 
         {isRunning && (

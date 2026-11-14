@@ -12,8 +12,7 @@
     min-width: 0;
 
     color: rgba(var(--text-rgb), 0.55);
-    font-weight: 400;
-    text-transform: uppercase;
+    font-weight: 450;
 
     svg {
       transition: 0.2s ease all;
@@ -73,7 +72,6 @@
       height: var(--tab-bar-height);
 
       font-size: 11px;
-      letter-spacing: 0.04em;
 
       svg {
         width: 24px;
@@ -96,12 +94,18 @@
   &--top {
     transition: 0.3s ease opacity;
     display: none;
-    flex: 1;
-    gap: 4px;
-    height: 100%;
+    gap: 2px;
+    justify-content: center;
 
     .tab {
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 20px;
       font-size: 15px;
+
+      &--active {
+        background: rgba(var(--accent-btn-rgb), 0.1);
+      }
 
       // Five labels fit the header only without their icons
       svg {

@@ -1,3 +1,15 @@
+import {
+  CardsIcon,
+  EchoIcon,
+  GridIcon,
+  InterceptIcon,
+  MetronomeIcon,
+  QuestionIcon,
+  RainIcon,
+  SnowmanIcon,
+  SoundAlikesIcon,
+  StopwatchIcon,
+} from "../icons/LineIcons";
 import { GameDef, GameGroup } from "./types";
 import { LV3 } from "./common";
 import { Rain } from "./Rain";
@@ -14,6 +26,7 @@ import { Trivia } from "./Trivia";
 
 const rain: GameDef = {
   id: "rain",
+  icon: <RainIcon />,
   name: "Morse Rain",
   desc: "Letters fall. Key each one before it lands.",
   trains: "Sending",
@@ -30,6 +43,7 @@ const rain: GameDef = {
 
 const timeAttack: GameDef = {
   id: "time-attack",
+  icon: <StopwatchIcon />,
   name: "Time Attack",
   desc: "Sixty seconds. As many letters as you can.",
   trains: "Both",
@@ -49,6 +63,7 @@ const timeAttack: GameDef = {
 
 const echo: GameDef = {
   id: "echo",
+  icon: <EchoIcon />,
   name: "Echo",
   desc: "The station sends a run of letters. Key it back, one longer each round.",
   trains: "Both",
@@ -68,6 +83,7 @@ const echo: GameDef = {
 
 const intercept: GameDef = {
   id: "intercept",
+  icon: <InterceptIcon />,
   name: "Intercept",
   desc: "Copy incoming messages word by word and follow the story.",
   trains: "Receiving",
@@ -85,6 +101,7 @@ const intercept: GameDef = {
 
 const soundAlikes: GameDef = {
   id: "sound-alikes",
+  icon: <SoundAlikesIcon />,
   name: "Sound-alikes",
   desc: "Tell apart the letters that are easy to confuse by ear.",
   trains: "Receiving",
@@ -101,6 +118,7 @@ const soundAlikes: GameDef = {
 
 const steadyHand: GameDef = {
   id: "steady-hand",
+  icon: <MetronomeIcon />,
   name: "Steady Hand",
   desc: "Key a phrase and be scored on rhythm, not speed.",
   trains: "Sending",
@@ -122,6 +140,7 @@ const steadyHand: GameDef = {
 
 const mordle: GameDef = {
   id: "mordle",
+  icon: <GridIcon />,
   name: "Mordle",
   desc: "Find the hidden word in six guesses, keyed in Morse.",
   trains: "Sending",
@@ -142,6 +161,7 @@ const mordle: GameDef = {
 
 const snowman: GameDef = {
   id: "snowman",
+  icon: <SnowmanIcon />,
   name: "Snowman",
   desc: "Guess words a letter at a time before the snowman melts.",
   trains: "Both",
@@ -158,6 +178,7 @@ const snowman: GameDef = {
 
 const memory: GameDef = {
   id: "memory",
+  icon: <CardsIcon />,
   name: "Memory",
   desc: "Turn over cards to pair each letter with its code.",
   trains: "Receiving",
@@ -179,6 +200,7 @@ const memory: GameDef = {
 
 const trivia: GameDef = {
   id: "trivia",
+  icon: <QuestionIcon />,
   name: "Trivia and Riddles",
   desc: "Answer in Morse. Five questions a round.",
   trains: "Sending",

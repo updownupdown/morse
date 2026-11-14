@@ -3,7 +3,7 @@ import { ReceiveIcon } from "../icons/ReceiveIcon";
 import { HomeIcon } from "../icons/HomeIcon";
 import { GamesIcon } from "../icons/GamesIcon";
 import { SendIcon } from "../icons/SendIcon";
-import { MorseMachineIcon } from "../icons/MorseMachineIcon";
+import { OnAirIcon } from "../icons/LineIcons";
 import { TranslateIcon } from "../icons/TranslateIcon";
 import { DictionaryIcon } from "../icons/DictionaryIcon";
 import { Themes } from "../data/themes";
@@ -213,9 +213,9 @@ export enum Modes {
 
 export const ModeIcons: Record<Modes, React.ReactNode> = {
   [Modes.Home]: <HomeIcon />,
-  [Modes.Send]: <MorseMachineIcon />,
+  [Modes.Send]: <SendIcon />,
   [Modes.Receive]: <ReceiveIcon />,
-  [Modes.OnAir]: <SendIcon />,
+  [Modes.OnAir]: <OnAirIcon />,
   [Modes.Learn]: <DictionaryIcon />,
   [Modes.Play]: <GamesIcon />,
   [Modes.Translate]: <TranslateIcon />,

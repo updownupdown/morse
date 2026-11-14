@@ -28,6 +28,7 @@ input[type="number"] {
 
   &::placeholder {
     color: rgba(var(--text-rgb), 0.3);
+    text-transform: none;
   }
 
   &:disabled {

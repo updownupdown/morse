@@ -9,9 +9,9 @@ import { initCode } from "../hooks/useAudio";
 import { routeToHash } from "../hooks/useHashRoute";
 import { gameGroups, games } from "../games/registry";
 import { GameDef, GameResult } from "../games/types";
-import { ArrowLeftIcon } from "../icons/ArrowLeftIcon";
 import { HelpIcon } from "../icons/HelpIcon";
-import { CloseIcon } from "../icons/CloseIcon";
+import { SendIcon } from "../icons/SendIcon";
+import { ReceiveIcon } from "../icons/ReceiveIcon";
 
 export const bestKey = (game: GameDef, level: string) => `${game.id}.${level}`;
 
@@ -47,19 +47,24 @@ const GameList = () => {
               return (
                 <a
                   key={game.id}
-                  className="game-tile"
+                  className="game-row"
                   href={routeToHash({ mode: Modes.Play, param: game.id })}
                   onClick={(e) => {
                     e.preventDefault();
                     setSelectedMode(Modes.Play, game.id);
                   }}
                 >
-                  <span className="game-tile__name">{game.name}</span>
-                  <span className="game-tile__desc">{game.desc}</span>
-                  <span className="game-tile__meta">
-                    <span>{game.trains}</span>
-                    {best !== undefined && <span>Best {best}</span>}
+                  <span className="game-row__icon">{game.icon}</span>
+                  <span className="game-row__text">
+                    <span>{game.name}</span>
+                    <span>{game.desc}</span>
+                    {best !== undefined && (
+                      <span>
+                        Best: {best} {game.scoreUnit}
+                      </span>
+                    )}
                   </span>
+                  <SkillIcons trains={game.trains} />
                 </a>
               );
             })}
@@ -70,10 +75,36 @@ const GameList = () => {
   );
 };
 
+// Sending and receiving, lit up for whichever the game trains
+const SkillIcons = ({ trains }: { trains: GameDef["trains"] }) => {
+  const sends = trains !== "Receiving";
+  const receives = trains !== "Sending";
+
+  return (
+    <span
+      className="game-row__skills"
+      aria-label={`Trains ${sends && receives ? "sending and receiving" : trains.toLowerCase()}`}
+    >
+      <span
+        className={clsx("skill-icon", sends && "skill-icon--send")}
+        title={sends ? "Trains sending" : undefined}
+      >
+        <SendIcon />
+      </span>
+      <span
+        className={clsx("skill-icon", receives && "skill-icon--receive")}
+        title={receives ? "Trains receiving" : undefined}
+      >
+        <ReceiveIcon />
+      </span>
+    </span>
+  );
+};
+
 type ShellState = "ready" | "playing" | "over";
 
 const GameShell = ({ game }: { game: GameDef }) => {
-  const { setSelectedMode, setPhase, phase } = useContext(MorseContext);
+  const { setPhase, phase } = useContext(MorseContext);
   const { playMorse, stopMorse } = useAudioContext();
   const { progress, submitBest } = useProgress();
 
@@ -115,13 +146,7 @@ const GameShell = ({ game }: { game: GameDef }) => {
     setPhase("standby");
   }
 
-  function quit() {
-    stopMorse();
-    setState("ready");
-    setPhase("standby");
-  }
-
-  // Leaving by the back button ends the round
+  // "Back" in the header (or the browser's) ends the round
   useEffect(() => {
     if (phase !== "play" && state === "playing") setState("ready");
   }, [phase]);
@@ -129,13 +154,6 @@ const GameShell = ({ game }: { game: GameDef }) => {
   if (state === "playing") {
     return (
       <div className="play play--game">
-        <div className="game-bar">
-          <span>{game.name}</span>
-          <button className="btn btn--small" onClick={quit}>
-            <CloseIcon />
-            <span>Quit</span>
-          </button>
-        </div>
         <Game key={round} level={level} best={best} onEnd={end} />
       </div>
     );
@@ -143,26 +161,8 @@ const GameShell = ({ game }: { game: GameDef }) => {
 
   return (
     <div className="play play--setup">
-      <div className="game-bar">
-        <button
-          className="btn btn--small"
-          onClick={() => setSelectedMode(Modes.Play)}
-        >
-          <ArrowLeftIcon />
-          <span>Games</span>
-        </button>
-        <button
-          className={clsx("btn btn--small", showHelp && "btn--active")}
-          onClick={() => setShowHelp(!showHelp)}
-          aria-expanded={showHelp}
-        >
-          <HelpIcon />
-          <span>How to play</span>
-        </button>
-      </div>
-
       <div className="game-setup">
-        <h2>{game.name}</h2>
+        <span className="game-setup__icon">{game.icon}</span>
 
         {state === "over" && result ? (
           <div className="game-result">
@@ -186,6 +186,15 @@ const GameShell = ({ game }: { game: GameDef }) => {
         ) : (
           <p className="game-setup__desc">{game.desc}</p>
         )}
+
+        <button
+          className={clsx("game-help-toggle", showHelp && "game-help-toggle--open")}
+          onClick={() => setShowHelp(!showHelp)}
+          aria-expanded={showHelp}
+        >
+          <HelpIcon />
+          <span>{showHelp ? "Hide the rules" : "How to play"}</span>
+        </button>
 
         {showHelp && (
           <ul className="game-help">

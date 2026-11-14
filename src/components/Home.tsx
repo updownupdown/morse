@@ -3,6 +3,7 @@ import "./Home.scss";
 import { ModeIcons, Modes, MorseContext } from "../context/MorseContext";
 import { modeToHash } from "../hooks/useHashRoute";
 import { ArrowRightIcon } from "../icons/ArrowRightIcon";
+import { ChevronRightIcon } from "../icons/LineIcons";
 import { useProgress } from "../context/ProgressContext";
 import { knownCount, streak } from "../progress/progress";
 import { letters } from "../data/chars";
@@ -44,11 +45,12 @@ export const HomeTile = ({ mode, title, desc }: HomeLink) => {
         setSelectedMode(mode);
       }}
     >
-      {ModeIcons[mode]}
+      <span className="home-tile__icon">{ModeIcons[mode]}</span>
       <span className="home-tile__text">
         <span>{title}</span>
         <span>{desc}</span>
       </span>
+      <ChevronRightIcon />
     </a>
   );
 };

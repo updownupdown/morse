@@ -21,60 +21,6 @@
     gap: 8px;
     min-height: 0; // prevents overflow!
 
-    .button-menu {
-      max-width: var(--max-quiz-settings-width);
-    }
-
-    &__qty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 12px;
-      width: 100%;
-      max-width: var(--max-quiz-settings-width);
-      min-height: 76px;
-
-      .btn {
-        flex-grow: unset;
-        border: unset;
-        border-radius: 50%;
-        aspect-ratio: 1;
-
-        svg {
-          width: 32px;
-          height: 32px;
-        }
-      }
-
-      &__practice {
-        display: none;
-      }
-
-      &__desc {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-        gap: 4px;
-        padding-bottom: 2px;
-
-        span {
-          color: var(--accent-btn);
-          text-shadow: 0 0 4px rgba(var(--accent-btn-rgb), 0.3);
-
-          &:first-child {
-            font-size: 30px;
-            font-weight: 700;
-          }
-          &:last-child {
-            font-size: 14px;
-            text-transform: lowercase;
-          }
-        }
-      }
-    }
-
     &__progress-stats {
       display: flex;
       gap: 20px;
@@ -102,6 +48,12 @@
         flex: 1;
       }
     }
+  }
+
+  // The setup screen scrolls on its own, edge to edge
+  &__content:has(> .practice-setup) {
+    justify-content: flex-start;
+    padding: 0;
   }
 
   &__bottom {
@@ -158,24 +110,7 @@
       &:last-child {
         font-size: 16px;
         font-weight: 400;
-        text-transform: uppercase;
       }
-    }
-  }
-}
-
-// Two columns, so longer lists of sources still fit a phone
-.quiz-sources.button-menu {
-  .btn-menu-item {
-    flex-direction: row;
-    height: 42px;
-    padding: 0 6px;
-    font-size: 14px;
-    white-space: nowrap;
-
-    // An odd one out spans the row
-    &:last-child:nth-child(odd) {
-      width: 100%;
     }
   }
 }
@@ -184,10 +119,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  max-width: var(--max-quiz-settings-width);
-  padding: 4px 0;
+  padding: 12px;
+  flex-shrink: 0;
+
+  border-radius: var(--box-radius);
+  background: rgba(var(--background-overlay-rgb), 0.3);
 
   font-size: 13px;
   color: rgba(var(--text-rgb), 0.6);
