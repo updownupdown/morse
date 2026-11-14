@@ -2,38 +2,27 @@ import React, { useContext, useEffect, useRef } from "react";
 import { CloseIcon } from "../icons/CloseIcon";
 import "./Modal.scss";
 import { Menus, MorseContext } from "../context/MorseContext";
+import { Tabs } from "./Tabs";
 
-// Theme, shortcuts and help all live under Settings
-const settingsSections = [
-  Menus.Settings,
-  Menus.Theme,
-  Menus.Shortcuts,
-  Menus.Info,
+// The sections of Settings, each its own modal
+const settingsTabs = [
+  { id: Menus.Settings, label: "General" },
+  { id: Menus.Key, label: "Key" },
+  { id: Menus.Shortcuts, label: "Shortcuts" },
+  { id: Menus.Theme, label: "Theme" },
 ];
-
-const settingsSectionNames: Partial<Record<Menus, string>> = {
-  [Menus.Settings]: "General",
-  [Menus.Theme]: "Theme",
-  [Menus.Shortcuts]: "Keys",
-  [Menus.Info]: "Help",
-};
 
 const SettingsNav = () => {
   const { selectedMenu, setSelectedMenu } = useContext(MorseContext);
 
   return (
     <div className="modal__nav">
-      <div className="button-menu">
-        {settingsSections.map((section) => (
-          <button
-            key={section}
-            className={`btn-menu-item btn-menu-item--${selectedMenu === section ? "selected" : "not-selected"}`}
-            onClick={() => setSelectedMenu(section)}
-          >
-            {settingsSectionNames[section]}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        label="Settings sections"
+        tabs={settingsTabs}
+        selected={selectedMenu}
+        onSelect={setSelectedMenu}
+      />
     </div>
   );
 };
@@ -135,7 +124,7 @@ export const Modal = ({ title, children, showTitle = true }: Props) => {
           <CloseIcon />
         </button>
       </div>
-      {settingsSections.includes(selectedMenu) && <SettingsNav />}
+      {settingsTabs.some((tab) => tab.id === selectedMenu) && <SettingsNav />}
       <div className="modal__content">{children}</div>
     </div>
   );

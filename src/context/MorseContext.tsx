@@ -150,7 +150,7 @@ export const settingsSpecs: Record<
     },
   },
   [Setting.KeyType]: {
-    title: "Key",
+    title: "Key type",
     values: KeyTypes,
     hints: {
       [KeyTypes.Straight]: "One key, non-repeating",
@@ -194,8 +194,8 @@ export const settingsSpecs: Record<
 export enum Menus {
   None = "None",
   Settings = "Settings",
+  Key = "Key",
   Shortcuts = "Shortcuts",
-  Info = "Info",
   Theme = "Theme",
   Vibrate = "Vibrate",
   Flash = "Flash",
