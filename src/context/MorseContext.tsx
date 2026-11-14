@@ -236,8 +236,6 @@ interface ContextProps {
   hasPracticed: boolean;
   quizSource: Sources | undefined;
   setQuizSource: (source: Sources) => void;
-  quizQty: number | undefined;
-  setQuizQty: (qty: number) => void;
   stats: Stats | undefined;
   setStats: (stats: Stats | undefined) => void;
   phase: Phase;
@@ -269,8 +267,6 @@ export const MorseContext = createContext<ContextProps>({
   setSessionLabel: () => {},
   quizSource: undefined,
   setQuizSource: () => {},
-  quizQty: undefined,
-  setQuizQty: () => {},
   stats: undefined,
   setStats: () => {},
 });

@@ -167,6 +167,24 @@ export function advanceLesson(
   };
 }
 
+// Auto practice brings in a new character only once the newest one is
+// known and the batch just finished was accurate: new characters arrive
+// slowly, and only on top of a solid base
+export function readyToUnlock(
+  progress: Progress,
+  skill: Skill,
+  batchAccuracy: number,
+): boolean {
+  const level = progress.lesson[skill];
+  const newest = kochOrder[level - 1];
+
+  return (
+    level < maxLesson &&
+    batchAccuracy >= lessonPassAccuracy &&
+    charMastery(progress, skill, newest) === "known"
+  );
+}
+
 // ========== Adaptive picking ========== //
 // Weak and unseen characters come up more often
 export function charWeight(stat: CharStat | undefined) {

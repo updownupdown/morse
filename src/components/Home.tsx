@@ -74,10 +74,10 @@ export const Home = () => {
               ? days > 1
                 ? `${days}-day streak. Keep it going`
                 : "Pick up where you left off"
-              : "New here? Start with two letters"}
+              : "New here? Start with two characters"}
           </span>
           <span>
-            {hasPracticed ? `Continue: ${lastPracticeMode}` : "Lesson 1"}
+            {hasPracticed ? `Continue: ${lastPracticeMode}` : "Auto practice"}
           </span>
           <span className="home-continue__meter">
             <div style={{ width: `${(known / letters.length) * 100}%` }} />

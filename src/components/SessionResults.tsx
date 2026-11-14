@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import "./SessionResults.scss";
 import { MorseContext } from "../context/MorseContext";
+import { alphaToMorse } from "../data/alphaToMorse";
 
 // The score from the session just finished, above its setup
 export const SessionResults = () => {
@@ -45,6 +46,46 @@ export const SessionResults = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+// Live readouts while a session runs
+export const SessionMeters = () => {
+  const { stats } = useContext(MorseContext);
+  const s = stats;
+
+  return (
+    <div className="session-meters" aria-live="off">
+      <div>
+        <b>{s ? Math.round(s.wpm) : 0}</b>
+        <small>WPM</small>
+      </div>
+      <div>
+        <b>{s && s.correct + s.incorrect > 0 ? Math.round(s.accuracy) : "–"}</b>
+        <small>accuracy %</small>
+      </div>
+      <div>
+        <b>{s ? s.charsDone : 0}</b>
+        <small>characters</small>
+      </div>
+    </div>
+  );
+};
+
+// Shown once Auto practice brings in a new character
+export const UnlockedNotice = ({ char }: { char?: string }) => {
+  if (!char) return null;
+
+  return (
+    <div className="unlocked-notice" role="status">
+      <span className="unlocked-notice__led" aria-hidden="true" />
+      <span>
+        New character: <b>{char}</b>
+      </span>
+      <span className="unlocked-notice__code">
+        {alphaToMorse(char).replace(/\./g, "·").replace(/-/g, "–")}
+      </span>
     </div>
   );
 };

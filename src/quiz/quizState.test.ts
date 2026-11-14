@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { applyGuess, currentChar, QuizState, startQuiz } from "./quizState";
+import {
+  applyGuess,
+  continueQuiz,
+  currentChar,
+  QuizState,
+  startQuiz,
+} from "./quizState";
 import { calculateWPM } from "../utils/utils";
 
 const play = (state: QuizState, guesses: string, at = 1000) =>
@@ -58,6 +64,24 @@ describe("quiz state", () => {
     const state = play(startQuiz(["paris"], 0), "PARIS", 60000);
     expect(state.stats.unitLength).toBe(43);
     expect(state.stats.wpm).toBeCloseTo(calculateWPM(60000, 43));
+  });
+});
+
+describe("continueQuiz", () => {
+  it("carries the stats into the next batch", () => {
+    const done = play(startQuiz(["et"], 0), "ET");
+    expect(done.done).toBe(true);
+
+    const next = continueQuiz(done, ["ab"]);
+    expect(next.done).toBe(false);
+    expect(currentChar(next)).toBe("A");
+    expect(next.stats.correct).toBe(2);
+    expect(next.stats.charsTotal).toBe(4);
+  });
+
+  it("leaves the round alone with nothing to add", () => {
+    const done = play(startQuiz(["e"], 0), "E");
+    expect(continueQuiz(done, [])).toBe(done);
   });
 });
 

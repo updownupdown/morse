@@ -43,8 +43,14 @@ export const Header = () => {
     stopMorse();
 
     if (inSession) {
-      // Ends the session or round, back to its setup
-      setPhase("standby");
+      // Ends the session or round, back to its setup: with the results,
+      // for a practice session that got anywhere
+      const attempted = stats && stats.correct + stats.incorrect > 0;
+      setPhase(
+        phase === "guess" && practiceModes.includes(selectedMode) && attempted
+          ? "stats"
+          : "standby",
+      );
     } else if (game) {
       setSelectedMode(Modes.Play);
     }
@@ -74,11 +80,6 @@ export const Header = () => {
   } else {
     title = selectedMode;
   }
-
-  const progress =
-    phase === "guess" && stats && stats.charsTotal > 0
-      ? Math.min(stats.charsDone / stats.charsTotal, 1)
-      : undefined;
 
   return (
     <header className={`header${canGoBack ? " header--sub" : ""}`}>
@@ -110,18 +111,6 @@ export const Header = () => {
           <SlidersIcon />
         </button>
       </div>
-
-      {progress !== undefined && (
-        <div
-          className="header-progress"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(progress * 100)}
-        >
-          <div style={{ width: `${progress * 100}%` }} />
-        </div>
-      )}
     </header>
   );
 };

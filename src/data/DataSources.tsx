@@ -4,6 +4,7 @@ import { pangrams } from "./pangrams";
 import { abbreviations } from "./abbreviations";
 import {
   buildLesson,
+  kochOrder,
   pickWeighted,
   Progress,
   Skill,
@@ -11,7 +12,7 @@ import {
 } from "../progress/progress";
 
 export enum Sources {
-  Lesson = "Lesson",
+  Auto = "Auto",
   Words = "Words",
   Pangrams = "Pangrams",
   AllChars = "Characters",
@@ -23,7 +24,7 @@ export enum Sources {
 }
 
 export const sendSources = [
-  Sources.Lesson,
+  Sources.Auto,
   Sources.Words,
   Sources.Pangrams,
   Sources.AllChars,
@@ -32,7 +33,7 @@ export const sendSources = [
   Sources.Practice,
 ];
 export const receiveSources = [
-  Sources.Lesson,
+  Sources.Auto,
   Sources.Words,
   Sources.Pangrams,
   Sources.Letters,
@@ -47,42 +48,43 @@ export const sourceLabels: Partial<Record<Sources, string>> = {
   [Sources.Abbreviations]: "Abbrev.",
 };
 
-// What a "quantity" of each source is called
-export const sourceUnits: Record<Sources, string> = {
-  [Sources.Lesson]: "groups",
-  [Sources.Words]: "words",
-  [Sources.Pangrams]: "pangrams",
-  [Sources.AllChars]: "characters",
-  [Sources.Practice]: "",
-  [Sources.Letters]: "letters",
-  [Sources.SpecialChars]: "characters",
-  [Sources.Numbers]: "groups",
-  [Sources.Abbreviations]: "abbreviations",
+// How much each batch holds. Practice is continuous: a new batch follows
+// as soon as one is finished, until you go back.
+export const batchQty: Record<Sources, number> = {
+  [Sources.Auto]: 6,
+  [Sources.Words]: 5,
+  [Sources.Pangrams]: 1,
+  [Sources.AllChars]: 10,
+  [Sources.Practice]: 1,
+  [Sources.Letters]: 10,
+  [Sources.SpecialChars]: 10,
+  [Sources.Numbers]: 3,
+  [Sources.Abbreviations]: 5,
 };
 
-export const defaultSourceQty: Record<Sources, number> = {
-  [Sources.Lesson]: 6,
-  [Sources.Words]: 8,
-  [Sources.Pangrams]: 2,
-  [Sources.AllChars]: 52,
-  [Sources.Practice]: 1,
-  [Sources.Letters]: 26,
-  [Sources.SpecialChars]: 26,
-  [Sources.Numbers]: 5,
-  [Sources.Abbreviations]: 10,
-};
+const digits = "0123456789".split("");
 
-export const maxSourceQty: Record<Sources, number> = {
-  [Sources.Lesson]: 20,
-  [Sources.Words]: 30,
-  [Sources.Pangrams]: 10,
-  [Sources.AllChars]: 52,
-  [Sources.Practice]: 1,
-  [Sources.Letters]: 26,
-  [Sources.SpecialChars]: 26,
-  [Sources.Numbers]: 20,
-  [Sources.Abbreviations]: 30,
-};
+// The characters each source draws on, for its "known" count
+export function sourceChars(source: Sources): string[] {
+  switch (source) {
+    case Sources.Auto:
+      return kochOrder;
+    case Sources.Words:
+    case Sources.Pangrams:
+    case Sources.Letters:
+      return letters;
+    case Sources.AllChars:
+      return [...letters, ...specialChars];
+    case Sources.SpecialChars:
+      return specialChars;
+    case Sources.Numbers:
+      return digits;
+    case Sources.Abbreviations:
+      return [...letters, ...digits];
+    default:
+      return [];
+  }
+}
 
 export type Stats = {
   correct: number;
@@ -122,20 +124,18 @@ function chunk(chars: string[], size: number) {
   return chunks;
 }
 
-const digits = "0123456789".split("");
-
 // Builds the set of words (or groups of characters) for a round.
 // Character drills lean towards the ones you find hardest.
 export function getWordSet(
   source: Sources,
-  qty: number,
   skill: Skill,
   progress: Progress,
 ): string[] {
   const stats = progress[skill];
+  const qty = batchQty[source];
 
   switch (source) {
-    case Sources.Lesson:
+    case Sources.Auto:
       return buildLesson(progress.lesson[skill], stats, words, qty);
     case Sources.Words:
       return shuffle(words).slice(0, qty);

@@ -45,7 +45,7 @@
 
     span {
       // Offset close icon spacing
-      padding-left: 32px;
+      padding-left: 28px;
       flex: 1;
 
       font-size: 18px;
@@ -55,16 +55,25 @@
     }
 
     button {
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      margin-right: -8px;
+      border-radius: 18px;
+
+      &:hover {
+        background: rgba(var(--text-rgb), 0.08);
+      }
+
       svg {
-        width: 32px;
-        height: 32px;
-        fill: rgba(var(--text-rgb), 0.6);
-        filter: drop-shadow(0 0 5px rgba(var(--background-light-rgb), 1));
+        width: 18px;
+        height: 18px;
+        fill: rgba(var(--text-rgb), 0.55);
       }
 
       &:hover svg {
         fill: var(--accent-btn-hover);
-        filter: drop-shadow(0 0 5px rgba(var(--accent-btn-rgb), 0.4));
       }
     }
   }

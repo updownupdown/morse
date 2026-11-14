@@ -42,6 +42,9 @@ export type ChoiceCard<T> = {
   desc?: string;
   // A few characters that show what the choice is about
   glyph?: React.ReactNode;
+  // How many of its characters are known; `reached` is how many are
+  // in play so far, where that's fewer than all of them
+  meter?: { known: number; total: number; reached?: number };
 };
 
 // A grid of choices, each with a glyph, a title and a line about it
@@ -79,7 +82,37 @@ export function ChoiceCards<T extends string>({
           <span className="choice-card__text">
             <span>{card.title}</span>
             {card.desc && <span>{card.desc}</span>}
+            {card.meter && (
+              <span className="choice-card__meter" aria-hidden="true">
+                {card.meter.reached !== undefined && (
+                  <i
+                    className="choice-card__meter__reached"
+                    style={{
+                      width: `${(card.meter.reached / card.meter.total) * 100}%`,
+                    }}
+                  />
+                )}
+                <i
+                  style={{
+                    width: `${(card.meter.known / card.meter.total) * 100}%`,
+                  }}
+                />
+              </span>
+            )}
           </span>
+          {card.meter && (
+            <span className="choice-card__count">
+              <b>
+                {card.meter.known}
+                <span>/{card.meter.total}</span>
+              </b>
+              <small>
+                {card.meter.reached !== undefined
+                  ? `known, ${card.meter.reached} in play`
+                  : "known"}
+              </small>
+            </span>
+          )}
         </button>
       ))}
     </div>

@@ -7,6 +7,7 @@ import {
   knownCount,
   lessonChars,
   normalizeProgress,
+  readyToUnlock,
   recordAttempt,
   streak,
   weightedOrder,
@@ -99,6 +100,22 @@ describe("lessons", () => {
     expect(wordsFromChars(["arm", "zebra", "a"], ["A", "R", "M"])).toEqual([
       "arm",
     ]);
+  });
+});
+
+describe("readyToUnlock", () => {
+  const withNewest = (attempts: number, score: number) => ({
+    ...defaultProgress,
+    send: { M: { attempts, correct: attempts, score } },
+  });
+
+  it("waits until the newest character is known", () => {
+    expect(readyToUnlock(withNewest(3, 1), "send", 100)).toBe(false);
+    expect(readyToUnlock(withNewest(10, 0.95), "send", 100)).toBe(true);
+  });
+
+  it("needs an accurate batch", () => {
+    expect(readyToUnlock(withNewest(10, 0.95), "send", 80)).toBe(false);
   });
 });
 
