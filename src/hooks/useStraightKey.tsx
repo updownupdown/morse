@@ -83,21 +83,22 @@ export const useStraightKey = (props: KeyInputProps) => {
     };
   }, [queue, settings, isPressed, pressStart]);
 
-  const MorseQueue = () => {
-    return queue.length !== 0 ? <MorseChar morse={queue} size="xl" /> : null;
-  };
+  // Elements, not components defined here: a component made afresh each
+  // render would remount on every parent render (Morse Rain renders every
+  // frame) and restart the growing bar's animation
+  const morseQueue =
+    queue.length !== 0 ? <MorseChar morse={queue} size="xl" /> : null;
 
-  const MorseProgress = () => {
-    return pressStart !== null ? (
+  const morseProgress =
+    pressStart !== null ? (
       <MorseChar morse={inProgressChar} size="xl" />
     ) : null;
-  };
 
   return {
     onPressDown,
     onPressUp,
-    MorseQueue,
-    MorseProgress,
+    morseQueue,
+    morseProgress,
     queue,
     isPressed,
   };

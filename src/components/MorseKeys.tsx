@@ -34,15 +34,15 @@ export const MorseKeys = ({ hint, ...keyInput }: Props) => {
   const {
     onPressDown: straightOnKeyDown,
     onPressUp: straightOnKeyUp,
-    MorseQueue: StraightMorseQueue,
-    MorseProgress: StraightMorseProgress,
+    morseQueue: straightMorseQueue,
+    morseProgress: straightMorseProgress,
     queue: straightQueue,
     isPressed: straightIsPressed,
   } = useStraightKey(keyInput);
 
   // Iambic keys
   const {
-    MorseQueue: IambicMorseQueue,
+    morseQueue: iambicMorseQueue,
     onKeyDown: iambicOnKeyDown,
     onKeyUp: iambicOnKeyUp,
     queue: iambicQueue,
@@ -61,13 +61,11 @@ export const MorseKeys = ({ hint, ...keyInput }: Props) => {
         <div className="morse-keys__top__morse-queue">
           {settings[Setting.KeyType] === KeyTypes.Straight ? (
             <>
-              <StraightMorseQueue />
-              <StraightMorseProgress />
+              {straightMorseQueue}
+              {straightMorseProgress}
             </>
           ) : (
-            <>
-              <IambicMorseQueue />
-            </>
+            iambicMorseQueue
           )}
 
           {hint && (
