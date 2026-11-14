@@ -1,41 +1,42 @@
 import { useContext, useEffect, useRef } from "react";
 import { MorseKeys } from "./MorseKeys";
 import {
-  defaultSourceQty,
-  maxSourceQty,
   sendSources,
+  sourceChars,
   sourceLabels,
   Sources,
-  sourceUnits,
 } from "../data/DataSources";
 import clsx from "clsx";
 import { useProgress } from "../context/ProgressContext";
 import {
+  charMastery,
+  kochOrder,
   lessonChars,
-  lessonPassAccuracy,
-  minLesson,
   nextLessonChar,
+  Skill,
 } from "../progress/progress";
 import { Modes, MorseContext } from "../context/MorseContext";
-import { conditionalPluralize, formatForCSSClass } from "../utils/utils";
+import { formatForCSSClass } from "../utils/utils";
 import { initCode } from "../hooks/useAudio";
-import { Phase, quizQtIncrementDuration, useQuiz } from "../hooks/useQuiz";
+import { Phase, useQuiz } from "../hooks/useQuiz";
 import { Word } from "./Word";
 import { alphaToMorse } from "../data/alphaToMorse";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { PlusIcon } from "../icons/PlusIcon";
-import { MinusIcon } from "../icons/MinusIcon";
 import { Practice } from "./Practice";
 import { useAudioContext } from "../context/AudioContext";
 import { SendIcon } from "../icons/SendIcon";
 import { ReceiveIcon } from "../icons/ReceiveIcon";
 import { OnAirIcon } from "../icons/LineIcons";
 import { ChoiceCards, IconTabs, SetupHeading } from "./PracticeSetup";
-import { SessionResults } from "./SessionResults";
+import { SessionMeters, SessionResults, UnlockedNotice } from "./SessionResults";
+
+// The saved source, if it's still one on offer (older versions had others)
+export function validSource(source: Sources, sources: Sources[]) {
+  return sources.includes(source) ? source : Sources.Auto;
+}
 
 export const Send = () => {
-  const { setQuizSource, quizQty, setQuizQty, phase, setPhase } =
-    useContext(MorseContext);
+  const { setQuizSource, phase, setPhase } = useContext(MorseContext);
   const { playMorse } = useAudioContext();
   const { setGuess, word, letterIndex, guess, unlocked } = useQuiz();
 
@@ -43,25 +44,15 @@ export const Send = () => {
   const practiceWordRef = useRef(practiceWord);
   practiceWordRef.current = practiceWord;
 
-  const [source, setSource] = useLocalStorage<Sources>(
+  const [storedSource, setSource] = useLocalStorage<Sources>(
     "sendSource",
-    Sources.Words,
+    Sources.Auto,
   );
-  const [sendQuantities, setSendQuantities] = useLocalStorage<
-    Record<Sources, number>
-  >("sendQuantities", defaultSourceQty);
+  const source = validSource(storedSource, sendSources);
 
   useEffect(() => {
     setQuizSource(source);
-    setQuizQty(sendQuantities[source] ?? defaultSourceQty[source]);
   }, [source]);
-
-  useEffect(() => {
-    setSendQuantities({
-      ...sendQuantities,
-      [source]: quizQty ?? defaultSourceQty[source],
-    });
-  }, [quizQty]);
 
   function addPracticeCharacter(char: string) {
     // Don't add more than one wordbreak in a row
@@ -83,12 +74,9 @@ export const Send = () => {
         <QuizSelect
           phase={phase}
           setPhase={setPhase}
-          quizQty={quizQty ?? 1}
           source={source}
           sources={sendSources}
           setSource={setSource}
-          maxQty={maxSourceQty}
-          setQuizQty={setQuizQty}
           unlocked={unlocked}
         />
 
@@ -101,9 +89,13 @@ export const Send = () => {
         )}
 
         {phase === "guess" && (
-          <div className="quiz__content__word">
-            <Word guess={guess} word={word} letterIndex={letterIndex} />
-          </div>
+          <>
+            <SessionMeters />
+            <UnlockedNotice char={unlocked} />
+            <div className="quiz__content__word">
+              <Word guess={guess} word={word} letterIndex={letterIndex} />
+            </div>
+          </>
         )}
       </div>
 
@@ -157,7 +149,7 @@ export const PracticeTabs = () => {
 
 // A few characters that show what each source is about
 const sourceGlyphs: Record<Sources, string> = {
-  [Sources.Lesson]: "",
+  [Sources.Auto]: "",
   [Sources.Words]: "cat",
   [Sources.Pangrams]: "A–Z",
   [Sources.AllChars]: "A1?",
@@ -169,93 +161,46 @@ const sourceGlyphs: Record<Sources, string> = {
 };
 
 const sourceDescs: Record<Sources, string> = {
-  [Sources.Lesson]: "New letters, a few at a time",
+  [Sources.Auto]: "Drills what you know and adds new characters slowly",
   [Sources.Words]: "Common English words",
   [Sources.Pangrams]: "Sentences using every letter",
   [Sources.AllChars]: "Letters, numbers and symbols",
-  [Sources.Practice]: "Key anything, no prompts",
-  [Sources.Letters]: "A to Z, in random order",
-  [Sources.SpecialChars]: "Punctuation and signs",
+  [Sources.Practice]: "Key anything, with no prompts",
+  [Sources.Letters]: "A to Z, weakest first",
+  [Sources.SpecialChars]: "Numbers and punctuation",
   [Sources.Numbers]: "Groups of digits",
   [Sources.Abbreviations]: "Ham radio shorthand",
 };
 
 interface QuizSelectProps {
   setPhase: (phase: Phase) => void;
-  setQuizQty: (qty: number) => void;
-  quizQty: number;
   phase: Phase;
   source: Sources;
   sources: Sources[];
   setSource: (source: Sources) => void;
-  maxQty: Record<Sources, number>;
-  // The character just unlocked by passing a lesson
+  // The character Auto practice just unlocked
   unlocked?: string;
 }
 
 export const QuizSelect = ({
   phase,
   setPhase,
-  setQuizQty,
-  quizQty,
   source,
   setSource,
-  maxQty,
   sources,
   unlocked,
 }: QuizSelectProps) => {
   const { selectedMode } = useContext(MorseContext);
   const { progress } = useProgress();
-  const lessonLevel =
-    progress.lesson[selectedMode === Modes.Receive ? "receive" : "send"];
+  const skill: Skill = selectedMode === Modes.Receive ? "receive" : "send";
+  const lessonLevel = progress.lesson[skill];
   const nextChar = nextLessonChar(lessonLevel);
+  const unlockedChars = lessonChars(lessonLevel);
+  const newest = unlockedChars[unlockedChars.length - 1];
 
-  const holdTimeoutRef = useRef<number | null>(null);
-  const holdIntervalRef = useRef<number | null>(null);
-  const quizQtyRef = useRef(quizQty);
-  quizQtyRef.current = quizQty;
-
-  function incrementQuizQty(increase: boolean) {
-    let newQty = quizQtyRef.current ?? defaultSourceQty[source];
-
-    if (increase) {
-      if (newQty < maxSourceQty[source]) {
-        newQty += 1;
-      }
-    } else {
-      if (newQty > 1) {
-        newQty -= 1;
-      }
-    }
-
-    setQuizQty(newQty);
-  }
-
-  const startHoldIncrement = (increase: boolean) => {
-    if (holdTimeoutRef.current || holdIntervalRef.current) return;
-
-    holdTimeoutRef.current = setTimeout(() => {
-      incrementQuizQty(increase);
-
-      holdIntervalRef.current = setInterval(() => {
-        incrementQuizQty(increase);
-      }, quizQtIncrementDuration.subsequent);
-      holdTimeoutRef.current = null;
-    }, quizQtIncrementDuration.initial);
-  };
-
-  const stopHoldIncrement = () => {
-    if (holdTimeoutRef.current) {
-      clearTimeout(holdTimeoutRef.current);
-      holdTimeoutRef.current = null;
-    }
-    if (holdIntervalRef.current) {
-      clearInterval(holdIntervalRef.current);
-      holdIntervalRef.current = null;
-    }
-  };
-
-  if (!["standby", "stats"].includes(phase)) return null;
+  const knownOf = (chars: string[]) =>
+    chars.filter((char) => charMastery(progress, skill, char) === "known")
+      .length;
 
   if (!["standby", "stats"].includes(phase)) return null;
 
@@ -269,94 +214,60 @@ export const QuizSelect = ({
 
       <ChoiceCards
         label="What to practise"
+        columns={1}
         selected={source}
         onSelect={(s) => {
           setPhase("standby");
           setSource(s);
         }}
-        cards={sources.map((s) => ({
-          id: s,
-          title:
-            s === Sources.Lesson
-              ? `Lesson ${lessonLevel - minLesson + 1}`
-              : (sourceLabels[s] ?? s),
-          desc: sourceDescs[s],
-          glyph:
-            s === Sources.Lesson
-              ? lessonChars(lessonLevel).slice(-1)[0]
-              : sourceGlyphs[s],
-        }))}
+        cards={sources.map((s) => {
+          const chars = sourceChars(s);
+
+          return {
+            id: s,
+            title: sourceLabels[s] ?? s,
+            desc: sourceDescs[s],
+            glyph: s === Sources.Auto ? newest : sourceGlyphs[s],
+            meter:
+              chars.length === 0
+                ? undefined
+                : s === Sources.Auto
+                  ? {
+                      known: knownOf(unlockedChars),
+                      total: kochOrder.length,
+                      reached: unlockedChars.length,
+                    }
+                  : { known: knownOf(chars), total: chars.length },
+          };
+        })}
       />
 
-      {source === Sources.Lesson && (
+      {source === Sources.Auto && (
         <div className="quiz-lesson">
           {unlocked ? (
             <span className="quiz-lesson__unlocked">
-              Passed! New character: <b>{unlocked}</b>
+              New character this session: <b>{unlocked}</b>
             </span>
           ) : (
             <span>
               {nextChar
-                ? `Score ${lessonPassAccuracy}% to unlock the next character`
+                ? `${nextChar} comes next, once ${newest} is known`
                 : "Every character unlocked"}
             </span>
           )}
           <div className="quiz-lesson__chars">
-            {lessonChars(lessonLevel).map((char, i, all) => (
+            {unlockedChars.map((char, i, all) => (
               <span
                 key={char}
-                className={clsx(i === all.length - 1 && "newest")}
+                className={clsx(
+                  `quiz-lesson__char--${charMastery(progress, skill, char)}`,
+                  i === all.length - 1 && "newest",
+                )}
               >
                 {char}
               </span>
             ))}
           </div>
-        </div>
-      )}
-
-      {source === Sources.Practice ? (
-        <div className="length-row">
-          <span className="length-row__label">
-            Send anything you want
-            <small>Playback, delete and word breaks are below the text.</small>
-          </span>
-        </div>
-      ) : (
-        <div className="length-row">
-          <span className="length-row__label">Length</span>
-
-          <button
-            className="btn btn--outlined"
-            aria-label="Fewer"
-            onClick={() => incrementQuizQty(false)}
-            onMouseDown={() => startHoldIncrement(false)}
-            onTouchStart={() => startHoldIncrement(false)}
-            onMouseUp={stopHoldIncrement}
-            onMouseLeave={stopHoldIncrement}
-            onTouchEnd={stopHoldIncrement}
-            disabled={quizQty === 1}
-          >
-            <MinusIcon />
-          </button>
-
-          <div className="length-row__value">
-            <b>{quizQty}</b>
-            <small>{conditionalPluralize(sourceUnits[source], quizQty)}</small>
-          </div>
-
-          <button
-            className="btn btn--outlined"
-            aria-label="More"
-            onClick={() => incrementQuizQty(true)}
-            onMouseDown={() => startHoldIncrement(true)}
-            onTouchStart={() => startHoldIncrement(true)}
-            onMouseUp={stopHoldIncrement}
-            onMouseLeave={stopHoldIncrement}
-            onTouchEnd={stopHoldIncrement}
-            disabled={quizQty === maxQty[source]}
-          >
-            <PlusIcon />
-          </button>
         </div>
       )}
     </div>

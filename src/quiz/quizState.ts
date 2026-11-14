@@ -50,6 +50,28 @@ export function startQuiz(source: string[], now: number): QuizState {
   };
 }
 
+// Practice is continuous: once a batch is done, the next one follows,
+// with the session's stats carried over
+export function continueQuiz(state: QuizState, source: string[]): QuizState {
+  const words = source.map((word) => word.toUpperCase());
+  if (words.length === 0) return state;
+
+  return {
+    ...state,
+    words,
+    wordIndex: 0,
+    letterIndex: 0,
+    missed: false,
+    done: false,
+    stats: {
+      ...state.stats,
+      charsTotal:
+        state.stats.charsTotal +
+        words.reduce((total, word) => total + word.replace(/ /g, "").length, 0),
+    },
+  };
+}
+
 export const currentWord = (state: QuizState): string | undefined =>
   state.words[state.wordIndex];
 

@@ -38,11 +38,9 @@
       &,
       &:hover {
         color: var(--accent-btn);
-        text-shadow: 0 0 6px rgba(var(--accent-btn-rgb), 0.4);
 
         svg {
           fill: var(--accent-btn);
-          filter: drop-shadow(0 0 4px rgba(var(--accent-btn-rgb), 0.5));
         }
       }
     }
@@ -62,9 +60,7 @@
     padding: 0 6px env(safe-area-inset-bottom, 0px);
 
     background: rgba(var(--background-overlay-rgb), 0.55);
-    box-shadow:
-      inset 0 1px 0 rgba(var(--background-light-rgb), 0.6),
-      0 -6px 24px rgba(var(--black-rgb), 0.15);
+    box-shadow: inset 0 1px 0 rgba(var(--text-rgb), 0.08);
 
     .tab {
       flex-direction: column;

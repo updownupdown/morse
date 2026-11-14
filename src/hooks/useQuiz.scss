@@ -124,8 +124,7 @@
   padding: 12px;
   flex-shrink: 0;
 
-  border-radius: var(--box-radius);
-  background: rgba(var(--background-overlay-rgb), 0.3);
+  @include well;
 
   font-size: 13px;
   color: rgba(var(--text-rgb), 0.6);
@@ -161,8 +160,18 @@
       font-weight: 600;
       color: rgba(var(--text-rgb), 0.8);
 
+      // A tick of colour for how well each is known
+      box-shadow: inset 0 -2px 0 rgba(var(--text-rgb), 0.12);
+
+      &.quiz-lesson__char--learning {
+        box-shadow: inset 0 -2px 0 rgba(var(--accent-input-rgb), 0.6);
+      }
+      &.quiz-lesson__char--known {
+        box-shadow: inset 0 -2px 0 var(--accent-btn);
+      }
+
       &.newest {
-        background: rgba(var(--accent-btn-rgb), 0.25);
+        background: rgba(var(--accent-btn-rgb), 0.18);
         color: var(--accent-btn);
       }
     }

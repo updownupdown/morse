@@ -9,46 +9,31 @@ import { initCode } from "../hooks/useAudio";
 import { MorseContext } from "../context/MorseContext";
 import { StopIcon } from "../icons/StopIcon";
 import clsx from "clsx";
-import {
-  defaultSourceQty,
-  maxSourceQty,
-  receiveSources,
-  Sources,
-} from "../data/DataSources";
+import { receiveSources, Sources } from "../data/DataSources";
 import { useQuiz } from "../hooks/useQuiz";
 import { Word } from "./Word";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useAudioContext } from "../context/AudioContext";
-import { QuizSelect } from "./Send";
+import { QuizSelect, validSource } from "./Send";
+import { SessionMeters, UnlockedNotice } from "./SessionResults";
 
 export const Receive = () => {
-  const { setPhase, phase, setQuizSource, quizQty, setQuizQty } =
-    useContext(MorseContext);
+  const { setPhase, phase, setQuizSource } = useContext(MorseContext);
 
   const { playMorse, stopMorse, isPlaying } = useAudioContext();
 
   const { setGuess, word, letterIndex, guess, unlocked } = useQuiz();
   const { progress } = useProgress();
 
-  const [source, setSource] = useLocalStorage<Sources>(
+  const [storedSource, setSource] = useLocalStorage<Sources>(
     "receiveSource",
-    Sources.Words,
+    Sources.Auto,
   );
-  const [receiveQuantities, setReceiveQuantities] = useLocalStorage<
-    Record<Sources, number>
-  >("receiveQuantities", defaultSourceQty);
+  const source = validSource(storedSource, receiveSources);
 
   useEffect(() => {
     setQuizSource(source);
-    setQuizQty(receiveQuantities[source] ?? defaultSourceQty[source]);
   }, [source]);
-
-  useEffect(() => {
-    setReceiveQuantities({
-      ...receiveQuantities,
-      [source]: quizQty ?? defaultSourceQty[source],
-    });
-  }, [quizQty]);
 
   const isPlayingWord = () => isPlaying === "word";
   const isPlayingChar = () => isPlaying === "char";
@@ -126,17 +111,16 @@ export const Receive = () => {
         <QuizSelect
           phase={phase}
           setPhase={setPhase}
-          quizQty={quizQty ?? 1}
           source={source}
           sources={receiveSources}
           setSource={setSource}
-          maxQty={maxSourceQty}
-          setQuizQty={setQuizQty}
           unlocked={unlocked}
         />
 
         {phase === "guess" && (
           <>
+            <SessionMeters />
+            <UnlockedNotice char={unlocked} />
             <div className="quiz__content__word">
               <Word guess={guess} word={word} letterIndex={letterIndex} />
             </div>
@@ -187,7 +171,7 @@ export const Receive = () => {
           <Keyboard
             setGuess={setGuess}
             layout={
-              source === Sources.Lesson
+              source === Sources.Auto
                 ? lessonChars(progress.lesson.receive)
                 : source === Sources.SpecialChars || source === Sources.Numbers
                   ? "special"

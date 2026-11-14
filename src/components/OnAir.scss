@@ -14,12 +14,7 @@
     padding: 8px 4px;
     flex-shrink: 0;
 
-    border-radius: var(--box-radius);
-    background: rgba(var(--background-main-rgb), 0.2);
-    box-shadow:
-      inset 0 1px 1px rgba(var(--text-rgb), 0.15),
-      inset 4px 6px 30px rgba(var(--background-light-rgb), 0.45),
-      3px 3px 10px rgba(var(--background-overlay-hover-rgb), 0.25);
+    @include panel;
 
     &__arrow {
       transition: 0.2s ease all;
@@ -55,7 +50,6 @@
         font-size: 18px;
         font-weight: 600;
         color: var(--accent-btn);
-        text-shadow: 0 0 4px rgba(var(--accent-btn-rgb), 0.3);
       }
       span:nth-child(2) {
         font-size: 13px;

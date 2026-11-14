@@ -62,7 +62,6 @@ function App() {
   const [selectedMenu, setSelectedMenu] = useState(Menus.None);
 
   const [quizSource, setQuizSource] = useState<Sources | undefined>(undefined);
-  const [quizQty, setQuizQty] = useState<number | undefined>(undefined);
   const [stats, setStats] = useState<Stats | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>("standby");
 
@@ -118,8 +117,6 @@ function App() {
         hasPracticed: storedPracticeMode !== null,
         quizSource,
         setQuizSource,
-        quizQty,
-        setQuizQty,
         stats,
         setStats,
         phase,
