@@ -33,11 +33,10 @@ export const useIambicKeys = (props: KeyInputProps) => {
     stopCharBreakTimeout,
   } = useCharQueue(props);
 
-  const MorseQueue = () => {
-    return queueRef.current.length !== 0 ? (
+  const morseQueue =
+    queueRef.current.length !== 0 ? (
       <MorseChar morse={queueRef.current} size="xl" />
     ) : null;
-  };
 
   // ========== PRESS LOGIC =========== //
   const [pressState, setPressState] = useState<PressedState>({
@@ -280,7 +279,7 @@ export const useIambicKeys = (props: KeyInputProps) => {
 
   // ========== Actual keys =========== //
   return {
-    MorseQueue,
+    morseQueue,
     onKeyDown,
     onKeyUp,
     queue,
